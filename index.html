@@ -3,142 +3,228 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#131a26">
+<meta name="theme-color" content="#121826">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Hej Ciera">
 <title>Hej Ciera</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
 <style>
-/* Layout: one phone-width column, a bottom tab bar, and a full-screen lesson player.
-   Look: the Danish "blue hour" - dusk navy, candle amber, nothing bright. Dark only, on purpose. */
+/* Layout: a winding lesson path on one phone column, a bottom tab bar, a full-screen lesson player.
+   Look: Danish "blue hour" - dusk navy with soft candy colors per unit. Dark only, never bright. */
 :root{
   color-scheme:dark;
-  --bg:#131a26; --surface:#1b2433; --raised:#243044; --line:#2f3c53;
-  --fg:#d8d3c6; --muted:#8d95a6;
-  --candle:#e3ac5c; --candle-ink:#2a1e0a;
-  --good:#7db78c; --good-bg:#1d3329; --miss:#d0787a; --miss-bg:#3a2226;
-  --red:#b9474e;
+  --bg:#121826; --surface:#1b2434; --raised:#253146; --line:#324059; --ledge:#0b1019;
+  --fg:#dcd6c8; --muted:#8e97a9; --ink:#141a26;
+  --candle:#e0a95a; --candle-d:#a17434;
+  --good:#6fbf85; --good-d:#3f8455; --good-bg:#1c3328;
+  --miss:#d97a7c; --miss-d:#9a4a4d; --miss-bg:#38222a;
   --display:"Fredoka","Trebuchet MS",system-ui,sans-serif;
   --body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --r:18px;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--fg);font:16px/1.45 var(--body);overscroll-behavior-y:none}
+body{background:var(--bg);color:var(--fg);font:16px/1.45 var(--body);overscroll-behavior-y:none;overflow-x:hidden}
 [hidden]{display:none!important}
-button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation}
-button:focus-visible,input:focus-visible{outline:2px solid var(--candle);outline-offset:2px}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+button:focus-visible,input:focus-visible{outline:2px solid var(--candle);outline-offset:3px}
 h1,h2,h3{font-family:var(--display);font-weight:600;margin:0;text-wrap:balance}
-#app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;
-  padding-top:env(safe-area-inset-top,0px)}
-.page{flex:1;display:flex;flex-direction:column;gap:18px;
-  padding-block:18px 96px;
+p{margin:0}
+#app{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px)}
+.page{flex:1;display:flex;flex-direction:column;gap:18px;padding-block:14px 100px;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 
-/* home */
-.hello{display:flex;flex-direction:column;gap:2px}
-.hello h1{font-size:30px}
-.hello p{margin:0;color:var(--muted)}
-.chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-weight:700;font-size:14px;display:flex;gap:6px;align-items:center}
-.chip small{font-weight:600;color:var(--muted);font-size:12px}
-.note{background:var(--surface);border:1px dashed var(--line);border-radius:var(--r);padding:12px 14px;color:var(--muted);font-size:14px}
-.unit{display:flex;flex-direction:column;gap:10px}
-.unit-h{display:flex;align-items:baseline;gap:10px;padding-top:6px}
-.unit-h h2{font-size:20px}
-.unit-h span{color:var(--muted);font-size:14px}
-.lesson{display:flex;align-items:center;gap:14px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
-.lesson .ico{width:48px;height:48px;border-radius:50%;background:var(--raised);display:grid;place-items:center;font-size:24px;flex:none}
-.lesson .tx{flex:1;min-width:0}
-.lesson b{font-family:var(--display);font-weight:600;font-size:18px;display:block}
-.lesson .tx span{color:var(--muted);font-size:14px}
-.lesson .st{font-size:13px;font-weight:700;color:var(--muted);flex:none}
-.lesson.next{border-color:var(--candle);background:linear-gradient(180deg,#2a2a2c,#1f2633)}
-.lesson.next .st{background:var(--candle);color:var(--candle-ink);padding:7px 14px;border-radius:999px}
-.lesson.locked{opacity:.45}
-.lesson.done .st{color:var(--candle);letter-spacing:2px}
+/* pressable 3D things */
+.btn{display:block;width:100%;padding:14px 18px;border-radius:16px;background:var(--candle);color:var(--ink);font-family:var(--display);font-weight:600;font-size:18px;text-align:center;
+  box-shadow:0 5px 0 var(--candle-d);transition:transform .07s,box-shadow .07s;margin-bottom:5px}
+.btn:active{transform:translateY(5px);box-shadow:0 0 0 var(--candle-d)}
+.btn:disabled{background:var(--raised);color:var(--muted);box-shadow:0 5px 0 var(--ledge)}
+.btn.ghost{background:var(--raised);color:var(--fg);box-shadow:0 5px 0 var(--ledge)}
+.btn.good{background:var(--good);box-shadow:0 5px 0 var(--good-d)}
+.btn.miss{background:var(--miss);box-shadow:0 5px 0 var(--miss-d)}
+.btn.sm{width:auto;padding:9px 15px;font-size:15px;border-radius:13px;box-shadow:0 4px 0 var(--ledge);margin-bottom:4px}
+.btn.sm:active{transform:translateY(4px);box-shadow:0 0 0 var(--ledge)}
+.link{color:var(--muted);text-decoration:underline;font-size:14px;padding:6px;align-self:center}
+
+/* home top */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:4;background:var(--bg);display:flex;gap:8px;justify-content:space-between;padding-block:6px}
+.chip{flex:1;justify-content:center;white-space:nowrap;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:6px 8px;font-family:var(--display);font-weight:600;font-size:17px;display:flex;gap:5px;align-items:center}
+.chip small{font-family:var(--body);font-weight:700;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+.chip .fl{display:inline-block}
+.chip.lit .fl{animation:flick 1.2s ease-in-out infinite}
+.chip.cold .fl{filter:grayscale(1);opacity:.6}
+.quests{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.quests h3{font-size:16px;display:flex;justify-content:space-between}
+.quests h3 span{color:var(--muted);font-family:var(--body);font-size:13px;font-weight:700}
+.q{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:14px;font-weight:700;align-items:center}
+.q .bar{grid-column:1/-1;height:10px;border-radius:9px;background:var(--raised);overflow:hidden}
+.q .bar i{display:block;height:100%;border-radius:9px;background:var(--candle);transition:width .5s}
+.q.done{color:var(--good)} .q.done .bar i{background:var(--good)}
+.note{background:var(--surface);border:2px dashed var(--line);border-radius:18px;padding:12px 14px;color:var(--muted);font-size:14px}
+
+/* path */
+.banner{border-radius:20px;padding:14px 16px;background:var(--c);color:var(--ink);box-shadow:0 5px 0 var(--cl);display:flex;flex-direction:column}
+.banner small{font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:11px;opacity:.75}
+.banner h2{font-size:22px} .banner span{font-weight:700;font-size:14px;opacity:.8}
+.path{display:flex;flex-direction:column;align-items:center;gap:20px;padding-block:22px 10px}
+.nw{position:relative;transform:translateX(var(--x));display:flex;flex-direction:column;align-items:center;gap:8px}
+.node{width:78px;height:70px;border-radius:50%;background:var(--c);box-shadow:0 8px 0 var(--cl);font-size:32px;display:grid;place-items:center;transition:transform .07s,box-shadow .07s;position:relative}
+.node:active{transform:translateY(8px);box-shadow:0 0 0 var(--cl)}
+.node.locked{background:#2a3548;box-shadow:0 8px 0 #1a2231}
+.node.locked span{filter:grayscale(1);opacity:.4}
+.node.next::before{content:"";position:absolute;inset:-9px -9px -15px;border-radius:50%;border:4px solid var(--c);opacity:.5;animation:ring 1.6s ease-in-out infinite}
+.nl{font-family:var(--display);font-weight:600;font-size:14px;color:var(--muted)}
+.nw.cur .nl{color:var(--fg)}
+.nst{color:var(--candle);font-size:13px;letter-spacing:2px;line-height:1}
+.startb{position:absolute;top:-40px;background:var(--surface);border:2px solid var(--line);color:var(--c);font-family:var(--display);font-weight:700;font-size:14px;letter-spacing:.06em;padding:5px 12px;border-radius:12px;animation:bounce 1.3s ease-in-out infinite;z-index:1}
+.startb::after{content:"";position:absolute;left:50%;bottom:-8px;width:12px;height:12px;background:var(--surface);border-right:2px solid var(--line);border-bottom:2px solid var(--line);transform:translateX(-50%) rotate(45deg)}
+.buddy{position:absolute;top:-8px;width:104px;display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.buddy.r{left:calc(100% + 6px)} .buddy.l{right:calc(100% + 6px)}
+.buddy.l .snegl{transform:scaleX(-1)}
+.say{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:5px 10px;font-family:var(--display);font-weight:600;font-size:14px;text-align:center;line-height:1.2;animation:pop .4s both}
+.say small{display:block;font-family:var(--body);color:var(--muted);font-size:11px;font-weight:700}
+
+/* mascot */
+.snegl{width:100%;height:auto;display:block;animation:bob 2.6s ease-in-out infinite}
+.snegl .blink{transform-box:fill-box;transform-origin:center;animation:blink 4.2s infinite}
+.snegl.yay{animation:hop .55s ease-out 3}
+.snegl.oops{animation:droop .5s both}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(6,9,15,.6);z-index:6;animation:fade .2s both}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:7;background:var(--surface);border-radius:26px 26px 0 0;border-top:4px solid var(--c);
+  padding:22px max(18px,env(safe-area-inset-left,0px)) calc(22px + env(safe-area-inset-bottom,0px));animation:up .28s cubic-bezier(.2,.9,.3,1.2) both}
+.sheet>div{max-width:444px;margin:0 auto;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center}
+.sheet .big{font-size:52px;animation:pop .4s .1s both}
+.sheet h2{font-size:26px} .sheet p{color:var(--muted)}
 
 /* tab bar */
-.tabs{position:fixed;left:0;right:0;bottom:0;background:#0f1520;border-top:1px solid var(--line);
-  padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:#0e141f;border-top:2px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
 .tabs div{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
-.tabs button{padding:10px 4px 9px;font-size:12px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:2px}
-.tabs button i{font-style:normal;font-size:21px;filter:grayscale(.6)}
-.tabs button.on{color:var(--candle)}
-.tabs button.on i{filter:none}
+.tabs button{padding:9px 4px 8px;font-size:12px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:1px}
+.tabs button i{font-style:normal;font-size:23px;filter:grayscale(.7);transition:transform .2s}
+.tabs button.on{color:var(--candle)} .tabs button.on i{filter:none;transform:translateY(-3px) scale(1.15)}
 
-/* shared */
-.btn{display:block;width:100%;padding:15px 18px;border-radius:16px;background:var(--candle);color:var(--candle-ink);font-family:var(--display);font-weight:600;font-size:18px;text-align:center}
-.btn:disabled{background:var(--raised);color:var(--muted)}
-.btn.ghost{background:var(--raised);color:var(--fg)}
-.btn.sm{width:auto;padding:10px 16px;font-size:15px;border-radius:12px}
-.link{color:var(--muted);text-decoration:underline;font-size:14px;padding:8px}
+/* other tabs */
+.hello h1{font-size:28px} .hello p{color:var(--muted)}
+.unit{display:flex;flex-direction:column;gap:10px}
+.unit-h{display:flex;align-items:baseline;gap:10px;padding-top:6px}
+.unit-h h2{font-size:20px} .unit-h span{color:var(--muted);font-size:14px}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 6px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center;min-width:0}
-.tile i{font-style:normal;font-size:32px}
-.tile b{font-size:13px;line-height:1.2}
-.tile small{color:var(--muted);font-size:12px;line-height:1.25}
-.tile.off i{filter:grayscale(1);opacity:.35}
-.tile.off b{color:var(--muted)}
-.tile.buy{border-color:var(--candle)}
-.row{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
-.row .tx{flex:1;min-width:0}
-.row b{display:block}
-.row span{color:var(--muted);font-size:14px}
-.round{width:40px;height:40px;border-radius:50%;background:var(--raised);font-size:18px;flex:none}
-.round.on{background:var(--candle);color:var(--candle-ink)}
+.tile{background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:12px 6px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center;min-width:0;box-shadow:0 4px 0 var(--ledge)}
+.tile i{font-style:normal;font-size:34px}
+.tile.own i{animation:wig 3s ease-in-out infinite}
+.tile b{font-size:13px;line-height:1.2} .tile small{color:var(--muted);font-size:12px;line-height:1.25}
+.tile.off i{filter:grayscale(1);opacity:.3} .tile.off b{color:var(--muted)}
+.tile.buy{border-color:var(--candle)} .tile.buy:active{transform:translateY(4px);box-shadow:none}
+.tile.new{animation:pop .5s both}
+.row{display:flex;align-items:center;gap:10px;background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:10px 12px}
+.row .tx{flex:1;min-width:0} .row b{display:block} .row span{color:var(--muted);font-size:14px}
+.round{width:42px;height:42px;border-radius:50%;background:var(--raised);font-size:18px;flex:none;box-shadow:0 3px 0 var(--ledge)}
+.round:active{transform:translateY(3px);box-shadow:none}
+.round.on{background:var(--candle);color:var(--ink)}
 .stack{display:flex;flex-direction:column;gap:10px}
 label{font-weight:700;font-size:14px;display:flex;flex-direction:column;gap:6px}
-input{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+input{font:inherit;color:var(--fg);background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px}
 
 /* lesson player */
-.player{flex:1;display:flex;flex-direction:column;min-height:100dvh;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.pbar{display:flex;align-items:center;gap:12px;padding-block:12px}
-.pbar .x{font-size:20px;color:var(--muted);width:36px;height:36px}
-.track{flex:1;height:10px;border-radius:9px;background:var(--raised);overflow:hidden}
-.track div{height:100%;background:var(--candle);border-radius:9px;transition:width .3s}
-.step{flex:1;display:flex;flex-direction:column;gap:16px;padding-block:8px 16px}
-.ask{color:var(--muted);font-weight:700;font-size:15px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:22px 18px;display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center}
-.da{font-family:var(--display);font-weight:600;font-size:32px;line-height:1.15;overflow-wrap:anywhere}
-.hint{color:var(--candle);font-size:16px;font-weight:600}
-.en{font-size:18px}
-.tip{color:var(--muted);font-size:14px;max-width:34ch}
-.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:6px}
-.bigplay{width:96px;height:96px;border-radius:50%;background:var(--raised);border:2px solid var(--candle);font-size:38px;margin:4px auto}
-.opts{display:flex;flex-direction:column;gap:10px}
-.opt{background:var(--surface);border:1.5px solid var(--line);border-radius:16px;padding:15px 16px;text-align:left;font-size:17px;font-weight:600}
-.opt.ok{border-color:var(--good);background:var(--good-bg)}
-.opt.no{border-color:var(--miss);background:var(--miss-bg)}
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.cols .opt{text-align:center;padding:14px 8px;font-size:16px;min-width:0;overflow-wrap:anywhere}
-.opt.sel{border-color:var(--candle)}
-.opt.gone{opacity:.3;border-color:var(--good)}
-.answer{min-height:64px;border-bottom:2px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;padding-bottom:10px}
-.bank{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
-.word{background:var(--raised);border:1px solid var(--line);border-radius:12px;padding:10px 14px;font-weight:700;font-size:17px}
-.word.used{opacity:.2}
-.mic{width:104px;height:104px;border-radius:50%;background:var(--candle);color:var(--candle-ink);font-size:42px;margin:6px auto;display:block}
-.mic.live{background:var(--red);color:#f1dcdc;animation:pulse 1.1s infinite}
-@keyframes pulse{50%{box-shadow:0 0 0 16px rgba(185,71,78,.18)}}
-.spk{display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center}
-.heard{color:var(--muted);font-size:15px}
-.foot{position:sticky;bottom:0;padding-block:12px calc(14px + env(safe-area-inset-bottom,0px));background:var(--bg);display:flex;flex-direction:column;gap:10px}
-.fb{border-radius:16px;padding:12px 14px;font-weight:700}
-.fb small{display:block;font-weight:600;opacity:.9;font-size:14px}
-.fb.ok{background:var(--good-bg);color:var(--good)}
-.fb.no{background:var(--miss-bg);color:var(--miss)}
+.player{flex:1;display:flex;flex-direction:column;min-height:100dvh;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.pbar{display:flex;align-items:center;gap:10px;padding-block:12px}
+.pbar .x{font-size:20px;color:var(--muted);width:34px;height:34px}
+.track{flex:1;height:14px;border-radius:9px;background:var(--raised);overflow:hidden}
+.track div{height:100%;background:var(--candle);border-radius:9px;transition:width .45s cubic-bezier(.3,1.4,.5,1);position:relative}
+.track div::after{content:"";position:absolute;left:8px;right:8px;top:3px;height:3px;border-radius:3px;background:rgba(255,255,255,.28)}
+.cmb{font-family:var(--display);font-weight:700;color:var(--candle);min-width:44px;text-align:right}
+.cmb.bump{animation:pop .35s}
+.step{flex:1;display:flex;flex-direction:column;gap:14px;padding-block:6px 16px;animation:slide .32s cubic-bezier(.2,.8,.3,1) both}
+.step>*{animation:rise .35s both} .step>*:nth-child(2){animation-delay:.05s} .step>*:nth-child(3){animation-delay:.1s} .step>*:nth-child(4){animation-delay:.15s}
+.ask{font-family:var(--display);font-weight:600;font-size:21px}
+.teach{display:flex;align-items:flex-end;gap:6px}
+.teach .m{width:92px;flex:none}
+.bub{flex:1;min-width:0;background:var(--surface);border:2px solid var(--line);border-radius:20px 20px 20px 6px;padding:14px 16px;display:flex;flex-direction:column;gap:3px;text-align:left;box-shadow:0 4px 0 var(--ledge)}
+.bub:active{transform:translateY(2px)}
+.da{font-family:var(--display);font-weight:600;font-size:28px;line-height:1.15;overflow-wrap:anywhere}
+.hint{color:var(--candle);font-weight:700;font-size:15px}
+.en{font-size:17px}
+.tip{background:var(--raised);border-radius:14px;padding:10px 14px;color:var(--fg);font-size:14px}
+.tip b{color:var(--candle)}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:20px 18px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;box-shadow:0 4px 0 var(--ledge)}
+.acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.bigplay{width:104px;height:98px;border-radius:28px;background:#5d8fd0;box-shadow:0 7px 0 #3d659b;font-size:42px;margin:2px auto 8px;color:var(--ink)}
+.bigplay:active{transform:translateY(7px);box-shadow:none}
+.opts{display:flex;flex-direction:column;gap:11px}
+.opt{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:14px 16px;text-align:left;font-size:17px;font-weight:700;box-shadow:0 4px 0 var(--line);transition:transform .07s,box-shadow .07s;margin-bottom:4px;animation:rise .3s both}
+.opts .opt:nth-child(2){animation-delay:.05s}.opts .opt:nth-child(3){animation-delay:.1s}.opts .opt:nth-child(4){animation-delay:.15s}
+.opt:active{transform:translateY(4px);box-shadow:none}
+.opt.ok{border-color:var(--good);background:var(--good-bg);box-shadow:0 4px 0 var(--good-d);color:var(--good)}
+.opt.no{border-color:var(--miss);background:var(--miss-bg);box-shadow:0 4px 0 var(--miss-d);color:var(--miss)}
+.opt.sel{border-color:#5d8fd0;box-shadow:0 4px 0 #3d659b;background:#1d2c44}
+.opt.gone{opacity:.25;border-color:var(--good);box-shadow:none;transform:scale(.96)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cols .opt{text-align:center;padding:14px 8px;font-size:16px;min-width:0;overflow-wrap:anywhere;min-height:60px}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.yn .btn{font-size:22px;padding:18px}
+.answer{min-height:60px;border-bottom:2px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start;padding-bottom:12px}
+.bank{display:flex;flex-wrap:wrap;gap:9px;justify-content:center}
+.word{background:var(--surface);border:2px solid var(--line);border-radius:13px;padding:9px 14px;font-weight:700;font-size:17px;box-shadow:0 4px 0 var(--line);margin-bottom:4px;animation:pop .22s both}
+.word:active{transform:translateY(4px);box-shadow:none}
+.word.used{opacity:.15;box-shadow:none}
+.chat{display:flex;flex-direction:column;gap:10px}
+.msg{max-width:84%;padding:10px 14px;border-radius:18px;font-weight:700;animation:pop .3s both}
+.msg small{display:block;font-weight:600;opacity:.75;font-size:13px}
+.msg.k{align-self:flex-start;background:var(--surface);border:2px solid var(--line);border-bottom-left-radius:6px}
+.msg.me{align-self:flex-end;background:#2c4a73;border-bottom-right-radius:6px}
+.who{display:flex;align-items:flex-end;gap:6px} .who .m{width:54px;flex:none}
+.mic{width:96px;height:90px;border-radius:50%;background:#5d8fd0;box-shadow:0 7px 0 #3d659b;color:var(--ink);font-size:40px;margin:2px auto 8px;display:block;position:relative}
+.mic:active{transform:translateY(7px);box-shadow:none}
+.mic.live{background:var(--miss);box-shadow:0 7px 0 var(--miss-d)}
+.mic.live::before,.mic.live::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:3px solid var(--miss);animation:wave 1.3s ease-out infinite}
+.mic.live::after{animation-delay:.65s}
+.spk{display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center}
+.heard{color:var(--muted);font-size:15px;font-weight:600}
+.foot{position:sticky;bottom:0;padding-block:10px calc(12px + env(safe-area-inset-bottom,0px));background:var(--bg);display:flex;flex-direction:column;gap:10px}
+.fb{border-radius:18px;padding:10px 14px;font-family:var(--display);font-weight:600;font-size:20px;display:flex;gap:10px;align-items:center;animation:up .3s cubic-bezier(.2,.9,.3,1.3) both}
+.fb .m{width:60px;flex:none}
+.fb small{display:block;font-family:var(--body);font-weight:700;font-size:14px;opacity:.9;line-height:1.3}
+.fb.ok{background:var(--good-bg);color:var(--good)} .fb.no{background:var(--miss-bg);color:var(--miss)}
 .shake{animation:shake .3s}
-@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.combo{position:fixed;left:50%;top:22%;z-index:9;transform:translateX(-50%);font-family:var(--display);font-weight:700;font-size:34px;color:var(--candle);text-shadow:0 4px 0 var(--ledge);pointer-events:none;animation:combo 1.1s both;white-space:nowrap}
+.toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top,0px));z-index:9;transform:translateX(-50%);background:var(--good-bg);color:var(--good);border:2px solid var(--good-d);border-radius:14px;padding:9px 16px;font-weight:700;white-space:nowrap;animation:toast 2.6s both;pointer-events:none}
 
 /* finish */
-.fin{flex:1;display:flex;flex-direction:column;gap:16px;align-items:center;justify-content:center;text-align:center;padding-block:24px}
-.fin .stars{font-size:44px;letter-spacing:6px;color:var(--candle)}
+.fin{flex:1;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;text-align:center;padding-block:20px}
+.fin .m{width:150px}
+.stars{font-size:50px;letter-spacing:8px;line-height:1}
+.stars span{display:inline-block;color:var(--raised);animation:star .5s both}
+.stars span.on{color:var(--candle)}
 .fin h1{font-size:34px}
-.fin .won{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-#confetti{position:fixed;inset:0;pointer-events:none;z-index:9}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}
+.stat{border-radius:16px;border:2px solid var(--c);overflow:hidden;animation:pop .4s both}
+.stat small{display:block;background:var(--c);color:var(--ink);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding:3px}
+.stat b{display:block;font-family:var(--display);font-size:22px;padding:8px 2px;color:var(--c)}
+.chest{width:100%;background:var(--surface);border:2px dashed var(--candle);border-radius:18px;padding:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:12px}
+.chest i{font-style:normal;font-size:38px;animation:wig 1s ease-in-out infinite}
+.chest.open{border-style:solid} .chest.open i{animation:pop .5s both}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:8}
+
+@keyframes bob{50%{transform:translateY(-4px)}}
+@keyframes hop{30%{transform:translateY(-16px) rotate(-4deg)}60%{transform:translateY(0)}}
+@keyframes droop{to{transform:translateY(3px) rotate(3deg)}}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+@keyframes bounce{50%{transform:translateY(-7px)}}
+@keyframes ring{50%{transform:scale(1.1);opacity:.15}}
+@keyframes flick{50%{transform:scale(1.2) rotate(-6deg)}}
+@keyframes pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+@keyframes rise{from{transform:translateY(12px);opacity:0}}
+@keyframes slide{from{transform:translateX(28px);opacity:0}}
+@keyframes up{from{transform:translateY(100%)}}
+@keyframes fade{from{opacity:0}}
+@keyframes wig{25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
+@keyframes wave{to{transform:scale(1.5);opacity:0}}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes star{0%{transform:scale(0) rotate(-90deg)}70%{transform:scale(1.35)}100%{transform:scale(1)}}
+@keyframes combo{0%{transform:translateX(-50%) scale(.3);opacity:0}25%{transform:translateX(-50%) scale(1.15);opacity:1}75%{transform:translateX(-50%) translateY(-10px) scale(1);opacity:1}100%{transform:translateX(-50%) translateY(-40px);opacity:0}}
+@keyframes toast{0%{transform:translate(-50%,-80px)}12%,85%{transform:translate(-50%,0);opacity:1}100%{transform:translate(-50%,-80px);opacity:0}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -146,12 +232,12 @@ input{font:inherit;color:var(--fg);background:var(--surface);border:1px solid va
 <div id="app"></div>
 <canvas id="confetti" hidden></canvas>
 <script>
-/* ---------- course content: [Danish, English, say-it hint, note] ---------- */
+/* ---------- course content: p = [Danish, English, say-it hint, note]; d = chat turns [Kanel says, English, index of the right reply] ---------- */
 const UNITS=[
- {t:'Første ord',en:'First words'},
- {t:'Ud i byen',en:'Out and about'},
- {t:'Familie & hygge',en:'Family and cozy times'},
- {t:'På tur',en:'On the trip'}
+ {t:'Første ord',en:'First words',c:'#45ab9f',cl:'#2a776e'},
+ {t:'Ud i byen',en:'Out and about',c:'#d98670',cl:'#9b5443'},
+ {t:'Familie & hygge',en:'Family and cozy times',c:'#9a8ad8',cl:'#6657a5'},
+ {t:'På tur',en:'On the trip',c:'#d9a85c',cl:'#9b7436'}
 ];
 const L=[
  {u:0,t:'Hej!',en:'Hello and goodbye',i:'👋',p:[
@@ -162,7 +248,8 @@ const L=[
   ['Godnat','Good night','go-NAT'],
   ['Tak','Thanks','tahk'],
   ['Ja','Yes','ya'],
-  ['Nej','No','nigh']]},
+  ['Nej','No','nigh']],
+  d:[['Hej Ciera!','Hi Ciera!',0],['Vil du have kage?','Do you want cake?',6],['Godnat, Ciera!','Good night, Ciera!',4]]},
  {u:0,t:'Tak!',en:'Being polite',i:'🙏',p:[
   ['Mange tak','Thanks a lot','MAHNG-eh tahk'],
   ['Selv tak','You\'re welcome','sel tahk'],
@@ -171,7 +258,8 @@ const L=[
   ['Ja tak','Yes, please','ya tahk','Danish has no word for "please". "Tak" does the job.'],
   ['Nej tak','No, thank you','nigh tahk'],
   ['Vi ses','See you','vee SEHS'],
-  ['Farvel','Goodbye','fa-VEL']]},
+  ['Farvel','Goodbye','fa-VEL']],
+  d:[['Her er din kaffe.','Here is your coffee.',0],['Ups, undskyld!','Oops, sorry!',3],['Vil du have en øl?','Do you want a beer?',4],['Vi ses!','See you!',6]]},
  {u:0,t:'Om mig',en:'About me',i:'🙋‍♀️',p:[
   ['Jeg hedder Ciera','My name is Ciera','yigh HEH-thuh …','The "dd" is soft, like the "th" in "the".'],
   ['Hvad hedder du?','What is your name?','va HEH-thuh doo','The H in "hvad" is silent.'],
@@ -180,10 +268,12 @@ const L=[
   ['Hyggeligt at møde dig','Nice to meet you','HOO-guh-lit at MUH-thuh digh'],
   ['I lige måde','Likewise','ee LEE-uh MAW-thuh'],
   ['Hvordan går det?','How is it going?','vor-DAN gor day'],
-  ['Det går godt','It\'s going well','day gor got']]},
+  ['Det går godt','It\'s going well','day gor got']],
+  d:[['Hej! Hvad hedder du?','Hi! What is your name?',0],['Hvor kommer du fra?','Where do you come from?',2],['Hyggeligt at møde dig!','Nice to meet you!',5],['Hvordan går det?','How is it going?',7]]},
  {u:1,t:'Tal',en:'Numbers 1 to 10',i:'🔢',p:[
   ['en','one','een'],['to','two','toe'],['tre','three','tray'],['fire','four','FEE-uh'],['fem','five','fem'],
-  ['seks','six','sex'],['syv','seven','syoo'],['otte','eight','OH-duh'],['ni','nine','nee'],['ti','ten','tee']]},
+  ['seks','six','sex'],['syv','seven','syoo'],['otte','eight','OH-duh'],['ni','nine','nee'],['ti','ten','tee']],
+  d:[['Hvad er to plus tre?','What is two plus three?',4],['Hvad er fem plus fem?','What is five plus five?',9],['Hvad er fire minus tre?','What is four minus three?',0]]},
  {u:1,t:'På café',en:'At the café',i:'☕',p:[
   ['En kaffe, tak','A coffee, please','een KAH-fuh tahk'],
   ['En te, tak','A tea, please','een tay tahk'],
@@ -192,7 +282,8 @@ const L=[
   ['Jeg vil gerne have en kaffe','I would like a coffee','yigh vil GAIR-nuh ha een KAH-fuh','"Jeg vil gerne have …" works for ordering anything.'],
   ['Hvad koster det?','How much is it?','va KOS-tuh day'],
   ['Må jeg betale?','May I pay?','maw yigh be-TAY-luh'],
-  ['Med kort','By card','meth kort']]},
+  ['Med kort','By card','meth kort']],
+  d:[['Hej! Hvad vil du have?','Hi! What would you like?',4],['Ellers andet?','Anything else?',3],['Kontant eller kort?','Cash or card?',7]]},
  {u:1,t:'Hvad?',en:'When you get stuck',i:'🤔',p:[
   ['Jeg forstår ikke','I don\'t understand','yigh for-STOR IG-uh'],
   ['Taler du engelsk?','Do you speak English?','TAY-luh doo ENG-elsk'],
@@ -201,13 +292,15 @@ const L=[
   ['Langsomt, tak','Slowly, please','LAHNG-somt tahk'],
   ['Hvad betyder det?','What does that mean?','va be-TOO-thuh day'],
   ['Jeg lærer dansk','I am learning Danish','yigh LAIR-uh dansk'],
-  ['Jeg ved det ikke','I don\'t know','yigh veth day IG-uh']]},
+  ['Jeg ved det ikke','I don\'t know','yigh veth day IG-uh']],
+  d:[['Taler du dansk?','Do you speak Danish?',2],['Rødgrød med fløde!','(A famous Danish tongue twister)',3],['Hvad laver du?','What are you doing?',6]]},
  {u:2,t:'Familien',en:'Meeting the family',i:'👨‍👩‍👧',p:[
   ['mor','mom','moor'],['far','dad','far'],['søster','sister','SUS-tuh'],['bror','brother','broor'],
   ['min kæreste','my boyfriend / girlfriend','meen KAIR-stuh','Literally "my dearest". Same word for both.'],
   ['Det er min kæreste','This is my boyfriend','day air meen KAIR-stuh'],
   ['Det er min familie','This is my family','day air meen fa-MEEL-yuh'],
-  ['Jeg elsker dig','I love you','yigh EL-skuh digh']]},
+  ['Jeg elsker dig','I love you','yigh EL-skuh digh']],
+  d:[['Hvem er Scott?','Who is Scott?',5],['Jeg elsker dig!','I love you!',7]]},
  {u:2,t:'Hygge',en:'Cozy at the table',i:'🕯️',p:[
   ['Skål!','Cheers!','skawl','Look everyone in the eye when you say it.'],
   ['Det er hyggeligt','This is cozy','day air HOO-guh-lit'],
@@ -216,12 +309,14 @@ const L=[
   ['Det smager godt','It tastes good','day SMAY-uh got'],
   ['Jeg er sulten','I am hungry','yigh air SOOL-ten'],
   ['Jeg er tørstig','I am thirsty','yigh air TUR-stee'],
-  ['Tak for i dag','Thanks for today','tahk for ee day']]},
+  ['Tak for i dag','Thanks for today','tahk for ee day']],
+  d:[['Skål!','Cheers!',0],['Hvordan smager det?','How does it taste?',4],['Tak for mad!','Thanks for the meal!',3]]},
  {u:2,t:'Mad',en:'Food worth knowing',i:'🥪',p:[
   ['brød','bread','bruth'],['ost','cheese','oost'],['rugbrød','rye bread','ROO-bruth'],
   ['smørrebrød','open-faced sandwich','SMUR-uh-bruth'],['kage','cake','KAY-uh'],['is','ice cream','ees'],
   ['en pølse','a hot dog','een PUL-suh'],
-  ['Jeg kan godt lide kage','I like cake','yigh ka got lee KAY-uh']]},
+  ['Jeg kan godt lide kage','I like cake','yigh ka got lee KAY-uh']],
+  d:[['Hvad kan du lide?','What do you like?',7],['Det er varmt i dag. Hvad vil du have?','It is hot today. What would you like?',5]]},
  {u:3,t:'Find vej',en:'Finding your way',i:'🧭',p:[
   ['Hvor er toilettet?','Where is the restroom?','vor air toy-LET-eth'],
   ['Hvor er stationen?','Where is the station?','vor air sta-SHOWN-en'],
@@ -230,7 +325,8 @@ const L=[
   ['til venstre','to the left','til VEN-struh'],
   ['lige ud','straight ahead','LEE-uh ooth'],
   ['Er det langt?','Is it far?','air day lahngt'],
-  ['Det er tæt på','It is close by','day air tet paw']]},
+  ['Det er tæt på','It is close by','day air tet paw']],
+  d:[['Kan jeg hjælpe dig?','Can I help you?',2],['Stranden er lige ud.','The beach is straight ahead.',6]]},
  {u:3,t:'Vejret',en:'Weather small talk',i:'🌦️',p:[
   ['Solen skinner','The sun is shining','SOOL-en SKIN-uh'],
   ['Det regner','It is raining','day RIGH-nuh'],
@@ -239,7 +335,8 @@ const L=[
   ['Sikke et dejligt vejr','What lovely weather','SIG-uh et DIGH-lit vair'],
   ['i dag','today','ee day'],
   ['i morgen','tomorrow','ee morn'],
-  ['God weekend','Have a good weekend','go weekend']]},
+  ['God weekend','Have a good weekend','go weekend']],
+  d:[['Hvordan er vejret?','How is the weather?',0],['God weekend!','Have a good weekend!',7]]},
  {u:3,t:'Sommerferie',en:'Summer vacation',i:'🏖️',p:[
   ['Vi er på ferie','We are on vacation','vee air paw FAIR-yuh'],
   ['Jeg elsker Danmark','I love Denmark','yigh EL-skuh DAN-mark'],
@@ -248,7 +345,8 @@ const L=[
   ['Det var sjovt','That was fun','day var shoat'],
   ['Jeg er træt','I am tired','yigh air tret'],
   ['Hav en god dag','Have a nice day','ha een go day'],
-  ['Tak for sidst','Thanks for last time','tahk for seest','Said the next time you see someone you had a good time with.']]}
+  ['Tak for sidst','Thanks for last time','tahk for seest','Said the next time you see someone you had a good time with.']],
+  d:[['Hvad laver I i Danmark?','What are you two doing in Denmark?',0],['Hvad skal I i dag?','What are you doing today?',2],['Hav en god dag!','Have a nice day!',6]]}
 ];
 L.forEach((l,li)=>l.p=l.p.map((a,pi)=>({id:li+'-'+pi,da:a[0],en:a[1],say:a[2],note:a[3]||''})));
 
@@ -263,11 +361,12 @@ const BADGES=[
  {id:'sp25',i:'🗣️',t:'Snakkesalig',d:'Say 25 phrases out loud',ok:s=>s.speaks>=25},
  {id:'sp100',i:'⚔️',t:'Vikingestemme',d:'Say 100 phrases out loud',ok:s=>s.speaks>=100},
  {id:'perf',i:'⭐',t:'Fejlfri',d:'A lesson with no mistakes',ok:s=>s.perfect>0},
+ {id:'c10',i:'⚡',t:'Ti i træk',d:'Get 10 right in a row',ok:s=>s.bestCombo>=10},
  {id:'w50',i:'📚',t:'Halvtreds',d:'Learn 50 phrases',ok:s=>learned(s).length>=50},
  {id:'bak3',i:'🍰',t:'Kagekender',d:'Collect 3 pastries',ok:s=>s.bakery.length>=3}
 ];
 const BAKERY=[
- {id:'kanel',i:'🥐',t:'Kanelsnegl',p:30,d:'"Cinnamon snail". The classic.'},
+ {id:'kanel',i:'🥐',t:'Kanelsnegl',p:30,d:'"Cinnamon snail". Kanel\'s cousin.'},
  {id:'flode',i:'🍫',t:'Flødebolle',p:40,d:'Marshmallow cream under a chocolate shell.'},
  {id:'rom',i:'🟤',t:'Romkugle',p:40,d:'A rum ball made from yesterday\'s cakes.'},
  {id:'wiener',i:'🥮',t:'Wienerbrød',p:50,d:'What the world calls "a Danish".'},
@@ -277,11 +376,17 @@ const BAKERY=[
  {id:'krans',i:'🗼',t:'Kransekage',p:120,d:'Marzipan ring tower for New Year\'s.'},
  {id:'lag',i:'🎂',t:'Lagkage',p:150,d:'Layer cake. No birthday without one.'}
 ];
-const PRAISE=[['Flot!','Nice!'],['Super!','Super!'],['Godt klaret!','Well done!'],['Perfekt!','Perfect!'],['Sådan!','That\'s it!'],['Dygtig!','Clever!']];
+const QUESTS=[
+ {id:'l',t:'Finish a lesson',g:1,v:d=>d.lessons},
+ {id:'s',t:'Say 10 phrases out loud',g:10,v:d=>d.speaks},
+ {id:'c',t:'Get 5 right in a row',g:5,v:d=>d.combo}
+];
+const PRAISE=[['Flot!','Nice!'],['Super!','Super!'],['Godt klaret!','Well done!'],['Perfekt!','Perfect!'],['Sådan!','That\'s it!'],['Dygtig!','Clever!'],['Sejt!','Cool!']];
+const CHEER=[['Kom så!','Let\'s go!'],['Du kan godt!','You can do it!'],['Klar?','Ready?'],['Hej Ciera!','Hi Ciera!']];
 
 /* ---------- state ---------- */
 const KEY='hejciera.v1';
-const def=()=>({kr:0,xp:0,streak:0,lastDay:'',done:{},badges:[],bakery:[],starred:[],speaks:0,perfect:0,trip:''});
+const def=()=>({kr:0,xp:0,streak:0,lastDay:'',done:{},badges:[],bakery:[],starred:[],speaks:0,perfect:0,bestCombo:0,trip:'',sound:true,day:{k:''}});
 let S=def();
 try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
@@ -289,14 +394,51 @@ const n=s=>Object.keys(s.done).length;
 const unitDone=(s,u)=>L.every((l,i)=>l.u!==u||s.done[i]);
 const learned=s=>L.flatMap((l,i)=>s.done[i]?l.p:[]);
 const dayKey=d=>{d=d||new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+const today=()=>{if(S.day.k!==dayKey())S.day={k:dayKey(),lessons:0,speaks:0,combo:0,q:[]};return S.day};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const rnd=a=>a[Math.floor(Math.random()*a.length)];
 const app=document.getElementById('app');
-let tab='home',cur=null;
+let tab='home',cur=null,sheet=null;
+
+/* ---------- Kanel the cinnamon snail ---------- */
+function snegl(m){m=m||'hi';
+  const eye=(x,y)=>m==='yay'?`<path d="M${x-4.5} ${y+2} q4.5 -7 9 0" stroke="#3b2a1a" stroke-width="2.6" fill="none" stroke-linecap="round"/>`
+    :`<g class="blink"><circle cx="${x}" cy="${y}" r="6" fill="#f1ece0"/><circle cx="${x+1}" cy="${y+(m==='oops'?2.5:0)}" r="2.8" fill="#3b2a1a"/></g>`;
+  const mouth=m==='yay'?'<path d="M90 59 q7 11 14 0 z" fill="#8a3b3b"/>':m==='oops'?'<ellipse cx="97" cy="63" rx="3" ry="3.6" fill="#8a3b3b"/>'
+    :'<path d="M91 60 q6 6 12 0" stroke="#3b2a1a" stroke-width="2.4" fill="none" stroke-linecap="round"/>';
+  return `<svg class="snegl ${m}" viewBox="0 0 124 96" aria-hidden="true">
+  <path d="M8 88 Q4 71 22 71 H100 Q119 71 115 88 Z" fill="#e2c08a"/>
+  <path d="M83 76 Q81 40 97 38 Q113 40 111 76 Z" fill="#e2c08a"/>
+  <path d="M91 42 L87 23 M103 42 L107 23" stroke="#e2c08a" stroke-width="4.5" stroke-linecap="round"/>
+  ${eye(87,19)}${eye(107,19)}
+  <circle cx="87" cy="57" r="3.2" fill="#e08f84" opacity=".7"/><circle cx="107" cy="57" r="3.2" fill="#e08f84" opacity=".7"/>${mouth}
+  <circle cx="50" cy="46" r="31" fill="#b57843"/>
+  <path d="M50 46 a4 4 0 0 1 8 0 a8 8 0 0 1 -16 0 a12 12 0 0 1 24 0 a16 16 0 0 1 -32 0 a20 20 0 0 1 40 0 a24 24 0 0 1 -48 0" fill="none" stroke="#7b4a22" stroke-width="4" stroke-linecap="round"/>
+  <path d="M29 31 q8 -11 21 -11 M63 23 q10 6 12 17" stroke="#f1ece0" stroke-width="3.6" fill="none" stroke-linecap="round" opacity=".85"/></svg>`}
+
+/* ---------- sound and touch ---------- */
+let AC=null;
+function sfx(k){
+  if(navigator.vibrate&&(k==='ok'||k==='no'))try{navigator.vibrate(k==='ok'?12:[20,40,20])}catch(e){}
+  if(!S.sound)return;
+  try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();const t=AC.currentTime;
+    const T=(f,at,d,v,ty)=>{const o=AC.createOscillator(),g=AC.createGain();o.type=ty||'sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+at);g.gain.linearRampToValueAtTime(v||.09,t+at+.012);g.gain.exponentialRampToValueAtTime(.0001,t+at+d);o.connect(g);g.connect(AC.destination);o.start(t+at);o.stop(t+at+d+.03)};
+    if(k==='ok'){T(659,0,.13);T(988,.09,.22)}
+    else if(k==='no'){T(233,0,.16,.08,'triangle');T(185,.12,.24,.08,'triangle')}
+    else if(k==='tap')T(540,0,.05,.04)
+    else if(k==='win')[523,659,784,1047,1319].forEach((f,i)=>T(f,i*.1,.3))
+    else if(k==='coin'){T(1047,0,.08);T(1568,.07,.25)}
+    else if(k==='combo')[784,988,1175].forEach((f,i)=>T(f,i*.06,.16))
+  }catch(e){}
+}
+function toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),2700)}
+function comboPop(nr){const d=document.createElement('div');d.className='combo';d.textContent=`🔥 ${nr} i træk!`;document.body.appendChild(d);setTimeout(()=>d.remove(),1150);sfx('combo')}
+function quests(){const d=today();QUESTS.forEach(q=>{if(!d.q.includes(q.id)&&q.v(d)>=q.g){d.q.push(q.id);S.kr+=10;toast('Quest done! +10 🪙');sfx('coin')}});save()}
 
 /* ---------- voice out ---------- */
 let voice=null,voicesSeen=false;
-function pickVoice(){if(!('speechSynthesis'in window))return;const v=speechSynthesis.getVoices();if(v.length){voicesSeen=true;voice=v.find(x=>/^da/i.test(x.lang))||null;if(tab==='home'&&!cur)render()}}
+function pickVoice(){if(!('speechSynthesis'in window))return;const v=speechSynthesis.getVoices();if(v.length){const had=voicesSeen;voicesSeen=true;voice=v.find(x=>/^da/i.test(x.lang))||null;if(!had&&tab==='home'&&!cur&&sheet===null)render()}}
 if('speechSynthesis'in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
 function say(text,slow){
   if(!('speechSynthesis'in window))return;
@@ -315,35 +457,41 @@ function render(){
   const body={home,rewards,book,me}[tab]();
   app.innerHTML=`<div class="page">${body}</div>
   <nav class="tabs"><div>${[['home','🏠','Learn'],['rewards','🏅','Rewards'],['book','📖','Phrases'],['me','⚙️','Me']]
-    .map(t=>`<button data-a="tab" data-v="${t[0]}" class="${tab===t[0]?'on':''}"><i>${t[1]}</i>${t[2]}</button>`).join('')}</div></nav>`;
+    .map(t=>`<button data-a="tab" data-v="${t[0]}" class="${tab===t[0]?'on':''}"><i>${t[1]}</i>${t[2]}</button>`).join('')}</div></nav>${sheet!==null?sheetHtml(sheet):''}`;
 }
-function daysToTrip(){if(!S.trip)return null;const d=Math.ceil((new Date(S.trip+'T00:00')-new Date())/864e5);return d}
+function daysToTrip(){if(!S.trip)return null;return Math.ceil((new Date(S.trip+'T00:00')-new Date())/864e5)}
+const XS=[0,-50,-72,-50,0,50,72,50];
 function home(){
-  const d=daysToTrip(),hr=new Date().getHours();
-  const greet=hr<10?'Godmorgen':hr<18?'Hej':'Godaften';
-  const practiced=S.lastDay===dayKey();
-  let h=`<div class="hello"><h1>${greet}, Ciera</h1><p>${practiced?'You practiced today. Flot!':'One lesson today, about 20 minutes.'}</p></div>
-  <div class="chips"><span class="chip">🔥 ${S.streak} <small>day streak</small></span><span class="chip">🪙 ${S.kr} <small>kroner</small></span>
-  ${d!==null&&d>=0?`<span class="chip">🇩🇰 ${d} <small>days to Denmark</small></span>`:''}</div>`;
+  const d=daysToTrip(),lit=S.lastDay===dayKey(),day=today();
+  let h=`<header class="top"><span class="chip ${lit?'lit':'cold'}"><span class="fl">🔥</span>${S.streak}<small>streak</small></span>
+  <span class="chip">🪙 ${S.kr}<small>kroner</small></span>
+  ${d!==null&&d>=0?`<span class="chip">🇩🇰 ${d}<small>days</small></span>`:`<button class="chip" data-a="tab" data-v="me">🇩🇰<small>set trip</small></button>`}</header>
+  <section class="quests"><h3>Today's quests <span>+10 🪙 each</span></h3>${QUESTS.map(q=>{const v=Math.min(q.v(day)||0,q.g),dn=v>=q.g;
+    return `<div class="q ${dn?'done':''}"><span>${dn?'✓ ':''}${q.t}</span><span>${v}/${q.g}</span><div class="bar"><i style="width:${v/q.g*100}%"></i></div></div>`}).join('')}</section>`;
   if(voicesSeen&&!voice)h+=`<div class="note">This phone has no Danish voice installed, so listening will sound off. Add Danish under text-to-speech in the phone settings, or ask Scott.</div>`;
+  const ch=rnd(CHEER);
   UNITS.forEach((u,ui)=>{
-    h+=`<section class="unit"><div class="unit-h"><h2>${u.t}</h2><span>${u.en}</span></div>`;
+    h+=`<section style="--c:${u.c};--cl:${u.cl}"><div class="banner"><small>Unit ${ui+1}</small><h2>${u.t}</h2><span>${u.en}</span></div><div class="path">`;
     L.forEach((l,i)=>{if(l.u!==ui)return;
-      const dn=S.done[i],open=i===0||S.done[i-1],nx=open&&!dn;
-      h+=`<button class="lesson ${dn?'done':nx?'next':open?'':'locked'}" ${open?`data-a="start" data-v="${i}"`:'disabled'}>
-      <span class="ico">${l.i}</span><span class="tx"><b>${l.t}</b><span>${l.en}</span></span>
-      <span class="st">${dn?'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars):nx?'Start':'🔒'}</span></button>`});
-    h+=`</section>`});
+      const dn=S.done[i],open=i===0||S.done[i-1],nx=open&&!dn,x=XS[i%8];
+      h+=`<div class="nw ${nx?'cur':''}" style="--x:${x}px">${nx?`<div class="startb">START</div><div class="buddy ${x>0?'l':'r'}"><div class="say">${ch[0]}<small>${ch[1]}</small></div>${snegl('hi')}</div>`:''}
+      <button class="node ${nx?'next':open?'':'locked'}" ${open?`data-a="node" data-v="${i}"`:'disabled'} aria-label="${esc(l.en)}"><span>${l.i}</span></button>
+      ${dn?`<span class="nst">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}<span class="nl">${l.t}</span></div>`});
+    h+=`</div></section>`});
   return h+`<div class="note">More lessons are on the way. Scott adds them as you go.</div>`;
 }
+function sheetHtml(i){const l=L[i],u=UNITS[l.u],dn=S.done[i];
+  return `<div class="scrim" data-a="closesheet"></div><div class="sheet" style="--c:${u.c}"><div><div class="big">${l.i}</div><h2>${l.t}</h2>
+  <p>${l.en} · ${l.p.length} phrases · about ${l.p.length>8?20:15} minutes</p>${dn?`<span class="nst" style="font-size:22px">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}
+  <button class="btn" data-a="start" data-v="${i}">${dn?'Practice again':'Start lesson'}</button></div></div>`}
 function rewards(){
   return `<div class="hello"><h1>Rewards</h1><p>${S.badges.length} of ${BADGES.length} badges · 🪙 ${S.kr} kroner to spend</p></div>
   <section class="unit"><div class="unit-h"><h2>Bageriet</h2><span>The bakery</span></div><div class="grid">${BAKERY.map(b=>{
     const own=S.bakery.includes(b.id),can=S.kr>=b.p;
-    return own?`<div class="tile"><i>${b.i}</i><b>${b.t}</b><small>${b.d}</small></div>`
+    return own?`<div class="tile own ${rewards.just===b.id?'new':''}"><i>${b.i}</i><b>${b.t}</b><small>${b.d}</small></div>`
       :`<button class="tile ${can?'buy':'off'}" data-a="buy" data-v="${b.id}" ${can?'':'disabled'}><i>${b.i}</i><b>${b.t}</b><small>🪙 ${b.p}</small></button>`}).join('')}</div></section>
   <section class="unit"><div class="unit-h"><h2>Badges</h2></div><div class="grid">${BADGES.map(b=>{
-    const own=S.badges.includes(b.id);return `<div class="tile ${own?'':'off'}"><i>${b.i}</i><b>${b.t}</b><small>${b.d}</small></div>`}).join('')}</div></section>`;
+    const own=S.badges.includes(b.id);return `<div class="tile ${own?'own':'off'}"><i>${b.i}</i><b>${b.t}</b><small>${b.d}</small></div>`}).join('')}</div></section>`;
 }
 function phraseRow(p){const st=S.starred.includes(p.id);
   return `<div class="row"><button class="round" data-a="hear" data-v="${p.id}" aria-label="Listen">🔊</button><div class="tx"><b>${esc(p.da)}</b><span>${esc(p.en)}</span></div>
@@ -352,102 +500,127 @@ function book(){
   const all=L.flatMap(l=>l.p),ask=all.filter(p=>S.starred.includes(p.id));
   let h=`<div class="hello"><h1>Phrases</h1><p>Everything you have learned. Tap ? to save one to ask Scott about.</p></div>`;
   if(ask.length)h+=`<section class="unit"><div class="unit-h"><h2>Spørg Scott</h2><span>Ask Scott</span></div><div class="stack">${ask.map(phraseRow).join('')}</div></section>`;
-  const any=L.some((l,i)=>S.done[i]);
-  if(!any)h+=`<div class="note">Finish your first lesson and its phrases show up here.</div>`;
+  if(!L.some((l,i)=>S.done[i]))h+=`<div class="note">Finish your first lesson and its phrases show up here.</div>`;
   L.forEach((l,i)=>{if(S.done[i])h+=`<section class="unit"><div class="unit-h"><h2>${l.t}</h2><span>${l.en}</span></div><div class="stack">${l.p.map(phraseRow).join('')}</div></section>`});
   return h;
 }
 function me(){
-  return `<div class="hello"><h1>Me</h1><p>${learned(S).length} phrases learned · ${S.speaks} said out loud</p></div>
+  return `<div class="hello"><h1>Me</h1><p>${learned(S).length} phrases learned · ${S.speaks} said out loud · best combo ${S.bestCombo}</p></div>
   <label for="trip">When do you leave for Denmark?<input id="trip" type="date" value="${S.trip}"></label>
+  <button class="btn ghost" data-a="sound">Sound effects: ${S.sound?'on':'off'}</button>
   <div class="note">Your progress is saved on this phone only.</div>
-  <button class="btn ghost" data-a="reset" id="resetBtn">Start over</button>`;
+  <button class="btn ghost" data-a="reset">Start over</button>`;
 }
 
 /* ---------- lesson engine ---------- */
 function pool(li){return L.slice(0,li+1).flatMap(l=>l.p)}
-function options(p,li,key){const o=sh(pool(li).filter(x=>x[key]!==p[key]&&x.id!==p.id));const pick=[];for(const x of o){if(!pick.some(y=>y[key]===x[key]))pick.push(x);if(pick.length===3)break}return sh([p,...pick])}
+function options(p,li,key,k){const o=sh(pool(li).filter(x=>x[key]!==p[key]&&x.id!==p.id));const pick=[];for(const x of o){if(!pick.some(y=>y[key]===x[key]))pick.push(x);if(pick.length===(k||3))break}return sh([p,...pick])}
+function tf(p,li){const truth=Math.random()<.5,o=rnd(pool(li).filter(x=>x.en!==p.en));return {k:'tf',p,truth,shown:truth?p.en:o.en}}
 function build(li){
   const P=L[li].p,st=[];
   for(let c=0;c<P.length;c+=4){const ch=P.slice(c,c+4);
-    ch.forEach(p=>st.push({k:'learn',p}));
+    ch.forEach((p,i)=>{st.push({k:'learn',p});
+      if(i%2===1){const q=ch[i-(Math.random()<.5?1:0)];st.push({k:'hear',p:q,o:options(q,li,'en')})}});
     if(ch.length>=3)st.push({k:'match',ps:ch});
-    sh(ch).forEach(p=>st.push({k:'hear',p,o:options(p,li,'en')}));
-    ch.forEach(p=>st.push({k:'speak',p,mode:'read'}));
+    sh(ch).slice(0,2).forEach(p=>st.push(tf(p,li)));
   }
-  sh(P).forEach(p=>st.push({k:'pick',p,o:options(p,li,'da')}));
-  sh(P.filter(p=>p.da.split(' ').length>=2)).slice(0,5).forEach(p=>{
-    const w=p.da.replace(/[?!.,]/g,'').split(' ');
-    const extra=sh(pool(li).flatMap(x=>x.da.replace(/[?!.,]/g,'').split(' ')).filter(x=>!w.includes(x))).slice(0,2);
-    st.push({k:'tiles',p,w,bank:sh([...w,...extra])})});
-  sh(P).slice(0,4).forEach(p=>st.push({k:'speak',p,mode:'recall'}));
+  (L[li].d||[]).forEach(t=>{const p=P[t[2]];st.push({k:'chat',line:{da:t[0],en:t[1]},p,o:options(p,li,'da',2)})});
+  sh(P).slice(0,6).forEach(p=>st.push({k:'pick',p,o:options(p,li,'da')}));
+  const multi=sh(P.filter(p=>p.da.split(' ').length>=2)).slice(0,4);
+  multi.forEach((p,i)=>{const w=p.da.replace(/[?!.,]/g,'').split(' ');
+    const extra=sh([...new Set(pool(li).flatMap(x=>x.da.replace(/[?!.,]/g,'').split(' ')))].filter(x=>!w.includes(x))).slice(0,3);
+    st.push({k:'tiles',listen:i%2===1,p,w,bank:sh([...w,...extra])})});
+  if(multi.length<3)sh(P).slice(0,4).forEach(p=>st.push(tf(p,li)));
+  sh(P).slice(0,4).forEach(p=>st.push({k:'speak',p}));
   return st;
 }
-function start(li){cur={li,steps:build(li),i:0,right:0,graded:0,state:{}};window.scrollTo(0,0);renderStep()}
+function start(li){sheet=null;cur={li,steps:build(li),i:0,right:0,graded:0,combo:0,best:0,chat:[],state:{}};window.scrollTo(0,0);sfx('tap');renderStep()}
+const micBlock=()=>`<div class="spk" id="spk"></div>`;
 function renderStep(){
   const s=cur.steps[cur.i],p=s.p;cur.state={};
   let b='',foot=`<button class="btn" data-a="next" id="go" disabled>Continue</button>`;
+  const skip=`<button class="link" data-a="skipspeak">I can't talk right now</button>`;
   if(s.k==='learn'){
-    b=`<div class="ask">New phrase</div><div class="card"><div class="da">${esc(p.da)}</div><div class="hint">${esc(p.say)}</div><div class="en">${esc(p.en)}</div>${p.note?`<div class="tip">${esc(p.note)}</div>`:''}
-    <div class="acts"><button class="btn sm ghost" data-a="say">🔊 Listen</button><button class="btn sm ghost" data-a="slow">🐢 Slow</button><button class="btn sm ghost" data-a="star" data-v="${p.id}">${S.starred.includes(p.id)?'✓ Saved for Scott':'? Ask Scott'}</button></div></div>`;
-    foot=`<button class="btn" data-a="next" id="go">Got it</button>`;
+    cur.state={tries:0};
+    b=`<div class="ask">Listen, then say it back</div>
+    <div class="teach"><div class="m">${snegl('hi')}</div><button class="bub" data-a="say"><span class="da">${esc(p.da)} 🔊</span><span class="hint">${esc(p.say)}</span><span class="en">${esc(p.en)}</span></button></div>
+    ${p.note?`<div class="tip"><b>Tip:</b> ${esc(p.note)}</div>`:''}
+    <div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button><button class="btn sm ghost" data-a="star" data-v="${p.id}">${S.starred.includes(p.id)?'✓ Saved for Scott':'? Ask Scott'}</button></div>${micBlock()}`;
+    foot+=skip;
   }else if(s.k==='match'){
     const a=sh(s.ps),e=sh(s.ps);cur.state={left:s.ps.length,miss:false};
-    b=`<div class="ask">Match the pairs</div><div class="cols"><div class="opts">${a.map(x=>`<button class="opt" data-a="pair" data-side="da" data-v="${x.id}">${esc(x.da)}</button>`).join('')}</div>
+    b=`<div class="ask">Tap the matching pairs</div><div class="cols"><div class="opts">${a.map(x=>`<button class="opt" data-a="pair" data-side="da" data-v="${x.id}">${esc(x.da)}</button>`).join('')}</div>
     <div class="opts">${e.map(x=>`<button class="opt" data-a="pair" data-side="en" data-v="${x.id}">${esc(x.en)}</button>`).join('')}</div></div>`;
   }else if(s.k==='hear'){
-    b=`<div class="ask">What does this mean?</div><button class="bigplay" data-a="say" aria-label="Play again">🔊</button><div class="acts"><button class="link" data-a="slow">Play it slowly</button></div>
+    b=`<div class="ask">What did Kanel say?</div><button class="bigplay" data-a="say" aria-label="Play again">🔊</button><div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button></div>
     <div class="opts">${s.o.map(x=>`<button class="opt" data-a="ans" data-v="${x.id}">${esc(x.en)}</button>`).join('')}</div>`;
+  }else if(s.k==='tf'){
+    b=`<div class="ask">True or not? Ja or nej!</div><button class="card" data-a="say"><span class="da">${esc(p.da)} 🔊</span><span class="heard">means</span><span class="en" style="font-size:22px;font-weight:700">${esc(s.shown)}</span></button>
+    <div class="yn"><button class="btn miss" data-a="tf" data-v="0">✗ Nej</button><button class="btn good" data-a="tf" data-v="1">✓ Ja</button></div>`;
+  }else if(s.k==='chat'){
+    const hist=s.retry?[]:cur.chat.slice(-4);
+    b=`<div class="ask">Answer Kanel</div><div class="chat">${hist.map(m=>`<div class="msg ${m.w}" style="animation:none">${esc(m.da)}<small>${esc(m.en)}</small></div>`).join('')}
+    <div class="who"><div class="m">${snegl('hi')}</div><button class="msg k" data-a="sayline">${esc(s.line.da)} 🔊<small>${esc(s.line.en)}</small></button></div></div>
+    <div class="opts">${s.o.map(x=>`<button class="opt" data-a="ans" data-v="${x.id}">${esc(x.da)}</button>`).join('')}</div>`;
   }else if(s.k==='pick'){
-    b=`<div class="ask">How do you say this in Danish?</div><div class="card"><div class="en">${esc(p.en)}</div></div>
+    b=`<div class="ask">How do you say this?</div><div class="card"><div class="en" style="font-size:22px;font-weight:700">${esc(p.en)}</div></div>
     <div class="opts">${s.o.map(x=>`<button class="opt" data-a="ans" data-v="${x.id}">${esc(x.da)}</button>`).join('')}</div>`;
   }else if(s.k==='tiles'){
     cur.state={picked:[]};
-    b=`<div class="ask">Build it in Danish</div><div class="card"><div class="en">${esc(p.en)}</div></div><div class="answer" id="ansrow"></div>
-    <div class="bank" id="bank">${s.bank.map((w,i)=>`<button class="word" data-a="word" data-v="${i}">${esc(w)}</button>`).join('')}</div>`;
+    b=`<div class="ask">${s.listen?'Tap what you hear':'Build it in Danish'}</div>${s.listen?`<button class="bigplay" data-a="say" aria-label="Play again">🔊</button>`:`<div class="card"><div class="en" style="font-size:20px;font-weight:700">${esc(p.en)}</div></div>`}
+    <div class="answer" id="ansrow"></div><div class="bank" id="bank">${s.bank.map((w,i)=>`<button class="word" data-a="word" data-v="${i}" style="animation-delay:${i*.04}s">${esc(w)}</button>`).join('')}</div>`;
     foot=`<button class="btn" data-a="check" id="go" disabled>Check</button>`;
   }else if(s.k==='speak'){
     cur.state={tries:0};
-    b=s.mode==='read'
-      ?`<div class="ask">Say it out loud</div><div class="card"><div class="da">${esc(p.da)}</div><div class="hint">${esc(p.say)}</div><div class="en">${esc(p.en)}</div><div class="acts"><button class="btn sm ghost" data-a="say">🔊 Listen</button><button class="btn sm ghost" data-a="slow">🐢 Slow</button></div></div>`
-      :`<div class="ask">From memory: say it in Danish</div><div class="card"><div class="en">${esc(p.en)}</div><div class="da" id="peek" hidden>${esc(p.da)}</div><div class="acts"><button class="btn sm ghost" data-a="peek">👀 Peek</button></div></div>`;
-    b+=`<div class="spk" id="spk"></div>`;
-    foot=`<button class="btn" data-a="next" id="go" disabled>Continue</button><button class="link" data-a="skipspeak">I can't talk right now</button>`;
+    b=`<div class="ask">From memory: say it in Danish</div><div class="card"><div class="en" style="font-size:22px;font-weight:700">${esc(p.en)}</div><div class="da" id="peek" hidden>${esc(p.da)}</div><div class="acts"><button class="btn sm ghost" data-a="peek">👀 Peek</button></div></div>${micBlock()}`;
+    foot+=skip;
   }
-  app.innerHTML=`<div class="player"><div class="pbar"><button class="x" data-a="quit" aria-label="Leave lesson">✕</button><div class="track"><div style="width:${cur.i/cur.steps.length*100}%"></div></div></div>
+  app.innerHTML=`<div class="player"><div class="pbar"><button class="x" data-a="quit" aria-label="Leave lesson">✕</button><div class="track"><div id="prog" style="width:${Math.max(4,cur.i/cur.steps.length*100)}%"></div></div><span class="cmb" id="cmb">${cur.combo>=2?'🔥 '+cur.combo:''}</span></div>
   <div class="step">${b}</div><div class="foot"><div id="fb"></div>${foot}</div></div>`;
-  if(s.k==='learn'||s.k==='hear')say(p.da);
-  if(s.k==='speak')drawSpeak('idle');
+  if(s.k==='learn'||s.k==='hear'||s.k==='tf'||(s.k==='tiles'&&s.listen))say(p.da);
+  if(s.k==='chat')say(s.line.da);
+  if(s.k==='learn'||s.k==='speak')drawSpeak('idle',s.k==='learn'?'Your turn! Tap and say it':'');
 }
 function grade(ok,s,quiet){
   if(!s.retry){cur.graded++;if(ok)cur.right++}
   if(!ok&&!s.retry)cur.steps.push(Object.assign({},s,{retry:true}));
-  const pr=PRAISE[Math.floor(Math.random()*PRAISE.length)];
-  const fb=document.getElementById('fb');
-  fb.innerHTML=ok?`<div class="fb ok">${pr[0]} <small>${pr[1]}</small></div>`
-    :`<div class="fb no">Næsten! <small>Almost. It's "${esc(s.p?s.p.da:'')}" = ${esc(s.p?s.p.en:'')}. You'll see it again.</small></div>`;
-  const go=document.getElementById('go');go.disabled=false;go.dataset.a='next';go.textContent='Continue';
-  if(!quiet&&s.p)say(s.p.da);
+  cur.combo=ok?cur.combo+1:0;cur.best=Math.max(cur.best,cur.combo);
+  const d=today();d.combo=Math.max(d.combo||0,cur.combo);S.bestCombo=Math.max(S.bestCombo,cur.combo);
+  const cm=document.getElementById('cmb');if(cm){cm.textContent=cur.combo>=2?'🔥 '+cur.combo:'';cm.classList.remove('bump');void cm.offsetWidth;cm.classList.add('bump')}
+  if(ok&&[3,5,8,12,16,20].includes(cur.combo))comboPop(cur.combo);else sfx(ok?'ok':'no');
+  const pr=rnd(PRAISE);
+  document.getElementById('fb').innerHTML=ok?`<div class="fb ok"><div class="m">${snegl('yay')}</div><div>${pr[0]}<small>${pr[1]}</small></div></div>`
+    :`<div class="fb no"><div class="m">${snegl('oops')}</div><div>Næsten!<small>Almost. "${esc(s.p.da)}" means "${esc(s.p.en)}". You'll get it again.</small></div></div>`;
+  const go=document.getElementById('go');go.disabled=false;go.dataset.a='next';go.textContent='Continue';go.className='btn '+(ok?'good':'miss');
+  const pg=document.getElementById('prog');if(pg&&ok)pg.style.width=(cur.i+1)/cur.steps.length*100+'%';
+  if(!quiet)setTimeout(()=>say(s.p.da),ok?350:500);
+  quests();
 }
 function next(){
   try{speechSynthesis.cancel()}catch(e){}stopRec();
   cur.i++;if(cur.i>=cur.steps.length)return finish();window.scrollTo(0,0);renderStep();
 }
 function finish(){
-  const li=cur.li,acc=cur.graded?cur.right/cur.graded:1,stars=acc>=.9?3:acc>=.7?2:1,first=!S.done[li];
+  const li=cur.li,acc=cur.graded?cur.right/cur.graded:1,stars=acc>=.9?3:acc>=.7?2:1,first=!S.done[li],best=cur.best;
   const kr=15+stars*5+(first?10:0);
   S.kr+=kr;S.xp+=cur.right;if(acc===1)S.perfect++;
   const t=dayKey(),y=dayKey(new Date(Date.now()-864e5));
   if(S.lastDay!==t){S.streak=S.lastDay===y?S.streak+1:1;S.lastDay=t}
   S.done[li]={stars:Math.max(stars,S.done[li]?S.done[li].stars:0)};
+  today().lessons++;
   const won=BADGES.filter(b=>!S.badges.includes(b.id)&&b.ok(S));won.forEach(b=>S.badges.push(b.id));
   save();cur=null;tab='home';
-  app.innerHTML=`<div class="page"><div class="fin"><div class="stars">${'★'.repeat(stars)+'☆'.repeat(3-stars)}</div><h1>${stars===3?'Fantastisk!':stars===2?'Godt klaret!':'Færdig!'}</h1>
-  <p>${esc(L[li].t)} is done. ${Math.round(acc*100)}% right on the first try.</p>
-  <div class="won"><span class="chip">🪙 +${kr} <small>kroner</small></span><span class="chip">🔥 ${S.streak} <small>day streak</small></span></div>
-  ${won.length?`<div class="grid" style="width:100%">${won.map(b=>`<div class="tile"><i>${b.i}</i><b>${b.t}</b><small>New badge!</small></div>`).join('')}</div>`:''}
-  <button class="btn" data-a="tab" data-v="home">Continue</button><button class="link" data-a="tab" data-v="rewards">Spend kroner at the bakery</button></div></div>`;
-  confetti();
+  app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div>
+  <div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':''}" style="animation-delay:${.25+i*.28}s">★</span>`).join('')}</div>
+  <h1>${stars===3?'Fantastisk!':stars===2?'Godt klaret!':'Færdig!'}</h1><p>${esc(L[li].t)} is done${S.streak>1?` · 🔥 ${S.streak} days in a row`:''}</p>
+  <div class="stats"><div class="stat" style="--c:var(--candle);animation-delay:1s"><small>Kroner</small><b>🪙 <span data-n="${kr}">0</span></b></div>
+  <div class="stat" style="--c:var(--good);animation-delay:1.15s"><small>Right</small><b><span data-n="${Math.round(acc*100)}">0</span>%</b></div>
+  <div class="stat" style="--c:#5d8fd0;animation-delay:1.3s"><small>Best combo</small><b>🔥 <span data-n="${best}">0</span></b></div></div>
+  <button class="chest" data-a="chest"><i>🎁</i><span>Tap to open your bonus</span></button>
+  ${won.length?`<div class="grid" style="width:100%">${won.map(b=>`<div class="tile own new"><i>${b.i}</i><b>${b.t}</b><small>New badge!</small></div>`).join('')}</div>`:''}
+  <button class="btn" data-a="tab" data-v="home">Continue</button></div></div>`;
+  document.querySelectorAll('[data-n]').forEach(el=>{const to=+el.dataset.n;let f=0;const iv=setInterval(()=>{f++;el.textContent=Math.round(to*Math.min(1,f/20));if(f>=20)clearInterval(iv)},45)});
+  sfx('win');confetti();quests();
 }
 
 /* ---------- speaking ---------- */
@@ -455,15 +628,15 @@ let recog=null,media=null,myAudio=null;
 function stopRec(){try{recog&&recog.abort()}catch(e){}recog=null;try{media&&media.rec.state!=='inactive'&&media.rec.stop();media&&media.stream.getTracks().forEach(t=>t.stop())}catch(e){}media=null}
 function drawSpeak(mode,msg){
   const el=document.getElementById('spk');if(!el)return;
-  const mic=(live)=>`<button class="mic ${live?'live':''}" data-a="mic" aria-label="${live?'Stop':'Speak'}">${live?'■':'🎤'}</button>`;
+  const mic=live=>`<button class="mic ${live?'live':''}" data-a="mic" aria-label="${live?'Stop':'Speak'}">${live?'■':'🎤'}</button>`;
   if(mode==='idle')el.innerHTML=mic(false)+`<div class="heard">${msg||'Tap the mic and say it'}</div>`;
   else if(mode==='live')el.innerHTML=mic(true)+`<div class="heard">${msg||'Listening…'}</div>`;
   else if(mode==='again')el.innerHTML=mic(false)+`<div class="heard">${msg}</div>`;
   else if(mode==='review')el.innerHTML=`<div class="heard">Listen to yourself, then to the Danish. Close enough?</div><div class="acts"><button class="btn sm ghost" data-a="mine">▶ Me</button><button class="btn sm ghost" data-a="say">🔊 Danish</button></div>
-    <div class="acts"><button class="btn sm ghost" data-a="mic">Try again</button><button class="btn sm" data-a="selfok">Sounds good</button></div>`;
+    <div class="acts"><button class="btn sm ghost" data-a="mic">Try again</button><button class="btn sm good" data-a="selfok">Sounds good</button></div>`;
   else if(mode==='done')el.innerHTML=`<div class="heard">${msg||''}</div>`;
 }
-function spoke(msg){S.speaks++;save();drawSpeak('done',msg);grade(true,cur.steps[cur.i],true);const pk=document.getElementById('peek');if(pk)pk.hidden=false}
+function spoke(msg){S.speaks++;today().speaks++;save();drawSpeak('done',msg);grade(true,cur.steps[cur.i],true);const pk=document.getElementById('peek');if(pk)pk.hidden=false}
 function mic(){
   const s=cur.steps[cur.i],st=cur.state;
   if(recog){try{recog.stop()}catch(e){}return}
@@ -471,16 +644,17 @@ function mic(){
   try{speechSynthesis.cancel()}catch(e){}
   if(REC){
     let got=false;const r=recog=new REC();r.lang='da-DK';r.maxAlternatives=5;r.interimResults=false;
+    const miss=()=>{st.tries++;sfx('tap');drawSpeak('again','I didn\'t catch that. Tap and try again.');if(st.tries>=2)allowOn()};
     r.onresult=e=>{got=true;let best=0,heard='';const res=e.results[0];for(let i=0;i<res.length;i++){const v=sim(res[i].transcript,s.p.da);if(v>=best){best=v;heard=res[i].transcript}}
       recog=null;st.tries++;
-      if(best>=.75)spoke(`I heard "${esc(heard)}". Spot on.`);
+      if(best>=.75)spoke(`I heard "${esc(heard)}". Spot on!`);
       else if(best>=.5)spoke(`I heard "${esc(heard)}". Close enough to be understood!`);
       else{drawSpeak('again',`I heard "${esc(heard)}". Listen once more and try again.`);if(st.tries>=2)allowOn()}};
     r.onerror=e=>{got=true;recog=null;
-      if(e.error==='not-allowed'||e.error==='service-not-allowed'&&!st.denied){st.denied=true;drawSpeak('again','The microphone is blocked. Allow it for this page, then tap again.');allowOn()}
+      if(e.error==='not-allowed'){drawSpeak('again','The microphone is blocked. Allow it for this page, then tap again.');allowOn()}
       else if(e.error==='language-not-supported'||e.error==='service-not-allowed'||e.error==='network'){REC=null;drawSpeak('idle','Tap to record yourself instead')}
-      else{st.tries++;drawSpeak('again','I didn\'t catch that. Tap and try again.');if(st.tries>=2)allowOn()}};
-    r.onend=()=>{if(!got){recog=null;st.tries++;drawSpeak('again','I didn\'t catch that. Tap and try again.');if(st.tries>=2)allowOn()}};
+      else miss()};
+    r.onend=()=>{if(!got){recog=null;miss()}};
     try{r.start();drawSpeak('live')}catch(e){recog=null;REC=null;drawSpeak('idle','Tap to record yourself instead')}
   }else if(navigator.mediaDevices&&window.MediaRecorder){
     navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
@@ -496,10 +670,13 @@ function allowOn(){const go=document.getElementById('go');if(go){go.disabled=fal
 /* ---------- actions ---------- */
 const byId=id=>L.flatMap(l=>l.p).find(p=>p.id===id);
 const A={
-  tab(el){tab=el.dataset.v;window.scrollTo(0,0);render()},
+  tab(el){tab=el.dataset.v;sheet=null;rewards.just=null;window.scrollTo(0,0);sfx('tap');render()},
+  node(el){sheet=+el.dataset.v;sfx('tap');render()},
+  closesheet(){sheet=null;render()},
   start(el){start(+el.dataset.v)},
   quit(){stopRec();try{speechSynthesis.cancel()}catch(e){}cur=null;render()},
   say(){say(cur.steps[cur.i].p.da)},
+  sayline(){say(cur.steps[cur.i].line.da)},
   slow(){say(cur.steps[cur.i].p.da,true)},
   hear(el){say(byId(el.dataset.v).da)},
   peek(){document.getElementById('peek').hidden=false},
@@ -508,16 +685,21 @@ const A={
   next,
   ans(el){const s=cur.steps[cur.i];if(cur.state.done)return;cur.state.done=true;
     const ok=el.dataset.v===s.p.id;el.classList.add(ok?'ok':'no');
-    if(!ok)document.querySelector(`.opt[data-v="${s.p.id}"]`).classList.add('ok');grade(ok,s)},
-  pair(el){const st=cur.state,s=cur.steps[cur.i];if(el.classList.contains('gone'))return;
+    if(!ok){el.classList.add('shake');document.querySelector(`.opt[data-v="${s.p.id}"]`).classList.add('ok')}
+    if(s.k==='chat'&&!s.retry)cur.chat.push({w:'k',da:s.line.da,en:s.line.en},{w:'me',da:s.p.da,en:s.p.en});
+    grade(ok,s)},
+  tf(el){const s=cur.steps[cur.i];if(cur.state.done)return;cur.state.done=true;grade((el.dataset.v==='1')===s.truth,s,true)},
+  pair(el){const st=cur.state;if(el.classList.contains('gone'))return;
     if(el.dataset.side==='da')say(byId(el.dataset.v).da);
-    if(!st.sel||st.sel.dataset.side===el.dataset.side){st.sel&&st.sel.classList.remove('sel');st.sel=el;el.classList.add('sel');return}
+    if(!st.sel||st.sel.dataset.side===el.dataset.side){st.sel&&st.sel.classList.remove('sel');st.sel=el;el.classList.add('sel');sfx('tap');return}
     const a=st.sel;st.sel=null;a.classList.remove('sel');
-    if(a.dataset.v===el.dataset.v){a.classList.add('gone');el.classList.add('gone');if(--st.left===0){cur.graded++;if(!st.miss)cur.right++;
-      document.getElementById('fb').innerHTML=`<div class="fb ok">Flot! <small>All matched.</small></div>`;document.getElementById('go').disabled=false}}
-    else{st.miss=true;[a,el].forEach(x=>{x.classList.add('shake');setTimeout(()=>x.classList.remove('shake'),320)})}},
+    if(a.dataset.v===el.dataset.v){a.classList.add('gone');el.classList.add('gone');sfx('ok');
+      if(--st.left===0){cur.graded++;if(!st.miss)cur.right++;cur.combo++;cur.best=Math.max(cur.best,cur.combo);
+        document.getElementById('fb').innerHTML=`<div class="fb ok"><div class="m">${snegl('yay')}</div><div>Flot!<small>All matched.</small></div></div>`;
+        const go=document.getElementById('go');go.disabled=false;go.className='btn good'}}
+    else{st.miss=true;sfx('no');[a,el].forEach(x=>{x.classList.add('shake');setTimeout(()=>x.classList.remove('shake'),320)})}},
   word(el){const st=cur.state,s=cur.steps[cur.i];if(st.done||el.classList.contains('used'))return;
-    el.classList.add('used');st.picked.push(+el.dataset.v);drawTiles(s)},
+    el.classList.add('used');st.picked.push(+el.dataset.v);sfx('tap');drawTiles(s)},
   unword(el){const st=cur.state,s=cur.steps[cur.i];if(st.done)return;const i=+el.dataset.v;
     st.picked=st.picked.filter(x=>x!==i);document.querySelector(`#bank .word[data-v="${i}"]`).classList.remove('used');drawTiles(s)},
   check(){const s=cur.steps[cur.i],st=cur.state;st.done=true;grade(st.picked.map(i=>s.bank[i]).join(' ')===s.w.join(' '),s)},
@@ -525,8 +707,11 @@ const A={
   mine(){myAudio&&myAudio.play().catch(()=>{})},
   selfok(){spoke('Godt! Saying it out loud is the whole trick.')},
   skipspeak(){next()},
-  buy(el){const b=BAKERY.find(x=>x.id===el.dataset.v);if(S.kr<b.p||S.bakery.includes(b.id))return;S.kr-=b.p;S.bakery.push(b.id);
-    BADGES.forEach(x=>{if(!S.badges.includes(x.id)&&x.ok(S))S.badges.push(x.id)});save();render();confetti()},
+  chest(el){if(el.classList.contains('open'))return;const b=5+Math.floor(Math.random()*4)*5;S.kr+=b;save();el.classList.add('open');
+    el.innerHTML=`<i>🪙</i><span>Bonus! +${b} kroner</span>`;sfx('coin');confetti()},
+  buy(el){const b=BAKERY.find(x=>x.id===el.dataset.v);if(S.kr<b.p||S.bakery.includes(b.id))return;S.kr-=b.p;S.bakery.push(b.id);rewards.just=b.id;
+    BADGES.forEach(x=>{if(!S.badges.includes(x.id)&&x.ok(S))S.badges.push(x.id)});save();render();sfx('coin');confetti()},
+  sound(){S.sound=!S.sound;save();render();sfx('ok')},
   reset(el){if(el.dataset.sure){S=def();save();render()}else{el.dataset.sure=1;el.textContent='Tap again to erase all progress'}}
 };
 function drawTiles(s){const st=cur.state;
@@ -539,11 +724,11 @@ document.addEventListener('change',e=>{if(e.target.id==='trip'){S.trip=e.target.
 function confetti(){
   if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
   const c=document.getElementById('confetti'),x=c.getContext('2d');c.hidden=false;c.width=innerWidth;c.height=innerHeight;
-  const col=['#e3ac5c','#b9474e','#d8d3c6','#7db78c'],P=Array.from({length:70},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.4,v:2+Math.random()*3,w:5+Math.random()*5,r:Math.random()*6,c:col[Math.floor(Math.random()*4)]}));
-  let f=0;(function tick(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.y+=p.v;p.r+=.1;x.save();x.translate(p.x+Math.sin(p.r)*12,p.y);x.rotate(p.r);x.fillStyle=p.c;x.globalAlpha=.85;x.fillRect(-p.w/2,-p.w/2,p.w,p.w*.6);x.restore()});
-    if(++f<150)requestAnimationFrame(tick);else c.hidden=true})();
+  const col=['#e0a95a','#d98670','#9a8ad8','#45ab9f','#6fbf85'],P=Array.from({length:80},()=>({x:c.width/2+(Math.random()-.5)*80,y:c.height*.35,vx:(Math.random()-.5)*11,vy:-6-Math.random()*9,w:5+Math.random()*6,r:Math.random()*6,c:rnd(col)}));
+  let f=0;(function tick(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.vy+=.32;p.x+=p.vx;p.y+=p.vy;p.vx*=.985;p.r+=.15;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.globalAlpha=Math.max(0,1-f/130);x.fillRect(-p.w/2,-p.w/2,p.w,p.w*.6);x.restore()});
+    if(++f<130)requestAnimationFrame(tick);else c.hidden=true})();
 }
-render();
+today();render();
 </script>
 </body>
 </html>
