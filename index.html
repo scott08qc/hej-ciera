@@ -440,9 +440,21 @@ function quests(){const d=today();QUESTS.forEach(q=>{if(!d.q.includes(q.id)&&q.v
 let voice=null,voicesSeen=false;
 function pickVoice(){if(!('speechSynthesis'in window))return;const v=speechSynthesis.getVoices();if(v.length){const had=voicesSeen;voicesSeen=true;voice=v.find(x=>/^da/i.test(x.lang))||null;if(!had&&tab==='home'&&!cur&&sheet===null)render()}}
 /* pickVoice can draw the page, so its first call waits until the very end of this script (phones return voices instantly) */
-function say(text,slow){
+function robot(text,slow){
   if(!('speechSynthesis'in window))return;
   try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='da-DK';if(voice)u.voice=voice;u.rate=slow?0.55:0.9;speechSynthesis.speak(u)}catch(e){}
+}
+/* Recorded voices: audio/f (woman) and audio/m (man), one clip per Danish line. The phone's own voice is only the fallback. */
+const slug=t=>t.toLowerCase().replace(/æ/g,'ae').replace(/ø/g,'oe').replace(/å/g,'aa').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+let player=null,flip=0;
+function hush(){try{player&&player.pause()}catch(e){}player=null;try{speechSynthesis.cancel()}catch(e){}}
+function stepVoice(){return cur.state.who||(cur.i%2?'m':'f')}
+function say(text,slow,who){
+  who=who||(cur?stepVoice():(flip++%2?'m':'f'));
+  hush();
+  const a=player=new Audio('audio/'+who+'/'+slug(text)+'.mp3');a.playbackRate=slow?0.7:1;
+  let fell=false;const fb=()=>{if(fell||player!==a)return;fell=true;robot(text,slow)};
+  a.onerror=fb;const pr=a.play();if(pr&&pr.catch)pr.catch(fb);
 }
 
 /* ---------- voice in ---------- */
@@ -468,7 +480,6 @@ function home(){
   ${d!==null&&d>=0?`<span class="chip">🇩🇰 ${d}<small>days</small></span>`:`<button class="chip" data-a="tab" data-v="me">🇩🇰<small>set trip</small></button>`}</header>
   <section class="quests"><h3>Today's quests <span>+10 🪙 each</span></h3>${QUESTS.map(q=>{const v=Math.min(q.v(day)||0,q.g),dn=v>=q.g;
     return `<div class="q ${dn?'done':''}"><span>${dn?'✓ ':''}${q.t}</span><span>${v}/${q.g}</span><div class="bar"><i style="width:${v/q.g*100}%"></i></div></div>`}).join('')}</section>`;
-  if(voicesSeen&&!voice)h+=`<div class="note">This phone has no Danish voice installed, so listening will sound off. Add Danish under text-to-speech in the phone settings, or ask Scott.</div>`;
   const ch=rnd(CHEER);
   UNITS.forEach((u,ui)=>{
     h+=`<section style="--c:${u.c};--cl:${u.cl}"><div class="banner"><small>Unit ${ui+1}</small><h2>${u.t}</h2><span>${u.en}</span></div><div class="path">`;
@@ -545,7 +556,7 @@ function renderStep(){
     b=`<div class="ask">Listen, then say it back</div>
     <div class="teach"><div class="m">${snegl('hi')}</div><button class="bub" data-a="say"><span class="da">${esc(p.da)} 🔊</span><span class="hint">${esc(p.say)}</span><span class="en">${esc(p.en)}</span></button></div>
     ${p.note?`<div class="tip"><b>Tip:</b> ${esc(p.note)}</div>`:''}
-    <div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button><button class="btn sm ghost" data-a="star" data-v="${p.id}">${S.starred.includes(p.id)?'✓ Saved for Scott':'? Ask Scott'}</button></div>${micBlock()}`;
+    <div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button><button class="btn sm ghost" data-a="other">🔁 Other voice</button><button class="btn sm ghost" data-a="star" data-v="${p.id}">${S.starred.includes(p.id)?'✓ Saved for Scott':'? Ask Scott'}</button></div>${micBlock()}`;
     foot+=skip;
   }else if(s.k==='match'){
     const a=sh(s.ps),e=sh(s.ps);cur.state={left:s.ps.length,miss:false};
@@ -578,7 +589,7 @@ function renderStep(){
   app.innerHTML=`<div class="player"><div class="pbar"><button class="x" data-a="quit" aria-label="Leave lesson">✕</button><div class="track"><div id="prog" style="width:${Math.max(4,cur.i/cur.steps.length*100)}%"></div></div><span class="cmb" id="cmb">${cur.combo>=2?'🔥 '+cur.combo:''}</span></div>
   <div class="step">${b}</div><div class="foot"><div id="fb"></div>${foot}</div></div>`;
   if(s.k==='learn'||s.k==='hear'||s.k==='tf'||(s.k==='tiles'&&s.listen))say(p.da);
-  if(s.k==='chat')say(s.line.da);
+  if(s.k==='chat')say(s.line.da,false,'m');
   if(s.k==='learn'||s.k==='speak')drawSpeak('idle',s.k==='learn'?'Your turn! Tap and say it':'');
 }
 function grade(ok,s,quiet){
@@ -593,11 +604,11 @@ function grade(ok,s,quiet){
     :`<div class="fb no"><div class="m">${snegl('oops')}</div><div>Næsten!<small>Almost. "${esc(s.p.da)}" means "${esc(s.p.en)}". You'll get it again.</small></div></div>`;
   const go=document.getElementById('go');go.disabled=false;go.dataset.a='next';go.textContent='Continue';go.className='btn '+(ok?'good':'miss');
   const pg=document.getElementById('prog');if(pg&&ok)pg.style.width=(cur.i+1)/cur.steps.length*100+'%';
-  if(!quiet)setTimeout(()=>say(s.p.da),ok?350:500);
+  if(!quiet)setTimeout(()=>say(s.p.da,false,s.k==='chat'?'f':undefined),ok?350:500);
   quests();
 }
 function next(){
-  try{speechSynthesis.cancel()}catch(e){}stopRec();
+  hush();stopRec();
   cur.i++;if(cur.i>=cur.steps.length)return finish();window.scrollTo(0,0);renderStep();
 }
 function finish(){
@@ -641,7 +652,7 @@ function mic(){
   const s=cur.steps[cur.i],st=cur.state;
   if(recog){try{recog.stop()}catch(e){}return}
   if(media){try{media.rec.stop()}catch(e){}return}
-  try{speechSynthesis.cancel()}catch(e){}
+  hush();
   if(REC){
     let got=false;const r=recog=new REC();r.lang='da-DK';r.maxAlternatives=5;r.interimResults=false;
     const miss=()=>{st.tries++;sfx('tap');drawSpeak('again','I didn\'t catch that. Tap and try again.');if(st.tries>=2)allowOn()};
@@ -674,9 +685,10 @@ const A={
   node(el){sheet=+el.dataset.v;sfx('tap');render()},
   closesheet(){sheet=null;render()},
   start(el){start(+el.dataset.v)},
-  quit(){stopRec();try{speechSynthesis.cancel()}catch(e){}cur=null;render()},
+  quit(){stopRec();hush();cur=null;render()},
   say(){say(cur.steps[cur.i].p.da)},
-  sayline(){say(cur.steps[cur.i].line.da)},
+  sayline(){say(cur.steps[cur.i].line.da,false,'m')},
+  other(){cur.state.who=stepVoice()==='f'?'m':'f';say(cur.steps[cur.i].p.da)},
   slow(){say(cur.steps[cur.i].p.da,true)},
   hear(el){say(byId(el.dataset.v).da)},
   peek(){document.getElementById('peek').hidden=false},
