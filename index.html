@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#121826">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Hej Ciera">
-<title>Hej Ciera</title>
+<meta name="apple-mobile-web-app-title" content="Hej Danmark">
+<title>Hej Danmark</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
 <style>
 /* Layout: a winding lesson path on one phone column, a bottom tab bar, a full-screen lesson player.
@@ -100,7 +100,7 @@ p{margin:0}
 
 /* tab bar */
 .tabs{position:fixed;left:0;right:0;bottom:0;background:#0e141f;border-top:2px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
-.tabs div{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+.tabs div{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
 .tabs button{padding:9px 4px 8px;font-size:12px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:1px}
 .tabs button i{font-style:normal;font-size:23px;filter:grayscale(.7);transition:transform .2s}
 .tabs button.on{color:var(--candle)} .tabs button.on i{filter:none;transform:translateY(-3px) scale(1.15)}
@@ -124,6 +124,16 @@ p{margin:0}
 .round:active{transform:translateY(3px);box-shadow:none}
 .round.on{background:var(--candle);color:var(--ink)}
 .stack{display:flex;flex-direction:column;gap:10px}
+.row.you{border-color:var(--candle)}
+.rk{font-size:26px;width:36px;text-align:center;flex:none;font-family:var(--display);font-weight:700;color:var(--muted)}
+.pts{font-family:var(--display);font-weight:700;font-size:22px;color:var(--candle);flex:none;text-align:right}
+.pts small{display:block;font-family:var(--body);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.fbar{height:8px;border-radius:8px;background:var(--raised);overflow:hidden;margin-top:6px}
+.fbar i{display:block;height:100%;background:var(--candle);border-radius:8px;transition:width .6s}
+.welcome{flex:1;display:flex;flex-direction:column;gap:14px;justify-content:center;text-align:center}
+.welcome .m{width:150px;margin:0 auto}
+.codein{text-align:center;font-family:var(--display);font-size:24px;letter-spacing:.12em;text-transform:uppercase}
+.err{color:var(--miss);font-weight:700;font-size:14px;text-align:center}
 label{font-weight:700;font-size:14px;display:flex;flex-direction:column;gap:6px}
 input{font:inherit;color:var(--fg);background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px}
 
@@ -249,7 +259,7 @@ const L=[
   ['Tak','Thanks','tahk'],
   ['Ja','Yes','ya'],
   ['Nej','No','nigh']],
-  d:[['Hej Ciera!','Hi Ciera!',0],['Vil du have kage?','Do you want cake?',6],['Godnat, Ciera!','Good night, Ciera!',4]]},
+  d:[['Hej {name}!','Hi {name}!',0],['Vil du have kage?','Do you want cake?',6],['Godnat, {name}!','Good night, {name}!',4]]},
  {u:0,t:'Tak!',en:'Being polite',i:'🙏',p:[
   ['Mange tak','Thanks a lot','MAHNG-eh tahk'],
   ['Selv tak','You\'re welcome','sel tahk'],
@@ -261,7 +271,7 @@ const L=[
   ['Farvel','Goodbye','fa-VEL']],
   d:[['Her er din kaffe.','Here is your coffee.',0],['Ups, undskyld!','Oops, sorry!',3],['Vil du have en øl?','Do you want a beer?',4],['Vi ses!','See you!',6]]},
  {u:0,t:'Om mig',en:'About me',i:'🙋‍♀️',p:[
-  ['Jeg hedder Ciera','My name is Ciera','yigh HEH-thuh …','The "dd" is soft, like the "th" in "the".'],
+  ['Jeg hedder {name}','My name is {name}','yigh HEH-thuh …','The "dd" is soft, like the "th" in "the".'],
   ['Hvad hedder du?','What is your name?','va HEH-thuh doo','The H in "hvad" is silent.'],
   ['Jeg kommer fra USA','I come from the USA','yigh KOM-uh fra oo-ess-ah'],
   ['Hvor kommer du fra?','Where do you come from?','vor KOM-uh doo fra'],
@@ -348,7 +358,9 @@ const L=[
   ['Tak for sidst','Thanks for last time','tahk for seest','Said the next time you see someone you had a good time with.']],
   d:[['Hvad laver I i Danmark?','What are you two doing in Denmark?',0],['Hvad skal I i dag?','What are you doing today?',2],['Hav en god dag!','Have a nice day!',6]]}
 ];
-L.forEach((l,li)=>l.p=l.p.map((a,pi)=>({id:li+'-'+pi,da:a[0],en:a[1],say:a[2],note:a[3]||''})));
+let NAME='Ciera';try{NAME=JSON.parse(localStorage.getItem('hejciera.v1')||'{}').name||'Ciera'}catch(e){}
+const nm=t=>t.replace('{name}',NAME);
+L.forEach((l,li)=>{l.p=l.p.map((a,pi)=>({id:li+'-'+pi,da:nm(a[0]),en:nm(a[1]),say:a[2],note:a[3]||''}));l.d=(l.d||[]).map(d=>[nm(d[0]),nm(d[1]),d[2]])});
 
 const BADGES=[
  {id:'first',i:'👣',t:'Første skridt',d:'Finish your first lesson',ok:s=>n(s)>=1},
@@ -382,18 +394,24 @@ const QUESTS=[
  {id:'c',t:'Get 5 right in a row',g:5,v:d=>d.combo}
 ];
 const PRAISE=[['Flot!','Nice!'],['Super!','Super!'],['Godt klaret!','Well done!'],['Perfekt!','Perfect!'],['Sådan!','That\'s it!'],['Dygtig!','Clever!'],['Sejt!','Cool!']];
-const CHEER=[['Kom så!','Let\'s go!'],['Du kan godt!','You can do it!'],['Klar?','Ready?'],['Hej Ciera!','Hi Ciera!']];
+const CHEER=[['Kom så!','Let\'s go!'],['Du kan godt!','You can do it!'],['Klar?','Ready?'],['Hej {name}!','Hi {name}!']];
 
 /* ---------- state ---------- */
 const KEY='hejciera.v1';
-const def=()=>({kr:0,xp:0,streak:0,lastDay:'',done:{},badges:[],bakery:[],starred:[],speaks:0,perfect:0,bestCombo:0,trip:'',sound:true,day:{k:''}});
-let S=def();
-try{S=Object.assign(def(),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+const CODEKEY='hejciera.code',SYNC='https://sync-production-16d2f.up.railway.app';
+const def=()=>({name:'',earned:0,xp:0,streak:0,lastDay:'',done:{},badges:[],bakery:[],starred:[],speaks:0,perfect:0,bestCombo:0,trip:'',tripAt:0,sound:true,solo:false,day:{k:''},week:{k:'',xp:0}});
+const price=id=>(BAKERY.find(b=>b.id===id)||{p:0}).p;
+let S=def(),CODE='';
+try{const raw=JSON.parse(localStorage.getItem(KEY)||'{}');S=Object.assign(def(),raw);if(raw.earned==null&&raw.kr!=null)S.earned=raw.kr+S.bakery.reduce((t,id)=>t+price(id),0);CODE=localStorage.getItem(CODEKEY)||''}catch(e){}
+delete S.kr;
+const kr=()=>S.earned-S.bakery.reduce((t,id)=>t+price(id),0);
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const n=s=>Object.keys(s.done).length;
 const unitDone=(s,u)=>L.every((l,i)=>l.u!==u||s.done[i]);
 const learned=s=>L.flatMap((l,i)=>s.done[i]?l.p:[]);
 const dayKey=d=>{d=d||new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+const weekKey=()=>{const d=new Date();d.setDate(d.getDate()-((d.getDay()+6)%7));return dayKey(d)};
+const week=()=>{if(!S.week||S.week.k!==weekKey())S.week={k:weekKey(),xp:0};return S.week};
 const today=()=>{if(S.day.k!==dayKey())S.day={k:dayKey(),lessons:0,speaks:0,combo:0,q:[]};return S.day};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
@@ -434,7 +452,7 @@ function sfx(k){
 }
 function toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),2700)}
 function comboPop(nr){const d=document.createElement('div');d.className='combo';d.textContent=`🔥 ${nr} i træk!`;document.body.appendChild(d);setTimeout(()=>d.remove(),1150);sfx('combo')}
-function quests(){const d=today();QUESTS.forEach(q=>{if(!d.q.includes(q.id)&&q.v(d)>=q.g){d.q.push(q.id);S.kr+=10;toast('Quest done! +10 🪙');sfx('coin')}});save()}
+function quests(){const d=today();QUESTS.forEach(q=>{if(!d.q.includes(q.id)&&q.v(d)>=q.g){d.q.push(q.id);S.earned+=10;toast('Quest done! +10 🪙');sfx('coin')}});save()}
 
 /* ---------- voice out ---------- */
 let voice=null,voicesSeen=false;
@@ -452,9 +470,9 @@ function stepVoice(){return cur.state.who||(cur.i%2?'m':'f')}
 function say(text,slow,who){
   who=who||(cur?stepVoice():(flip++%2?'m':'f'));
   hush();
-  const a=player=new Audio('audio/'+who+'/'+slug(text)+'.mp3');a.playbackRate=slow?0.7:1;
-  let fell=false;const fb=()=>{if(fell||player!==a)return;fell=true;robot(text,slow)};
-  a.onerror=fb;const pr=a.play();if(pr&&pr.catch)pr.catch(fb);
+  const k=who+'/'+slug(text)+'.mp3',urls=['audio/'+k,SYNC+'/audio/'+k],a=player=new Audio();let i=0;
+  const tryNext=()=>{if(player!==a)return;if(i>=urls.length){robot(text,slow);return}a.src=urls[i++];a.playbackRate=slow?0.7:1;const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{})};
+  a.onerror=tryNext;tryNext();
 }
 
 /* ---------- voice in ---------- */
@@ -466,9 +484,10 @@ function sim(a,b){a=norm(a);b=norm(b);if(!a||!b)return 0;return 1-lev(a,b)/Math.
 /* ---------- screens ---------- */
 function render(){
   if(cur){renderStep();return}
-  const body={home,rewards,book,me}[tab]();
+  if(!CODE&&!n(S)&&!S.solo){app.innerHTML=welcome();return}
+  const body={home,rewards,fam,book,me}[tab]();
   app.innerHTML=`<div class="page">${body}</div>
-  <nav class="tabs"><div>${[['home','🏠','Learn'],['rewards','🏅','Rewards'],['book','📖','Phrases'],['me','⚙️','Me']]
+  <nav class="tabs"><div>${[['home','🏠','Learn'],['fam','👪','Family'],['rewards','🏅','Rewards'],['book','📖','Phrases'],['me','⚙️','Me']]
     .map(t=>`<button data-a="tab" data-v="${t[0]}" class="${tab===t[0]?'on':''}"><i>${t[1]}</i>${t[2]}</button>`).join('')}</div></nav>${sheet!==null?sheetHtml(sheet):''}`;
 }
 function daysToTrip(){if(!S.trip)return null;return Math.ceil((new Date(S.trip+'T00:00')-new Date())/864e5)}
@@ -476,11 +495,12 @@ const XS=[0,-50,-72,-50,0,50,72,50];
 function home(){
   const d=daysToTrip(),lit=S.lastDay===dayKey(),day=today();
   let h=`<header class="top"><span class="chip ${lit?'lit':'cold'}"><span class="fl">🔥</span>${S.streak}<small>streak</small></span>
-  <span class="chip">🪙 ${S.kr}<small>kroner</small></span>
+  <span class="chip">🪙 ${kr()}<small>kroner</small></span>
   ${d!==null&&d>=0?`<span class="chip">🇩🇰 ${d}<small>days</small></span>`:`<button class="chip" data-a="tab" data-v="me">🇩🇰<small>set trip</small></button>`}</header>
   <section class="quests"><h3>Today's quests <span>+10 🪙 each</span></h3>${QUESTS.map(q=>{const v=Math.min(q.v(day)||0,q.g),dn=v>=q.g;
     return `<div class="q ${dn?'done':''}"><span>${dn?'✓ ':''}${q.t}</span><span>${v}/${q.g}</span><div class="bar"><i style="width:${v/q.g*100}%"></i></div></div>`}).join('')}</section>`;
-  const ch=rnd(CHEER);
+  if(!CODE)h+=`<button class="note" data-a="tab" data-v="me" style="text-align:left">Got a code from Scott? Enter it under Me to keep your progress on all your devices and join the family race.</button>`;
+  const ch=rnd(CHEER).map(nm);
   UNITS.forEach((u,ui)=>{
     h+=`<section style="--c:${u.c};--cl:${u.cl}"><div class="banner"><small>Unit ${ui+1}</small><h2>${u.t}</h2><span>${u.en}</span></div><div class="path">`;
     L.forEach((l,i)=>{if(l.u!==ui)return;
@@ -497,9 +517,9 @@ function sheetHtml(i){const l=L[i],u=UNITS[l.u],dn=S.done[i];
   <button class="btn" data-a="start" data-v="${i}">${dn?'Practice again':'Start lesson'}</button>
   <button class="link" data-a="start" data-v="${i}" data-q="1">🤫 Can't talk right now? Start without speaking</button></div></div>`}
 function rewards(){
-  return `<div class="hello"><h1>Rewards</h1><p>${S.badges.length} of ${BADGES.length} badges · 🪙 ${S.kr} kroner to spend</p></div>
+  return `<div class="hello"><h1>Rewards</h1><p>${S.badges.length} of ${BADGES.length} badges · 🪙 ${kr()} kroner to spend</p></div>
   <section class="unit"><div class="unit-h"><h2>Bageriet</h2><span>The bakery</span></div><div class="grid">${BAKERY.map(b=>{
-    const own=S.bakery.includes(b.id),can=S.kr>=b.p;
+    const own=S.bakery.includes(b.id),can=kr()>=b.p;
     return own?`<div class="tile own ${rewards.just===b.id?'new':''}"><i>${b.i}</i><b>${b.t}</b><small>${b.d}</small></div>`
       :`<button class="tile ${can?'buy':'off'}" data-a="buy" data-v="${b.id}" ${can?'':'disabled'}><i>${b.i}</i><b>${b.t}</b><small>🪙 ${b.p}</small></button>`}).join('')}</div></section>
   <section class="unit"><div class="unit-h"><h2>Badges</h2></div><div class="grid">${BADGES.map(b=>{
@@ -516,12 +536,62 @@ function book(){
   L.forEach((l,i)=>{if(S.done[i])h+=`<section class="unit"><div class="unit-h"><h2>${l.t}</h2><span>${l.en}</span></div><div class="stack">${l.p.map(phraseRow).join('')}</div></section>`});
   return h;
 }
+let family=null,linkMsg='',syncing=false;
+const fmtCode=c=>c.slice(0,4)+'-'+c.slice(4);
+function codeBox(){
+  return CODE?`<div class="note">Your code is <b style="color:var(--fg);letter-spacing:.08em">${fmtCode(CODE)}</b>. Type it on another phone or tablet to pick up where you left off. Progress saves after every lesson.</div>`
+  :`<label for="code">Your code from Scott<input id="code" class="codein" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX"></label>
+  ${linkMsg?`<div class="err">${esc(linkMsg)}</div>`:''}<button class="btn" data-a="link">Connect</button>`}
+function welcome(){
+  return `<div class="page"><div class="welcome"><div class="m">${snegl('hi')}</div><h1 style="font-size:34px">Velkommen!</h1><p style="color:var(--muted)">Welcome! I'm Kanel. Type the code Scott gave you and we'll start.</p>
+  ${codeBox()}<button class="link" data-a="solo">I don't have a code</button></div></div>`}
+function fam(){
+  let h=`<div class="hello"><h1>Familien</h1><p>This week's race. One point for every right answer. Starts over each Monday.</p></div>`;
+  if(!CODE)return h+`<div class="note">Enter your code under Me to join the family race.</div>`;
+  if(!family)return h+`<div class="note">Finding everyone…</div>`;
+  const wk=weekKey(),live=[dayKey(),dayKey(new Date(Date.now()-864e5))];
+  const rows=family.map(p=>({...p,pts:p.week&&p.week.k===wk?p.week.xp||0:0,fire:live.includes(p.lastDay)?p.streak:0})).sort((a,b)=>b.pts-a.pts||b.lessons-a.lessons||a.name.localeCompare(b.name));
+  const top=Math.max(1,...rows.map(r=>r.pts)),lead=rows[0]&&rows[0].pts>0&&(!rows[1]||rows[0].pts>rows[1].pts)?rows[0]:null;
+  h+=`<div class="teach"><div class="m">${snegl(lead?'yay':'hi')}</div><div class="bub"><span class="da" style="font-size:22px">${lead?esc(lead.name)+' fører!':'Hvem starter?'}</span><span class="en">${lead?esc(lead.name)+' is in the lead!':'Who goes first?'}</span></div></div><div class="stack">`;
+  rows.forEach((r,i)=>{h+=`<div class="row ${r.me?'you':''}"><span class="rk">${r.pts>0?(['🥇','🥈','🥉'][i]||i+1):i+1}</span><div class="tx"><b>${esc(r.name)}${r.me?' (you)':''}</b><span>🔥 ${r.fire} · ${r.lessons} lessons · ★ ${r.stars}</span><div class="fbar"><i style="width:${r.pts/top*100}%"></i></div></div><span class="pts">${r.pts}<small>points</small></span></div>`});
+  return h+`</div>`;
+}
+/* ---------- sync: counters take the larger value, collections are joined, dated things take the later date ---------- */
+const dnum=k=>{const a=String(k||'').split('-').map(Number);return a.length===3&&a.every(Number.isFinite)?a[0]*10000+a[1]*100+a[2]:0};
+function merge(a,b){
+  if(!a)return b;if(!b)return a;const o=Object.assign({},b,a);
+  ['xp','speaks','perfect','bestCombo','earned'].forEach(k=>o[k]=Math.max(+a[k]||0,+b[k]||0));
+  ['badges','bakery','starred'].forEach(k=>o[k]=[...new Set([...(a[k]||[]),...(b[k]||[])])]);
+  o.done={};[a.done||{},b.done||{}].forEach(d=>{for(const k in d)o.done[k]={stars:Math.max(+(d[k]&&d[k].stars)||1,(o.done[k]||{}).stars||0)}});
+  const da=dnum(a.lastDay),db=dnum(b.lastDay);
+  if(db>da){o.streak=b.streak;o.lastDay=b.lastDay}else if(db===da)o.streak=Math.max(+a.streak||0,+b.streak||0);else{o.streak=a.streak;o.lastDay=a.lastDay}
+  const A=a.day||{k:''},B=b.day||{k:''};
+  o.day=A.k===B.k?{k:A.k,lessons:Math.max(A.lessons||0,B.lessons||0),speaks:Math.max(A.speaks||0,B.speaks||0),combo:Math.max(A.combo||0,B.combo||0),q:[...new Set([...(A.q||[]),...(B.q||[])])]}:(dnum(B.k)>dnum(A.k)?B:A);
+  const WA=a.week||{k:'',xp:0},WB=b.week||{k:'',xp:0};
+  o.week=WA.k===WB.k?{k:WA.k,xp:Math.max(WA.xp||0,WB.xp||0)}:(dnum(WB.k)>dnum(WA.k)?WB:WA);
+  if((+b.tripAt||0)>(+a.tripAt||0)){o.trip=b.trip;o.tripAt=b.tripAt}else{o.trip=a.trip||b.trip||'';o.tripAt=a.tripAt||b.tripAt||0}
+  return o}
+async function sync(){
+  if(!CODE||syncing)return false;syncing=true;
+  try{
+    const r=await fetch(SYNC+'/sync/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify({state:S})});
+    if(r.status===404){CODE='';try{localStorage.removeItem(CODEKEY)}catch(e){}return false}
+    if(!r.ok)return false;
+    const j=await r.json();family=j.family||null;try{localStorage.setItem(CODEKEY,CODE)}catch(e){}
+    const keep={sound:S.sound,solo:S.solo};S=Object.assign(merge(S,j.state||S),keep);
+    const renamed=j.name&&j.name!==NAME;S.name=j.name||S.name;save();
+    if(renamed){location.reload();return true}
+    const typing=document.activeElement&&document.activeElement.tagName==='INPUT';
+    if(!cur&&!typing&&!document.querySelector('.fin')&&sheet===null)render();
+    return true}
+  catch(e){return false}finally{syncing=false}
+}
 function me(){
-  return `<div class="hello"><h1>Me</h1><p>${learned(S).length} phrases learned · ${S.speaks} said out loud · best combo ${S.bestCombo}</p></div>
+  return `<div class="hello"><h1>${CODE?esc(NAME):'Me'}</h1><p>${learned(S).length} phrases learned · ${S.speaks} said out loud · best combo ${S.bestCombo}</p></div>
   <label for="trip">When do you leave for Denmark?<input id="trip" type="date" value="${S.trip}"></label>
   <button class="btn ghost" data-a="sound">Sound effects: ${S.sound?'on':'off'}</button>
-  <div class="note">Your progress is saved on this phone only.</div>
-  <button class="btn ghost" data-a="reset">Start over</button>`;
+  ${codeBox()}
+  <button class="btn ghost" data-a="reset">Sign out and erase this device</button>`;
 }
 
 /* ---------- lesson engine ---------- */
@@ -615,8 +685,8 @@ function next(){
 }
 function finish(){
   const li=cur.li,acc=cur.graded?cur.right/cur.graded:1,stars=acc>=.9?3:acc>=.7?2:1,first=!S.done[li],best=cur.best;
-  const kr=15+stars*5+(first?10:0);
-  S.kr+=kr;S.xp+=cur.right;if(acc===1)S.perfect++;
+  const gain=15+stars*5+(first?10:0);
+  S.earned+=gain;S.xp+=cur.right;week().xp+=cur.right;if(acc===1)S.perfect++;
   const t=dayKey(),y=dayKey(new Date(Date.now()-864e5));
   if(S.lastDay!==t){S.streak=S.lastDay===y?S.streak+1:1;S.lastDay=t}
   S.done[li]={stars:Math.max(stars,S.done[li]?S.done[li].stars:0)};
@@ -626,14 +696,14 @@ function finish(){
   app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div>
   <div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':''}" style="animation-delay:${.25+i*.28}s">★</span>`).join('')}</div>
   <h1>${stars===3?'Fantastisk!':stars===2?'Godt klaret!':'Færdig!'}</h1><p>${esc(L[li].t)} is done${S.streak>1?` · 🔥 ${S.streak} days in a row`:''}</p>
-  <div class="stats"><div class="stat" style="--c:var(--candle);animation-delay:1s"><small>Kroner</small><b>🪙 <span data-n="${kr}">0</span></b></div>
+  <div class="stats"><div class="stat" style="--c:var(--candle);animation-delay:1s"><small>Kroner</small><b>🪙 <span data-n="${gain}">0</span></b></div>
   <div class="stat" style="--c:var(--good);animation-delay:1.15s"><small>Right</small><b><span data-n="${Math.round(acc*100)}">0</span>%</b></div>
   <div class="stat" style="--c:#5d8fd0;animation-delay:1.3s"><small>Best combo</small><b>🔥 <span data-n="${best}">0</span></b></div></div>
   <button class="chest" data-a="chest"><i>🎁</i><span>Tap to open your bonus</span></button>
   ${won.length?`<div class="grid" style="width:100%">${won.map(b=>`<div class="tile own new"><i>${b.i}</i><b>${b.t}</b><small>New badge!</small></div>`).join('')}</div>`:''}
   <button class="btn" data-a="tab" data-v="home">Continue</button></div></div>`;
   document.querySelectorAll('[data-n]').forEach(el=>{const to=+el.dataset.n;let f=0;const iv=setInterval(()=>{f++;el.textContent=Math.round(to*Math.min(1,f/20));if(f>=20)clearInterval(iv)},45)});
-  sfx('win');confetti();quests();
+  sfx('win');confetti();quests();sync();
 }
 
 /* ---------- speaking ---------- */
@@ -711,7 +781,9 @@ function feats(buf){
 function dtw(A,B){const n=A.length,m=B.length;let prev=new Float32Array(m+1).fill(Infinity),curr=new Float32Array(m+1);prev[0]=0;
   for(let i=1;i<=n;i++){curr.fill(Infinity);const a=A[i-1];for(let j=1;j<=m;j++){const b=B[j-1];let d=0;for(let k=0;k<12;k++){const t=a[k]-b[k];d+=t*t}curr[j]=Math.sqrt(d)+Math.min(prev[j],prev[j-1],curr[j-1])}const t=prev;prev=curr;curr=t}
   return prev[m]/(n+m)}
-function refFeats(text,who){const k=who+'/'+slug(text);return refCache[k]||(refCache[k]=fetch('audio/'+k+'.mp3').then(r=>r.arrayBuffer()).then(decode).then(buf=>{refDur[slug(text)]=buf.duration;return feats(buf)}))}
+const getBuf=u=>fetch(u).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()});
+const getClip=k=>getBuf('audio/'+k+'.mp3').catch(()=>getBuf(SYNC+'/audio/'+k+'.mp3'));
+function refFeats(text,who){const k=who+'/'+slug(text);return refCache[k]||(refCache[k]=getClip(k).then(decode).then(buf=>{refDur[slug(text)]=buf.duration;return feats(buf)}))}
 function matchPct(d){return Math.round(Math.max(0,Math.min(1,(D_BAD-d)/(D_BAD-D_GOOD)))*100)}
 async function judge(blob,s,st){
   drawSpeak('done','Checking…');const here=()=>cur&&cur.steps[cur.i]===s;
@@ -730,7 +802,13 @@ function allowOn(){const go=document.getElementById('go');if(go){go.disabled=fal
 /* ---------- actions ---------- */
 const byId=id=>L.flatMap(l=>l.p).find(p=>p.id===id);
 const A={
-  tab(el){tab=el.dataset.v;sheet=null;rewards.just=null;window.scrollTo(0,0);sfx('tap');render()},
+  tab(el){tab=el.dataset.v;sheet=null;rewards.just=null;window.scrollTo(0,0);sfx('tap');render();if(tab==='fam'||tab==='home')sync()},
+  async link(){const el=document.getElementById('code'),c=((el&&el.value)||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+    if(c.length<8){linkMsg='A code has 8 letters and numbers.';render();return}
+    linkMsg='Checking…';render();CODE=c;const ok=await sync();
+    if(!ok){CODE='';linkMsg='That code did not work. Check it with Scott, and that you are online.';render();return}
+    linkMsg='';render()},
+  solo(){S.solo=true;save();render()},
   node(el){sheet=+el.dataset.v;sfx('tap');render()},
   closesheet(){sheet=null;render()},
   start(el){start(+el.dataset.v,!!el.dataset.q)},
@@ -769,18 +847,18 @@ const A={
   selfok(){spoke('Godt! Saying it out loud is the whole trick.')},
   goquiet(){cur.quiet=true;stopRec();hush();toast('No speaking for the rest of this lesson');renderStep()},
   unquiet(){cur.quiet=false;renderStep()},
-  chest(el){if(el.classList.contains('open'))return;const b=5+Math.floor(Math.random()*4)*5;S.kr+=b;save();el.classList.add('open');
+  chest(el){if(el.classList.contains('open'))return;const b=5+Math.floor(Math.random()*4)*5;S.earned+=b;save();el.classList.add('open');
     el.innerHTML=`<i>🪙</i><span>Bonus! +${b} kroner</span>`;sfx('coin');confetti()},
-  buy(el){const b=BAKERY.find(x=>x.id===el.dataset.v);if(S.kr<b.p||S.bakery.includes(b.id))return;S.kr-=b.p;S.bakery.push(b.id);rewards.just=b.id;
-    BADGES.forEach(x=>{if(!S.badges.includes(x.id)&&x.ok(S))S.badges.push(x.id)});save();render();sfx('coin');confetti()},
+  buy(el){const b=BAKERY.find(x=>x.id===el.dataset.v);if(kr()<b.p||S.bakery.includes(b.id))return;S.bakery.push(b.id);rewards.just=b.id;
+    BADGES.forEach(x=>{if(!S.badges.includes(x.id)&&x.ok(S))S.badges.push(x.id)});save();render();sfx('coin');confetti();sync()},
   sound(){S.sound=!S.sound;save();render();sfx('ok')},
-  reset(el){if(el.dataset.sure){S=def();save();render()}else{el.dataset.sure=1;el.textContent='Tap again to erase all progress'}}
+  reset(el){if(el.dataset.sure){S=def();CODE='';try{localStorage.removeItem(CODEKEY)}catch(e){}save();render()}else{el.dataset.sure=1;el.textContent='Tap again to erase this device'}}
 };
 function drawTiles(s){const st=cur.state;
   document.getElementById('ansrow').innerHTML=st.picked.map(i=>`<button class="word" data-a="unword" data-v="${i}">${esc(s.bank[i])}</button>`).join('');
   document.getElementById('go').disabled=!st.picked.length}
 document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(el&&!el.disabled&&A[el.dataset.a])A[el.dataset.a](el)});
-document.addEventListener('change',e=>{if(e.target.id==='trip'){S.trip=e.target.value;save()}});
+document.addEventListener('change',e=>{if(e.target.id==='trip'){S.trip=e.target.value;S.tripAt=Date.now();save();sync()}});
 
 /* ---------- confetti ---------- */
 function confetti(){
@@ -790,7 +868,9 @@ function confetti(){
   let f=0;(function tick(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.vy+=.32;p.x+=p.vx;p.y+=p.vy;p.vx*=.985;p.r+=.15;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.globalAlpha=Math.max(0,1-f/130);x.fillRect(-p.w/2,-p.w/2,p.w,p.w*.6);x.restore()});
     if(++f<130)requestAnimationFrame(tick);else c.hidden=true})();
 }
-today();render();
+try{const qc=new URLSearchParams(location.search).get('c');if(qc){CODE=qc.toUpperCase().replace(/[^A-Z0-9]/g,'');history.replaceState(null,'',location.pathname)}}catch(e){}
+today();week();render();sync();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!cur)sync()});
 if('speechSynthesis'in window){try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice}catch(e){}}
 window.addEventListener('error',e=>{if(!app.innerHTML)app.innerHTML='<div class="page"><div class="note">Something went wrong loading the app. Send Scott this: '+esc(e.message)+'</div></div>'});
 </script>
