@@ -494,7 +494,8 @@ function home(){
 function sheetHtml(i){const l=L[i],u=UNITS[l.u],dn=S.done[i];
   return `<div class="scrim" data-a="closesheet"></div><div class="sheet" style="--c:${u.c}"><div><div class="big">${l.i}</div><h2>${l.t}</h2>
   <p>${l.en} · ${l.p.length} phrases · about ${l.p.length>8?20:15} minutes</p>${dn?`<span class="nst" style="font-size:22px">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}
-  <button class="btn" data-a="start" data-v="${i}">${dn?'Practice again':'Start lesson'}</button></div></div>`}
+  <button class="btn" data-a="start" data-v="${i}">${dn?'Practice again':'Start lesson'}</button>
+  <button class="link" data-a="start" data-v="${i}" data-q="1">🤫 Can't talk right now? Start without speaking</button></div></div>`}
 function rewards(){
   return `<div class="hello"><h1>Rewards</h1><p>${S.badges.length} of ${BADGES.length} badges · 🪙 ${S.kr} kroner to spend</p></div>
   <section class="unit"><div class="unit-h"><h2>Bageriet</h2><span>The bakery</span></div><div class="grid">${BAKERY.map(b=>{
@@ -545,19 +546,20 @@ function build(li){
   sh(P).slice(0,4).forEach(p=>st.push({k:'speak',p}));
   return st;
 }
-function start(li){sheet=null;cur={li,steps:build(li),i:0,right:0,graded:0,combo:0,best:0,chat:[],state:{}};window.scrollTo(0,0);sfx('tap');renderStep()}
+function start(li,quiet){sheet=null;cur={quiet:!!quiet,li,steps:build(li),i:0,right:0,graded:0,combo:0,best:0,chat:[],state:{}};window.scrollTo(0,0);sfx('tap');renderStep()}
 const micBlock=()=>`<div class="spk" id="spk"></div>`;
 function renderStep(){
   const s=cur.steps[cur.i],p=s.p;cur.state={};
+  if(cur.quiet&&s.k==='speak'){s.k='pick';s.o=options(p,cur.li,'da')}
   let b='',foot=`<button class="btn" data-a="next" id="go" disabled>Continue</button>`;
-  const skip=`<button class="link" data-a="skipspeak">I can't talk right now</button>`;
+  const skip=`<button class="link" data-a="goquiet">🤫 Can't talk right now? Finish without speaking</button>`;
   if(s.k==='learn'){
     cur.state={tries:0};
-    b=`<div class="ask">Listen, then say it back</div>
+    b=`<div class="ask">${cur.quiet?'Listen and remember':'Listen, then say it back'}</div>
     <div class="teach"><div class="m">${snegl('hi')}</div><button class="bub" data-a="say"><span class="da">${esc(p.da)} 🔊</span><span class="hint">${esc(p.say)}</span><span class="en">${esc(p.en)}</span></button></div>
     ${p.note?`<div class="tip"><b>Tip:</b> ${esc(p.note)}</div>`:''}
-    <div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button><button class="btn sm ghost" data-a="other">🔁 Other voice</button><button class="btn sm ghost" data-a="star" data-v="${p.id}">${S.starred.includes(p.id)?'✓ Saved for Scott':'? Ask Scott'}</button></div>${micBlock()}`;
-    foot+=skip;
+    <div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button><button class="btn sm ghost" data-a="other">🔁 Other voice</button><button class="btn sm ghost" data-a="star" data-v="${p.id}">${S.starred.includes(p.id)?'✓ Saved for Scott':'? Ask Scott'}</button></div>${cur.quiet?'':micBlock()}`;
+    if(cur.quiet)foot=`<button class="btn" data-a="next" id="go">Got it</button><button class="link" data-a="unquiet">🎤 I can talk again</button>`;else foot+=skip;
   }else if(s.k==='match'){
     const a=sh(s.ps),e=sh(s.ps);cur.state={left:s.ps.length,miss:false};
     b=`<div class="ask">Tap the matching pairs</div><div class="cols"><div class="opts">${a.map(x=>`<button class="opt" data-a="pair" data-side="da" data-v="${x.id}">${esc(x.da)}</button>`).join('')}</div>
@@ -590,7 +592,7 @@ function renderStep(){
   <div class="step">${b}</div><div class="foot"><div id="fb"></div>${foot}</div></div>`;
   if(s.k==='learn'||s.k==='hear'||s.k==='tf'||(s.k==='tiles'&&s.listen))say(p.da);
   if(s.k==='chat')say(s.line.da,false,'m');
-  if(s.k==='learn'||s.k==='speak')drawSpeak('idle',s.k==='learn'?'Your turn! Tap and say it':'');
+  if(!cur.quiet&&(s.k==='learn'||s.k==='speak')){refFeats(p.da,'f').catch(()=>{});drawSpeak('idle',s.k==='learn'?'Your turn! Tap and say it':'')}
 }
 function grade(ok,s,quiet){
   if(!s.retry){cur.graded++;if(ok)cur.right++}
@@ -645,6 +647,7 @@ function drawSpeak(mode,msg){
   else if(mode==='again')el.innerHTML=mic(false)+`<div class="heard">${msg}</div>`;
   else if(mode==='review')el.innerHTML=`<div class="heard">Listen to yourself, then to the Danish. Close enough?</div><div class="acts"><button class="btn sm ghost" data-a="mine">▶ Me</button><button class="btn sm ghost" data-a="say">🔊 Danish</button></div>
     <div class="acts"><button class="btn sm ghost" data-a="mic">Try again</button><button class="btn sm good" data-a="selfok">Sounds good</button></div>`;
+  else if(mode==='compare')el.innerHTML=mic(false)+`<div class="heard">${msg}</div><div class="acts"><button class="btn sm ghost" data-a="mine">▶ Me</button><button class="btn sm ghost" data-a="say">🔊 Danish</button></div>`;
   else if(mode==='done')el.innerHTML=`<div class="heard">${msg||''}</div>`;
 }
 function spoke(msg){S.speaks++;today().speaks++;save();drawSpeak('done',msg);grade(true,cur.steps[cur.i],true);const pk=document.getElementById('peek');if(pk)pk.hidden=false}
@@ -671,10 +674,56 @@ function mic(){
     navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
       const rec=new MediaRecorder(stream),chunks=[];media={rec,stream};
       rec.ondataavailable=e=>chunks.push(e.data);
-      rec.onstop=()=>{stream.getTracks().forEach(t=>t.stop());media=null;myAudio=new Audio(URL.createObjectURL(new Blob(chunks,{type:rec.mimeType})));drawSpeak('review');myAudio.play().catch(()=>{})};
-      rec.start();drawSpeak('live','Recording… tap to stop');
+      rec.onstop=()=>{clearTimeout(stopT);stream.getTracks().forEach(t=>t.stop());media=null;const blob=new Blob(chunks,{type:rec.mimeType});
+        myAudio=new Audio(URL.createObjectURL(blob));if(cur&&cur.steps[cur.i]===s)judge(blob,s,st)};
+      rec.start();drawSpeak('live','Listening… tap when you are done');
+      const stopT=setTimeout(()=>{try{rec.state!=='inactive'&&rec.stop()}catch(e){}},((refDur[slug(s.p.da)]||2)*1.7+1.8)*1000);
     }).catch(()=>{drawSpeak('again','The microphone is blocked. Allow it for this page, then tap again.');allowOn()});
   }else{drawSpeak('done','This browser can\'t use the microphone. Say it out loud anyway!');allowOn()}
+}
+/* ---------- grading a recording against the Danish voices ----------
+   Both clips become a sequence of sound fingerprints (12 mel cepstral numbers per 10 ms, loudness and
+   voice pitch normalized away). The two sequences are time-aligned and the average gap is the score. */
+/* Calibrated 2026-11 on the 98 phrases: the same phrase in the other voice scores a gap of 1.8-2.46 (median 2.08),
+   a different phrase 1.97-3.1 (median 2.49). Passing is a gap of 2.38 or less, set lenient for a learner. */
+const D_GOOD=1.95,D_BAD=2.73,PASS=45;
+const refCache={},refDur={},melCache={};
+const decode=ab=>new Promise((res,rej)=>{AC=AC||new (window.AudioContext||window.webkitAudioContext)();AC.decodeAudioData(ab,res,rej)});
+function fft(re,im){const n=re.length;for(let i=1,j=0;i<n;i++){let b=n>>1;for(;j&b;b>>=1)j^=b;j^=b;if(i<j){let t=re[i];re[i]=re[j];re[j]=t;t=im[i];im[i]=im[j];im[j]=t}}
+  for(let len=2;len<=n;len<<=1){const ang=-2*Math.PI/len,wr=Math.cos(ang),wi=Math.sin(ang);for(let i=0;i<n;i+=len){let cr=1,ci=0;for(let k=0;k<len/2;k++){const a=i+k,b=a+len/2,xr=re[b]*cr-im[b]*ci,xi=re[b]*ci+im[b]*cr;re[b]=re[a]-xr;im[b]=im[a]-xi;re[a]+=xr;im[a]+=xi;const t=cr*wr-ci*wi;ci=cr*wi+ci*wr;cr=t}}}}
+function melBank(sr,nfft){const key=sr+'/'+nfft;if(melCache[key])return melCache[key];const mel=f=>2595*Math.log10(1+f/700),inv=m=>700*(Math.pow(10,m/2595)-1),N=24,lo=mel(100),hi=mel(4500),pts=[];
+  for(let i=0;i<N+2;i++)pts.push(inv(lo+(hi-lo)*i/(N+1))*nfft/sr);
+  const fb=[];for(let i=1;i<=N;i++){const a=Math.ceil(pts[i-1]),b=Math.floor(pts[i+1]),w=[];for(let k=a;k<=b;k++)w.push(k<=pts[i]?(k-pts[i-1])/(pts[i]-pts[i-1]):(pts[i+1]-k)/(pts[i+1]-pts[i]));fb.push({lo:a,w})}
+  return melCache[key]=fb}
+function feats(buf){
+  const sr=buf.sampleRate,x=buf.getChannelData(0),win=Math.round(.025*sr),hop=Math.round(.01*sr);let nfft=1;while(nfft<win)nfft<<=1;
+  const fb=melBank(sr,nfft),F=[],en=[],re=new Float32Array(nfft),im=new Float32Array(nfft);
+  for(let s0=0;s0+win<=x.length;s0+=hop){re.fill(0);im.fill(0);let e=0;
+    for(let i=0;i<win;i++){const v=x[s0+i];e+=v*v;re[i]=(v-(i?.97*x[s0+i-1]:0))*(.54-.46*Math.cos(2*Math.PI*i/(win-1)))}
+    fft(re,im);const m=fb.map(f=>{let a=0;for(let k=0;k<f.w.length;k++){const q=f.lo+k;a+=(re[q]*re[q]+im[q]*im[q])*f.w[k]}return Math.log(a+1e-10)});
+    const c=[];for(let j=1;j<=12;j++){let a=0;for(let q=0;q<m.length;q++)a+=m[q]*Math.cos(Math.PI*j*(q+.5)/m.length);c.push(a)}
+    F.push(c);en.push(e/win)}
+  let pk=0;en.forEach(v=>{if(v>pk)pk=v});if(pk<2e-5)return null;
+  let a=en.findIndex(v=>v>pk*.03),b=en.length-1;while(b>a&&en[b]<=pk*.03)b--;
+  const K=F.slice(Math.max(0,a-2),b+3);if(K.length<10)return null;
+  for(let j=0;j<12;j++){let mu=0,sd=0;K.forEach(f=>mu+=f[j]);mu/=K.length;K.forEach(f=>sd+=(f[j]-mu)*(f[j]-mu));sd=Math.sqrt(sd/K.length)||1;K.forEach(f=>f[j]=(f[j]-mu)/sd)}
+  return K}
+function dtw(A,B){const n=A.length,m=B.length;let prev=new Float32Array(m+1).fill(Infinity),curr=new Float32Array(m+1);prev[0]=0;
+  for(let i=1;i<=n;i++){curr.fill(Infinity);const a=A[i-1];for(let j=1;j<=m;j++){const b=B[j-1];let d=0;for(let k=0;k<12;k++){const t=a[k]-b[k];d+=t*t}curr[j]=Math.sqrt(d)+Math.min(prev[j],prev[j-1],curr[j-1])}const t=prev;prev=curr;curr=t}
+  return prev[m]/(n+m)}
+function refFeats(text,who){const k=who+'/'+slug(text);return refCache[k]||(refCache[k]=fetch('audio/'+k+'.mp3').then(r=>r.arrayBuffer()).then(decode).then(buf=>{refDur[slug(text)]=buf.duration;return feats(buf)}))}
+function matchPct(d){return Math.round(Math.max(0,Math.min(1,(D_BAD-d)/(D_BAD-D_GOOD)))*100)}
+async function judge(blob,s,st){
+  drawSpeak('done','Checking…');const here=()=>cur&&cur.steps[cur.i]===s;
+  try{
+    const mine=feats(await decode(await blob.arrayBuffer()));if(!here())return;st.tries++;
+    if(!mine){drawSpeak('again','I could not hear you. Hold the phone a little closer and try again.');if(st.tries>=2)allowOn();return}
+    const refs=(await Promise.all(['f','m'].map(w=>refFeats(s.p.da,w).catch(()=>null)))).filter(Boolean);if(!refs.length)throw 0;if(!here())return;
+    const len=Math.min(...refs.map(r=>Math.max(mine.length/r.length,r.length/mine.length)));
+    const pct=len>2.6?0:matchPct(Math.min(...refs.map(r=>dtw(mine,r))));
+    if(pct>=PASS)spoke(`${pct}% match. ${pct>=75?'Spot on!':'Close enough to be understood!'}`);
+    else{drawSpeak('compare',`${pct}% match. Listen to both, then try again.`);if(st.tries>=2)allowOn()}
+  }catch(e){if(here())drawSpeak('review')}
 }
 function allowOn(){const go=document.getElementById('go');if(go){go.disabled=false;go.textContent='Continue anyway'}}
 
@@ -684,7 +733,7 @@ const A={
   tab(el){tab=el.dataset.v;sheet=null;rewards.just=null;window.scrollTo(0,0);sfx('tap');render()},
   node(el){sheet=+el.dataset.v;sfx('tap');render()},
   closesheet(){sheet=null;render()},
-  start(el){start(+el.dataset.v)},
+  start(el){start(+el.dataset.v,!!el.dataset.q)},
   quit(){stopRec();hush();cur=null;render()},
   say(){say(cur.steps[cur.i].p.da)},
   sayline(){say(cur.steps[cur.i].line.da,false,'m')},
@@ -718,7 +767,8 @@ const A={
   mic,
   mine(){myAudio&&myAudio.play().catch(()=>{})},
   selfok(){spoke('Godt! Saying it out loud is the whole trick.')},
-  skipspeak(){next()},
+  goquiet(){cur.quiet=true;stopRec();hush();toast('No speaking for the rest of this lesson');renderStep()},
+  unquiet(){cur.quiet=false;renderStep()},
   chest(el){if(el.classList.contains('open'))return;const b=5+Math.floor(Math.random()*4)*5;S.kr+=b;save();el.classList.add('open');
     el.innerHTML=`<i>🪙</i><span>Bonus! +${b} kroner</span>`;sfx('coin');confetti()},
   buy(el){const b=BAKERY.find(x=>x.id===el.dataset.v);if(S.kr<b.p||S.bakery.includes(b.id))return;S.kr-=b.p;S.bakery.push(b.id);rewards.just=b.id;
