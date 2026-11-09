@@ -439,7 +439,7 @@ function quests(){const d=today();QUESTS.forEach(q=>{if(!d.q.includes(q.id)&&q.v
 /* ---------- voice out ---------- */
 let voice=null,voicesSeen=false;
 function pickVoice(){if(!('speechSynthesis'in window))return;const v=speechSynthesis.getVoices();if(v.length){const had=voicesSeen;voicesSeen=true;voice=v.find(x=>/^da/i.test(x.lang))||null;if(!had&&tab==='home'&&!cur&&sheet===null)render()}}
-if('speechSynthesis'in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+/* pickVoice can draw the page, so its first call waits until the very end of this script (phones return voices instantly) */
 function say(text,slow){
   if(!('speechSynthesis'in window))return;
   try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='da-DK';if(voice)u.voice=voice;u.rate=slow?0.55:0.9;speechSynthesis.speak(u)}catch(e){}
@@ -729,6 +729,8 @@ function confetti(){
     if(++f<130)requestAnimationFrame(tick);else c.hidden=true})();
 }
 today();render();
+if('speechSynthesis'in window){try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice}catch(e){}}
+window.addEventListener('error',e=>{if(!app.innerHTML)app.innerHTML='<div class="page"><div class="note">Something went wrong loading the app. Send Scott this: '+esc(e.message)+'</div></div>'});
 </script>
 </body>
 </html>
