@@ -135,7 +135,10 @@ p{margin:0}
 .codein{text-align:center;font-family:var(--display);font-size:24px;letter-spacing:.12em;text-transform:uppercase}
 .err{color:var(--miss);font-weight:700;font-size:14px;text-align:center}
 label{font-weight:700;font-size:14px;display:flex;flex-direction:column;gap:6px}
-input{font:inherit;color:var(--fg);background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px}
+input,textarea{font:inherit;color:var(--fg);background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px}
+textarea{resize:vertical;min-height:130px;line-height:1.4;width:100%}
+textarea:focus-visible{outline:2px solid var(--candle);outline-offset:3px}
+.tipline{color:var(--muted);font-size:13px;margin-top:-10px}
 
 /* lesson player */
 .player{flex:1;display:flex;flex-direction:column;min-height:100dvh;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -247,7 +250,8 @@ const UNITS=[
  {t:'Første ord',en:'First words',c:'#45ab9f',cl:'#2a776e'},
  {t:'Ud i byen',en:'Out and about',c:'#d98670',cl:'#9b5443'},
  {t:'Familie & hygge',en:'Family and cozy times',c:'#9a8ad8',cl:'#6657a5'},
- {t:'På tur',en:'On the trip',c:'#d9a85c',cl:'#9b7436'}
+ {t:'På tur',en:'On the trip',c:'#d9a85c',cl:'#9b7436'},
+ {t:'Fra virkeligheden',en:'Real life',c:'#6f9bd6',cl:'#44689c',x:true}
 ];
 const L=[
  {u:0,t:'Hej!',en:'Hello and goodbye',i:'👋',p:[
@@ -360,7 +364,16 @@ const L=[
 ];
 let NAME='Ciera';try{NAME=JSON.parse(localStorage.getItem('hejciera.v1')||'{}').name||'Ciera'}catch(e){}
 const nm=t=>t.replace('{name}',NAME);
-L.forEach((l,li)=>{l.p=l.p.map((a,pi)=>({id:li+'-'+pi,da:nm(a[0]),en:nm(a[1]),say:a[2],note:a[3]||''}));l.d=(l.d||[]).map(d=>[nm(d[0]),nm(d[1]),d[2]])});
+L.forEach((l,li)=>{l.key=String(li);l.p=l.p.map((a,pi)=>({id:li+'-'+pi,da:nm(a[0]),en:nm(a[1]),say:a[2],note:a[3]||''}));l.d=(l.d||[]).map(d=>[nm(d[0]),nm(d[1]),d[2]])});
+
+/* Lessons the family made from real moments arrive from the sync service and sit after the course lessons. */
+const CORE=L.length;
+function setLessons(list){
+  L.length=CORE;
+  (list||[]).forEach(x=>L.push({u:4,x:true,key:x.id,t:x.t,en:x.en,i:x.i,by:x.by,mine:!!x.mine,p:x.p.map((a,pi)=>({id:x.id+'-'+pi,da:a[0],en:a[1],say:a[2]||'',note:a[3]||''})),d:x.d||[]}));
+  try{localStorage.setItem('hejciera.lessons',JSON.stringify(list||[]))}catch(e){}
+}
+try{setLessons(JSON.parse(localStorage.getItem('hejciera.lessons')||'[]'))}catch(e){}
 
 const BADGES=[
  {id:'first',i:'👣',t:'Første skridt',d:'Finish your first lesson',ok:s=>n(s)>=1},
@@ -407,8 +420,8 @@ delete S.kr;
 const kr=()=>S.earned-S.bakery.reduce((t,id)=>t+price(id),0);
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const n=s=>Object.keys(s.done).length;
-const unitDone=(s,u)=>L.every((l,i)=>l.u!==u||s.done[i]);
-const learned=s=>L.flatMap((l,i)=>s.done[i]?l.p:[]);
+const unitDone=(s,u)=>L.every(l=>l.u!==u||s.done[l.key]);
+const learned=s=>L.flatMap(l=>s.done[l.key]?l.p:[]);
 const dayKey=d=>{d=d||new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
 const weekKey=()=>{const d=new Date();d.setDate(d.getDate()-((d.getDay()+6)%7));return dayKey(d)};
 const week=()=>{if(!S.week||S.week.k!==weekKey())S.week={k:weekKey(),xp:0};return S.week};
@@ -485,7 +498,7 @@ function sim(a,b){a=norm(a);b=norm(b);if(!a||!b)return 0;return 1-lev(a,b)/Math.
 function render(){
   if(cur){renderStep();return}
   if(!CODE&&!n(S)&&!S.solo){app.innerHTML=welcome();return}
-  const body={home,rewards,fam,book,me}[tab]();
+  const body={home,rewards,fam,book,me,make}[tab]();
   app.innerHTML=`<div class="page">${body}</div>
   <nav class="tabs"><div>${[['home','🏠','Learn'],['fam','👪','Family'],['rewards','🏅','Rewards'],['book','📖','Phrases'],['me','⚙️','Me']]
     .map(t=>`<button data-a="tab" data-v="${t[0]}" class="${tab===t[0]?'on':''}"><i>${t[1]}</i>${t[2]}</button>`).join('')}</div></nav>${sheet!==null?sheetHtml(sheet):''}`;
@@ -501,21 +514,21 @@ function home(){
     return `<div class="q ${dn?'done':''}"><span>${dn?'✓ ':''}${q.t}</span><span>${v}/${q.g}</span><div class="bar"><i style="width:${v/q.g*100}%"></i></div></div>`}).join('')}</section>`;
   if(!CODE)h+=`<button class="note" data-a="tab" data-v="me" style="text-align:left">Got a code from Scott? Enter it under Me to keep your progress on all your devices and join the family race.</button>`;
   const ch=rnd(CHEER).map(nm);
-  UNITS.forEach((u,ui)=>{
-    h+=`<section style="--c:${u.c};--cl:${u.cl}"><div class="banner"><small>Unit ${ui+1}</small><h2>${u.t}</h2><span>${u.en}</span></div><div class="path">`;
+  [4,0,1,2,3].forEach(ui=>{const u=UNITS[ui];let k=0;
+    h+=`<section style="--c:${u.c};--cl:${u.cl}"><div class="banner"><small>${u.x?'Your own lessons':'Unit '+(ui+1)}</small><h2>${u.t}</h2><span>${u.en}</span></div>${u.x?`<button class="btn ghost" data-a="tab" data-v="make" style="margin-top:14px">＋ Turn a real moment into a lesson</button>`:''}<div class="path">`;
     L.forEach((l,i)=>{if(l.u!==ui)return;
-      const dn=S.done[i],open=i===0||S.done[i-1],nx=open&&!dn,x=XS[i%8];
+      const dn=S.done[l.key],open=l.x||i===0||S.done[L[i-1].key],nx=!l.x&&open&&!dn,x=XS[(l.x?k++:i)%8];
       h+=`<div class="nw ${nx?'cur':''}" style="--x:${x}px">${nx?`<div class="startb">START</div><div class="buddy ${x>0?'l':'r'}"><div class="say">${ch[0]}<small>${ch[1]}</small></div>${snegl('hi')}</div>`:''}
-      <button class="node ${nx?'next':open?'':'locked'}" ${open?`data-a="node" data-v="${i}"`:'disabled'} aria-label="${esc(l.en)}"><span>${l.i}</span></button>
-      ${dn?`<span class="nst">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}<span class="nl">${l.t}</span></div>`});
+      <button class="node ${nx?'next':open?'':'locked'}" ${open?`data-a="node" data-v="${i}"`:'disabled'} aria-label="${esc(l.en)}"><span>${esc(l.i)}</span></button>
+      ${dn?`<span class="nst">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}<span class="nl">${esc(l.t)}</span></div>`});
     h+=`</div></section>`});
   return h+`<div class="note">More lessons are on the way. Scott adds them as you go.</div>`;
 }
-function sheetHtml(i){const l=L[i],u=UNITS[l.u],dn=S.done[i];
-  return `<div class="scrim" data-a="closesheet"></div><div class="sheet" style="--c:${u.c}"><div><div class="big">${l.i}</div><h2>${l.t}</h2>
-  <p>${l.en} · ${l.p.length} phrases · about ${l.p.length>8?20:15} minutes</p>${dn?`<span class="nst" style="font-size:22px">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}
+function sheetHtml(i){const l=L[i],u=UNITS[l.u],dn=S.done[l.key];
+  return `<div class="scrim" data-a="closesheet"></div><div class="sheet" style="--c:${u.c}"><div><div class="big">${esc(l.i)}</div><h2>${esc(l.t)}</h2>
+  <p>${esc(l.en)} · ${l.p.length} phrases · about ${l.x?8:l.p.length>8?20:15} minutes${l.x&&l.by?' · from '+esc(l.by):''}</p>${dn?`<span class="nst" style="font-size:22px">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}
   <button class="btn" data-a="start" data-v="${i}">${dn?'Practice again':'Start lesson'}</button>
-  <button class="link" data-a="start" data-v="${i}" data-q="1">🤫 Can't talk right now? Start without speaking</button></div></div>`}
+  <button class="link" data-a="start" data-v="${i}" data-q="1">🤫 Can't talk right now? Start without speaking</button>${l.x&&l.mine?`<button class="link" data-a="dellesson" data-v="${l.key}">Delete this lesson for everyone</button>`:''}</div></div>`}
 function rewards(){
   return `<div class="hello"><h1>Rewards</h1><p>${S.badges.length} of ${BADGES.length} badges · 🪙 ${kr()} kroner to spend</p></div>
   <section class="unit"><div class="unit-h"><h2>Bageriet</h2><span>The bakery</span></div><div class="grid">${BAKERY.map(b=>{
@@ -532,8 +545,8 @@ function book(){
   const all=L.flatMap(l=>l.p),ask=all.filter(p=>S.starred.includes(p.id));
   let h=`<div class="hello"><h1>Phrases</h1><p>Everything you have learned. Tap ? to save one to ask Scott about.</p></div>`;
   if(ask.length)h+=`<section class="unit"><div class="unit-h"><h2>Spørg Scott</h2><span>Ask Scott</span></div><div class="stack">${ask.map(phraseRow).join('')}</div></section>`;
-  if(!L.some((l,i)=>S.done[i]))h+=`<div class="note">Finish your first lesson and its phrases show up here.</div>`;
-  L.forEach((l,i)=>{if(S.done[i])h+=`<section class="unit"><div class="unit-h"><h2>${l.t}</h2><span>${l.en}</span></div><div class="stack">${l.p.map(phraseRow).join('')}</div></section>`});
+  if(!L.some(l=>S.done[l.key]))h+=`<div class="note">Finish your first lesson and its phrases show up here.</div>`;
+  L.forEach(l=>{if(S.done[l.key])h+=`<section class="unit"><div class="unit-h"><h2>${esc(l.t)}</h2><span>${esc(l.en)}</span></div><div class="stack">${l.p.map(phraseRow).join('')}</div></section>`});
   return h;
 }
 let family=null,linkMsg='',syncing=false;
@@ -577,14 +590,56 @@ async function sync(){
     const r=await fetch(SYNC+'/sync/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify({state:S})});
     if(r.status===404){CODE='';try{localStorage.removeItem(CODEKEY)}catch(e){}return false}
     if(!r.ok)return false;
-    const j=await r.json();family=j.family||null;try{localStorage.setItem(CODEKEY,CODE)}catch(e){}
+    const j=await r.json();family=j.family||null;if(j.lessons&&!cur&&sheet===null)setLessons(j.lessons);try{localStorage.setItem(CODEKEY,CODE)}catch(e){}
     const keep={sound:S.sound,solo:S.solo};S=Object.assign(merge(S,j.state||S),keep);
     const renamed=j.name&&j.name!==NAME;S.name=j.name||S.name;save();
     if(renamed){location.reload();return true}
-    const typing=document.activeElement&&document.activeElement.tagName==='INPUT';
+    const typing=document.activeElement&&/INPUT|TEXTAREA/.test(document.activeElement.tagName);
     if(!cur&&!typing&&!document.querySelector('.fin')&&sheet===null)render();
     return true}
   catch(e){return false}finally{syncing=false}
+}
+const mk={text:'',msg:'',err:false,busy:false,rec:null};
+function make(){
+  let h=`<div class="hello"><h1>Fra virkeligheden</h1><p>Turn a real moment into a short lesson for the whole family.</p></div>`;
+  if(!CODE)return h+`<div class="note">Enter your code under Me first.</div>`;
+  return h+`<div class="teach"><div class="m">${snegl('hi')}</div><div class="bub"><span class="en">Tell me what was said, or let me listen. I'll write the Danish.</span></div></div>
+  <label for="mk">What happened?<textarea id="mk" placeholder="Example: The waiter asked if we wanted still or sparkling water. Later I asked for the check and whether we could split it.">${esc(mk.text)}</textarea></label>
+  <p class="tipline">Type it, or tap the mic on your keyboard and say it.</p>
+  ${mk.rec?`<button class="btn miss" data-a="recstop" id="recbtn">■ Stop recording · 0:00</button>`:`<button class="btn ghost" data-a="rec" ${mk.busy?'disabled':''}>🎙 Or record the conversation</button>`}
+  <p class="tipline">Up to three minutes. Let the table know you are recording.</p>
+  ${mk.msg?`<div class="${mk.err?'err':'note'}">${esc(mk.msg)}</div>`:''}
+  <button class="btn" data-a="mklesson" ${mk.busy||mk.rec?'disabled':''}>${mk.busy?'Kanel is working…':'Make my lesson'}</button>
+  <button class="link" data-a="tab" data-v="home">Back</button>`;
+}
+const say2=(msg,err)=>{mk.msg=msg;mk.err=!!err;if(tab==='make'&&!cur)render()};
+/* 16 kHz mono WAV pieces of at most 50 seconds, each cut at a quiet spot */
+function wavChunks(buf){
+  const sr=buf.sampleRate,x=buf.getChannelData(0),ratio=sr/16000,n=Math.floor(x.length/ratio),y=new Float32Array(n);
+  for(let i=0;i<n;i++){const a=Math.floor(i*ratio),b=Math.min(x.length,Math.max(a+1,Math.floor((i+1)*ratio)));let t=0;for(let k=a;k<b;k++)t+=x[k];y[i]=t/(b-a)}
+  let pk=0;for(let i=0;i<n;i++){const v=Math.abs(y[i]);if(v>pk)pk=v}const g=pk>0?Math.min(8,.9/pk):1;
+  const out=[],MAX=16000*50;let pos=0;
+  while(pos<n){let end=Math.min(n,pos+MAX);
+    if(end<n){let best=end,bestE=Infinity;for(let q=end-16000*6;q<end-3200;q+=1600){let e=0;for(let k=q;k<q+3200;k++)e+=y[k]*y[k];if(e<bestE){bestE=e;best=q+1600}}end=best}
+    const len=end-pos,dv=new DataView(new ArrayBuffer(44+len*2)),w=(o,t)=>{for(let i=0;i<t.length;i++)dv.setUint8(o+i,t.charCodeAt(i))};
+    w(0,'RIFF');dv.setUint32(4,36+len*2,true);w(8,'WAVEfmt ');dv.setUint32(16,16,true);dv.setUint16(20,1,true);dv.setUint16(22,1,true);dv.setUint32(24,16000,true);dv.setUint32(28,32000,true);dv.setUint16(32,2,true);dv.setUint16(34,16,true);w(36,'data');dv.setUint32(40,len*2,true);
+    for(let i=0;i<len;i++)dv.setInt16(44+i*2,Math.max(-1,Math.min(1,y[pos+i]*g))*32767,true);
+    out.push(dv.buffer);pos=end}
+  return out}
+async function heardBack(blob){
+  mk.busy=true;say2('Listening back to the recording…');
+  try{
+    const chunks=wavChunks(await decode(await blob.arrayBuffer()));let text='';
+    for(let i=0;i<chunks.length;i++){
+      if(chunks.length>1)say2(`Listening back… part ${i+1} of ${chunks.length}`);
+      const r=await fetch(SYNC+'/transcribe/'+CODE,{method:'POST',headers:{'content-type':'audio/wav'},body:chunks[i]});
+      if(r.status===503){mk.busy=false;say2('Recording needs one more setup step from Scott. For now, type what happened.',true);return}
+      if(!r.ok)throw 0;
+      text+=' '+((await r.json()).text||'')}
+    text=text.trim();mk.busy=false;
+    if(!text){say2('I could not make out any words. Try again closer to the table, or type what happened.',true);return}
+    mk.text=(mk.text?mk.text.trim()+'\n':'')+text;say2('Here is what I heard. Fix anything that is wrong, then make the lesson.');
+  }catch(e){mk.busy=false;say2('That recording did not work. Try again, or type what happened.',true)}
 }
 function me(){
   return `<div class="hello"><h1>${CODE?esc(NAME):'Me'}</h1><p>${learned(S).length} phrases learned · ${S.speaks} said out loud · best combo ${S.bestCombo}</p></div>
@@ -595,25 +650,25 @@ function me(){
 }
 
 /* ---------- lesson engine ---------- */
-function pool(li){return L.slice(0,li+1).flatMap(l=>l.p)}
+function pool(li){return L[li].x?[...L[li].p,...learned(S).filter(q=>!q.id.startsWith(L[li].key+'-'))]:L.slice(0,li+1).flatMap(l=>l.p)}
 function options(p,li,key,k){const o=sh(pool(li).filter(x=>x[key]!==p[key]&&x.id!==p.id));const pick=[];for(const x of o){if(!pick.some(y=>y[key]===x[key]))pick.push(x);if(pick.length===(k||3))break}return sh([p,...pick])}
 function tf(p,li){const truth=Math.random()<.5,o=rnd(pool(li).filter(x=>x.en!==p.en));return {k:'tf',p,truth,shown:truth?p.en:o.en}}
 function build(li){
-  const P=L[li].p,st=[];
+  const P=L[li].p,st=[],sm=!!L[li].x;
   for(let c=0;c<P.length;c+=4){const ch=P.slice(c,c+4);
     ch.forEach((p,i)=>{st.push({k:'learn',p});
       if(i%2===1){const q=ch[i-(Math.random()<.5?1:0)];st.push({k:'hear',p:q,o:options(q,li,'en')})}});
     if(ch.length>=3)st.push({k:'match',ps:ch});
-    sh(ch).slice(0,2).forEach(p=>st.push(tf(p,li)));
+    sh(ch).slice(0,sm?0:2).forEach(p=>st.push(tf(p,li)));
   }
   (L[li].d||[]).forEach(t=>{const p=P[t[2]];st.push({k:'chat',line:{da:t[0],en:t[1]},p,o:options(p,li,'da',2)})});
-  sh(P).slice(0,6).forEach(p=>st.push({k:'pick',p,o:options(p,li,'da')}));
-  const multi=sh(P.filter(p=>p.da.split(' ').length>=2)).slice(0,4);
+  sh(P).slice(0,sm?4:6).forEach(p=>st.push({k:'pick',p,o:options(p,li,'da')}));
+  const multi=sh(P.filter(p=>p.da.split(' ').length>=2)).slice(0,sm?3:4);
   multi.forEach((p,i)=>{const w=p.da.replace(/[?!.,]/g,'').split(' ');
     const extra=sh([...new Set(pool(li).flatMap(x=>x.da.replace(/[?!.,]/g,'').split(' ')))].filter(x=>!w.includes(x))).slice(0,3);
     st.push({k:'tiles',listen:i%2===1,p,w,bank:sh([...w,...extra])})});
-  if(multi.length<3)sh(P).slice(0,4).forEach(p=>st.push(tf(p,li)));
-  sh(P).slice(0,4).forEach(p=>st.push({k:'speak',p}));
+  if(!sm&&multi.length<3)sh(P).slice(0,4).forEach(p=>st.push(tf(p,li)));
+  sh(P).slice(0,sm?3:4).forEach(p=>st.push({k:'speak',p}));
   return st;
 }
 function start(li,quiet){sheet=null;cur={quiet:!!quiet,li,steps:build(li),i:0,right:0,graded:0,combo:0,best:0,chat:[],state:{}};window.scrollTo(0,0);sfx('tap');renderStep()}
@@ -684,12 +739,12 @@ function next(){
   cur.i++;if(cur.i>=cur.steps.length)return finish();window.scrollTo(0,0);renderStep();
 }
 function finish(){
-  const li=cur.li,acc=cur.graded?cur.right/cur.graded:1,stars=acc>=.9?3:acc>=.7?2:1,first=!S.done[li],best=cur.best;
+  const li=cur.li,key=L[li].key,acc=cur.graded?cur.right/cur.graded:1,stars=acc>=.9?3:acc>=.7?2:1,first=!S.done[key],best=cur.best;
   const gain=15+stars*5+(first?10:0);
   S.earned+=gain;S.xp+=cur.right;week().xp+=cur.right;if(acc===1)S.perfect++;
   const t=dayKey(),y=dayKey(new Date(Date.now()-864e5));
   if(S.lastDay!==t){S.streak=S.lastDay===y?S.streak+1:1;S.lastDay=t}
-  S.done[li]={stars:Math.max(stars,S.done[li]?S.done[li].stars:0)};
+  S.done[key]={stars:Math.max(stars,S.done[key]?S.done[key].stars:0)};
   today().lessons++;
   const won=BADGES.filter(b=>!S.badges.includes(b.id)&&b.ok(S));won.forEach(b=>S.badges.push(b.id));
   save();cur=null;tab='home';
@@ -809,6 +864,36 @@ const A={
     if(!ok){CODE='';linkMsg='That code did not work. Check it with Scott, and that you are online.';render();return}
     linkMsg='';render()},
   solo(){S.solo=true;save();render()},
+  rec(){
+    if(!navigator.mediaDevices||!window.MediaRecorder){say2('This browser cannot record. Type what happened instead.',true);return}
+    hush();
+    navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+      const rec=new MediaRecorder(stream),chunks=[],t0=Date.now();
+      rec.ondataavailable=e=>chunks.push(e.data);
+      rec.onstop=()=>{clearInterval(mk.rec.iv);stream.getTracks().forEach(t=>t.stop());mk.rec=null;heardBack(new Blob(chunks,{type:rec.mimeType}))};
+      mk.rec={rec,iv:setInterval(()=>{const t=Math.floor((Date.now()-t0)/1000),b=document.getElementById('recbtn');
+        if(b)b.textContent=`■ Stop recording · ${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`;if(t>=180)A.recstop()},500)};
+      mk.msg='';rec.start();render();
+    }).catch(()=>say2('The microphone is blocked. Allow it for this page, or type what happened.',true));
+  },
+  recstop(){try{mk.rec&&mk.rec.rec.state!=='inactive'&&mk.rec.rec.stop()}catch(e){}},
+  async mklesson(){
+    const text=mk.text.trim();if(text.length<15){say2('Tell me a little more about what was said.',true);return}
+    mk.busy=true;say2('Kanel is writing your lesson. This takes up to a minute.');
+    try{
+      const r=await fetch(SYNC+'/lesson/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify({text})});
+      mk.busy=false;
+      if(r.status===503){say2('Making lessons needs one more setup step from Scott. Your text stays here until then.',true);return}
+      if(r.status===429){say2('That is a lot of lessons for one day. Try again tomorrow.',true);return}
+      if(!r.ok){say2('Kanel could not make a lesson from that. Add a little more detail and try again.',true);return}
+      const j=await r.json();setLessons(j.lessons);mk.text='';mk.msg='';tab='home';sheet=L.findIndex(l=>l.key===j.lesson.id);if(sheet<0)sheet=null;
+      window.scrollTo(0,0);render();sfx('win');confetti();
+    }catch(e){mk.busy=false;say2('No connection. Check that you are online and try again.',true)}
+  },
+  async dellesson(el){
+    if(!el.dataset.sure){el.dataset.sure=1;el.textContent='Tap again to delete it for everyone';return}
+    try{const r=await fetch(SYNC+'/lesson/'+CODE+'/'+el.dataset.v,{method:'DELETE'});if(r.ok)setLessons((await r.json()).lessons)}catch(e){}
+    sheet=null;render()},
   node(el){sheet=+el.dataset.v;sfx('tap');render()},
   closesheet(){sheet=null;render()},
   start(el){start(+el.dataset.v,!!el.dataset.q)},
@@ -852,12 +937,13 @@ const A={
   buy(el){const b=BAKERY.find(x=>x.id===el.dataset.v);if(kr()<b.p||S.bakery.includes(b.id))return;S.bakery.push(b.id);rewards.just=b.id;
     BADGES.forEach(x=>{if(!S.badges.includes(x.id)&&x.ok(S))S.badges.push(x.id)});save();render();sfx('coin');confetti();sync()},
   sound(){S.sound=!S.sound;save();render();sfx('ok')},
-  reset(el){if(el.dataset.sure){S=def();CODE='';try{localStorage.removeItem(CODEKEY)}catch(e){}save();render()}else{el.dataset.sure=1;el.textContent='Tap again to erase this device'}}
+  reset(el){if(el.dataset.sure){S=def();CODE='';try{localStorage.removeItem(CODEKEY)}catch(e){}setLessons([]);save();render()}else{el.dataset.sure=1;el.textContent='Tap again to erase this device'}}
 };
 function drawTiles(s){const st=cur.state;
   document.getElementById('ansrow').innerHTML=st.picked.map(i=>`<button class="word" data-a="unword" data-v="${i}">${esc(s.bank[i])}</button>`).join('');
   document.getElementById('go').disabled=!st.picked.length}
 document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(el&&!el.disabled&&A[el.dataset.a])A[el.dataset.a](el)});
+document.addEventListener('input',e=>{if(e.target.id==='mk')mk.text=e.target.value});
 document.addEventListener('change',e=>{if(e.target.id==='trip'){S.trip=e.target.value;S.tripAt=Date.now();save();sync()}});
 
 /* ---------- confetti ---------- */
