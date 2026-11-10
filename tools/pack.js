@@ -14,6 +14,7 @@ if (process.argv.includes('--texts')) {
   const all = new Set();
   src.lessons.forEach(l => [l.p, l.d, l.mix].forEach(list => (list || []).forEach(a => all.add(a[0]))));
   (src.msgs || []).forEach(m => all.add(m.da));
+  if (src.welcome) all.add(src.welcome.da);
   process.stdout.write(JSON.stringify([...all]));
 } else {
   src.t = Date.now();

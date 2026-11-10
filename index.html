@@ -159,6 +159,10 @@ textarea:focus-visible{outline:2px solid var(--candle);outline-offset:3px}
 .rvb b{font-family:var(--display);font-size:18px}
 .rvb small{color:var(--muted);font-size:13px}
 .rvb em{font-style:normal;font-weight:700;color:var(--candle);font-size:13px;flex:none}
+.quests{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;padding:12px 14px}
+.quests h3{grid-column:1/-1;font-size:15px}
+.q{font-size:12.5px;gap:3px 6px} .q .bar{height:6px}
+#tkin{width:100%}
 .note.go{border-style:solid;border-color:var(--candle);display:flex;flex-direction:column;gap:6px;color:var(--fg)}
 .note.go span{color:var(--muted)} .note.go .acts{justify-content:flex-start;margin-top:4px}
 .prize{display:flex;gap:12px;align-items:center;background:var(--surface);border:2px solid var(--candle);border-radius:18px;padding:12px 14px}
@@ -714,7 +718,7 @@ try{PACK=JSON.parse(localStorage.getItem('hejciera.v1')||'{}').pack||null}catch(
 function addPack(){
   if(!PACK||!PACK.lessons)return;
   (PACK.units||[]).forEach(u=>UNITS.push(Object.assign({pk:true},u)));
-  PACK.lessons.forEach(x=>{const l={u:NU+(x.u||0),pk:true,key:x.key,t:x.t,en:x.en,i:x.i,cards:x.cards||[],d:x.d||[]};
+  PACK.lessons.forEach(x=>{const l={u:NU+(x.u||0),pk:true,stamp:x.stamp||'',key:x.key,t:x.t,en:x.en,i:x.i,cards:x.cards||[],d:x.d||[]};
     l.p=(x.p||[]).map((a,pi)=>PH[x.key+'-'+pi]={id:x.key+'-'+pi,da:a[0],en:a[1],say:a[2]||'',note:a[3]||''});
     l.mix=(x.mix||[]).map((a,mi)=>PH[x.key+'-m'+mi]={id:x.key+'-m'+mi,da:a[0],en:a[1],say:'',note:'',mix:true});L.push(l)})}
 function setPack(pk){PACK=pk||null;setLessons(famList)}
@@ -744,6 +748,8 @@ const BADGES=[
  {id:'rv10',i:'🧠',t:'Elefanthukommelse',d:'Finish 10 daily rounds',ok:s=>(s.stat||{}).rv>=10},
  {id:'st3',i:'📖',t:'Bogorm',d:'Read 3 stories',ok:s=>(s.stat||{}).st>=3},
  {id:'dw1',i:'⚔️',t:'Duelvinder',d:'Win a head-to-head',ok:s=>(s.stat||{}).dw>=1},
+ {id:'tk1',i:'💬',t:'Samtalepartner',d:'Finish a conversation with Kanel',ok:s=>(s.stat||{}).tk>=1},
+ {id:'tk10',i:'🎙️',t:'Sludrechatol',d:'Finish 10 conversations with Kanel',ok:s=>(s.stat||{}).tk>=10},
  {id:'rl1',i:'🍽️',t:'Fra virkeligheden',d:'Finish a real-life lesson',ok:s=>Object.keys(s.done).some(k=>k[0]==='x')},
  {id:'w150',i:'🎓',t:'Ordkunstner',d:'Learn 150 phrases',ok:s=>learned(s).length>=150},
  {id:'half',i:'🧭',t:'Halvvejs',d:'Finish unit 8',ok:s=>unitDone(s,8)},
@@ -778,7 +784,7 @@ let S=def(),CODE='';
 try{const raw=JSON.parse(localStorage.getItem(KEY)||'{}');S=Object.assign(def(),raw);if(raw.earned==null&&raw.kr!=null)S.earned=raw.kr+S.bakery.reduce((t,id)=>t+price(id),0);CODE=localStorage.getItem(CODEKEY)||''}catch(e){}
 delete S.kr;
 const kr=()=>S.earned-S.bakery.reduce((t,id)=>t+price(id),0)-((S.shop&&S.shop.spent)||0);
-const fz=()=>S.fz||{n:1,t:0},boost=()=>S.boost||{n:0,t:0},stat=()=>Object.assign({rv:0,st:0,dw:0,t:0},S.stat);
+const fz=()=>S.fz||{n:1,t:0},boost=()=>S.boost||{n:0,t:0},stat=()=>Object.assign({rv:0,st:0,dw:0,tk:0,t:0},S.stat);
 /* ---------- memory: every phrase has a box; right answers in the daily round move it up and space it out ---------- */
 const dayNo=()=>Math.floor((Date.now()-new Date().getTimezoneOffset()*6e4)/864e5),GAP=[0,1,2,4,8,16,32,64];
 function srsHit(p,ok,retry){
@@ -874,8 +880,9 @@ function sim(a,b){a=norm(a);b=norm(b);if(!a||!b)return 0;return 1-lev(a,b)/Math.
 /* ---------- screens ---------- */
 function render(){
   if(cur){renderStep();return}
+  if(CODE&&PACK&&PACK.welcome&&!(S.seenW&&S.seenW.v)){app.innerHTML=welcomePack();return}
   if(!CODE&&!n(S)&&!S.solo){app.innerHTML=welcome();return}
-  const body={home,rewards,fam,book,me,make,rev}[tab]();
+  const body={home,rewards,fam,book,me,make,rev,talk,voice:voiceScreen}[tab]();
   app.innerHTML=`<div class="page">${body}</div>
   <nav class="tabs"><div>${[['home','🏠','Learn'],['fam','👪','Family'],['rewards','🏅','Rewards'],['book','📖','Phrases'],['me','⚙️','Me']]
     .map(t=>`<button data-a="tab" data-v="${t[0]}" class="${tab===t[0]?'on':''}"><i>${t[1]}</i>${t[2]}</button>`).join('')}</div></nav>${sheet!==null?sheetHtml(sheet):''}`;
@@ -893,6 +900,7 @@ function home(){
   if(rs)h+=`<div class="note go"><b>Pick up where you left off</b><span>${rs.mode==='review'?"Today's round":esc(L[rs.li].t)} · step ${rs.i+1} of ${rs.steps.length}</span><div class="acts"><button class="btn sm" data-a="resume">Continue</button><button class="btn sm ghost" data-a="dropresume">Start fresh</button></div></div>`;
   const nd=due().length;
   if(learned(S).length)h+=`<button class="rvb ${nd&&!day.review?'hot':''}" data-a="review"><i>🔁</i><span><b>Dagens runde</b><small>${nd?nd+(nd===1?' phrase is':' phrases are')+' ready to come back':'All caught up. Play a bonus round?'}</small></span><em>${day.review?'✓ done':'5 min'}</em></button>`;
+  if(CODE)h+=`<button class="rvb" data-a="tab" data-v="talk"><i>💬</i><span><b>Snak med Kanel</b><small>Answer out loud in your own words. Kanel plays the waiter, the baker, the family.</small></span><em>new</em></button>`;
   if(!CODE)h+=`<button class="note" data-a="tab" data-v="me" style="text-align:left">Got a code from Scott? Enter it under Me to keep your progress on all your devices and join the family race.</button>`;
   const ch=rnd(PACK&&PACK.cheers?CHEER.concat(PACK.cheers):CHEER).map(nm);
   const nextUp=PATH.find(i=>!S.done[L[i].key]&&!L[i].story);
@@ -914,6 +922,7 @@ function sheetHtml(i){const l=L[i],u=UNITS[l.u],dn=S.done[l.key];
   ${l.story?'':`<button class="link" data-a="start" data-v="${i}" data-q="1">🤫 Can't talk right now? Start without speaking</button>`}${l.x&&l.mine?`<button class="link" data-a="dellesson" data-v="${l.key}">Delete this lesson for everyone</button>`:''}</div></div>`}
 function rewards(){
   return `<div class="hello"><h1>Rewards</h1><p>${S.badges.length} of ${BADGES.length} badges · 🪙 ${kr()} kroner to spend</p></div>
+  ${passport()}
   <section class="unit"><div class="unit-h"><h2>Kiosken</h2><span>Things that help</span></div><div class="grid" style="grid-template-columns:1fr 1fr">
   <button class="tile ${kr()>=80&&fz().n<2?'buy':'off'}" data-a="shop" data-v="fz" ${kr()>=80&&fz().n<2?'':'disabled'}><i>🧊</i><b>Isterning</b><small>Saves your streak if you miss a day. You have ${fz().n} of 2.</small><small>🪙 80</small></button>
   <button class="tile ${kr()>=60&&!boost().n?'buy':'off'}" data-a="shop" data-v="boost" ${kr()>=60&&!boost().n?'':'disabled'}><i>☕</i><b>Dobbelt kaffe</b><small>${boost().n?'Ready: your next lesson pays double.':'Double kroner on your next lesson.'}</small><small>🪙 60</small></button></div></section>
@@ -973,7 +982,7 @@ function fam(){
     const txt=id=>PH[id]?esc(PH[id].da)+' ('+esc(PH[id].en)+')':'';
     fx.coachData.players.forEach(pl=>{const asked=pl.starred.map(txt).filter(Boolean),weak=pl.weak.map(w=>txt(w.id)?txt(w.id)+' ×'+w.miss:'').filter(Boolean);
       h+=`<div class="coach"><b>${esc(pl.name)}</b><span>${pl.lessons} lessons · ${pl.known} phrases · 🔥 ${pl.streak} · ${pl.speaks} said aloud · ${pl.at?'last here '+ago(pl.at):'not started'}</span>${asked.length?`<p><i>Asked you about:</i> ${asked.join(' · ')}</p>`:''}${weak.length?`<p><i>Struggling with:</i> ${weak.join(' · ')}</p>`:''}</div>`});
-    h+=`</div><button class="btn ghost" data-a="tab" data-v="rev">Review the Danish · ${(fx.coachData.notes||[]).length} notes saved</button></section>`}
+    h+=`</div><button class="btn ghost" data-a="tab" data-v="rev">Review the Danish · ${(fx.coachData.notes||[]).length} notes saved</button><button class="btn ghost" data-a="tab" data-v="voice">Record your voice · ${vlines().filter(x=>(fx.voices||[]).includes(slug(x.da))).length} of ${vlines().length} done</button></section>`}
   return h;
 }
 function rev(){
@@ -1013,7 +1022,7 @@ async function sync(){
     const renamed=j.name&&j.name!==NAME;S.name=j.name||S.name;save();
     if(renamed){location.reload();return true}
     const typing=document.activeElement&&/INPUT|TEXTAREA/.test(document.activeElement.tagName);
-    if(!cur&&!typing&&!document.querySelector('.fin')&&sheet===null)render();
+    if(!cur&&!typing&&!document.querySelector('.fin')&&sheet===null&&!(tab==='talk'&&tk.scene)&&!vrec)render();
     return true}
   catch(e){return false}finally{syncing=false}
 }
@@ -1059,9 +1068,80 @@ async function heardBack(blob){
     mk.text=(mk.text?mk.text.trim()+'\n':'')+text;say2('Here is what I heard. Fix anything that is wrong, then make the lesson.');
   }catch(e){mk.busy=false;say2('That recording did not work. Try again, or type what happened.',true)}
 }
+/* ---------- things only a player with a personal pack sees ---------- */
+function scottSay(text){
+  if((fx.voices||[]).includes(slug(text))){hush();const a=player=new Audio(SYNC+'/voice/'+CODE+'/'+slug(text));a.onerror=()=>{if(player===a)say(text,false,'m')};const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{})}
+  else say(text,false,'m')}
+function welcomePack(){const w=PACK.welcome,d=daysToTrip();
+  return `<div class="page"><div class="welcome"><div class="m">${snegl('yay')}</div><h1 style="font-size:34px">${esc(w.title)}</h1>
+  <button class="love" data-a="wsay" style="animation:none"><i>💌</i><span><small>Fra Scott · tap to listen</small><b>${esc(w.da)}</b><em>${esc(w.en)}</em></span></button>
+  <p style="color:var(--muted)">${esc(w.body)}</p>${d!==null&&d>0?`<div class="chips" style="justify-content:center"><span class="chip" style="flex:none">🇩🇰 ${d}<small>days to Denmark</small></span></div>`:''}
+  <button class="btn" data-a="wgo">Begynd</button></div></div>`}
+function passport(){
+  const ls=L.filter(l=>l.pk&&l.stamp);if(!ls.length)return '';const full=ls.every(l=>S.done[l.key]);
+  return `<section class="unit"><div class="unit-h"><h2>Rejsepas</h2><span>Your trip passport</span></div><div class="grid">${ls.map(l=>{const dn=S.done[l.key];
+    return `<div class="tile ${dn?'own':'off'}"><i>${esc(l.i)}</i><b>${esc(l.stamp)}</b><small>${dn?'Stamped ✓':'Finish "'+esc(l.t)+'"'}</small></div>`}).join('')}</div>
+  ${full?(PACK.letter?`<div class="love" style="animation:none"><i>💌</i><span><small>Et brev fra Scott</small><em style="color:var(--fg);white-space:pre-line">${esc(PACK.letter)}</em></span></div>`:`<div class="note">Your passport is full! Scott is writing you a letter.</div>`):`<div class="note">Fill every stamp to unlock a letter from Scott.</div>`}</section>`}
+const vlines=()=>PACK?[...(PACK.welcome?[{da:PACK.welcome.da,en:PACK.welcome.en}]:[]),...(PACK.msgs||[]),...L.filter(l=>l.key==='pk-m2').flatMap(l=>l.p)]:[];
+let vrec=null;
+function voiceScreen(){
+  if(!fx.coach)return `<div class="note">Only the coach can record here.</div>`;
+  return `<div class="hello"><h1>Your voice</h1><p>Tap ● and say the line, tap ■ to stop. She hears your recording in place of the computer voice. Record again any time to replace it.</p></div><div class="stack">${vlines().map((x,i)=>{const id=slug(x.da),has=(fx.voices||[]).includes(id),on=vrec&&vrec.id===id;
+    return `<div class="row ${has?'you':''}"><div class="tx"><b>${esc(x.da)}</b><span>${esc(x.en)}${has?' · saved ✓':''}</span></div>${has?`<button class="round" data-a="vplay" data-v="${id}" aria-label="Play">▶</button>`:''}<button class="round ${on?'on':''}" data-a="vrec" data-v="${i}" aria-label="${on?'Stop':'Record'}">${on?'■':'●'}</button></div>`}).join('')}</div>
+  <button class="link" data-a="tab" data-v="fam">Back</button>`}
+
+/* ---------- Talk to Kanel: a short spoken role-play, answered in her own words ---------- */
+const SCENES=[
+ {i:'☕',t:'På café',en:'Order at a café',setup:'You are a friendly barista in a Copenhagen café. The learner is a customer who orders a drink and maybe a pastry, then pays.'},
+ {i:'🥐',t:'Hos bageren',en:'At the bakery',setup:'You are a baker in a Danish bakery. The learner wants bread or a pastry. Ask what they would like, how many, and whether they want anything else.'},
+ {i:'🧭',t:'Find vej',en:'Ask for directions',setup:'You are a helpful local on the street. The learner is looking for a place such as the station, the beach or a restroom, and you explain the way simply.'},
+ {i:'👨‍👩‍👧',t:'Mød familien',en:'Meet the family',setup:'You are a kind Danish relative meeting the learner for the first time at a family dinner. Ask simple things about them: their name, where they are from, whether they like the food.'},
+ {i:'🛍️',t:'I butikken',en:'In a shop',setup:'You are a shop assistant in a Danish clothing shop. The learner is looking for something to buy. Talk about size, color and price.'},
+ {i:'💬',t:'Bare snak',en:'Just chat',setup:'You are simply yourself, Kanel, chatting with the learner about their day, the weather, food and plans.'}
+];
+const tk={scene:null,hist:[],hint:null,fix:null,praise:'',busy:false,done:false,rec:null,msg:'',err:false,showEn:false,showHint:false,typing:false,turns:0};
+const scenes=()=>((PACK&&PACK.scenes)||[]).concat(SCENES);
+function talk(){
+  if(!CODE)return `<div class="hello"><h1>Snak med Kanel</h1></div><div class="note">Enter your code under Me first.</div>`;
+  if(!tk.scene)return `<div class="hello"><h1>Snak med Kanel</h1><p>Pick a scene and answer out loud, in your own words. Kanel plays the other person and helps when you get stuck.</p></div>
+    <div class="stack">${scenes().map((x,i)=>`<button class="rvb" data-a="scene" data-v="${i}"><i>${esc(x.i)}</i><span><b>${esc(x.t)}</b><small>${esc(x.en)}</small></span><em>${x.mine?'❤️':''}</em></button>`).join('')}</div><button class="link" data-a="tab" data-v="home">Back</button>`;
+  const shown=tk.hist.slice(-6),off=tk.hist.length-shown.length;
+  let h=`<div class="pbar" style="padding-block:0"><button class="x" data-a="talkend" aria-label="End the conversation">✕</button><b style="flex:1;font-family:var(--display);font-size:18px">${esc(tk.scene.t)}</b><button class="btn sm ghost" data-a="talken">${tk.showEn?'Hide English':'Show English'}</button></div><div class="chat">`;
+  shown.forEach((m,i)=>{h+=m.w==='k'?`<div class="who"><div class="m">${i===shown.length-1?snegl(tk.done?'yay':'hi'):''}</div><button class="msg k" style="animation:none" data-a="talksay" data-v="${off+i}">${esc(m.da)} 🔊${tk.showEn?`<small>${esc(m.en)}</small>`:''}</button></div>`:`<div class="msg me" style="animation:none">${esc(m.da)}</div>`});
+  h+=`</div>`;
+  if(tk.fix)h+=`<div class="tip"><b>A Dane would say:</b> ${esc(tk.fix.da)}<br><span style="color:var(--muted)">${esc(tk.fix.en)}</span></div>`;
+  if(tk.praise)h+=`<div class="fb ok" style="font-size:15px;animation:none">${esc(tk.praise)}</div>`;
+  if(tk.msg)h+=`<div class="${tk.err?'err':'note'}">${esc(tk.msg)}</div>`;
+  if(tk.done)return h+`<button class="btn good" data-a="talkdone">Finish</button>`;
+  if(tk.showHint&&tk.hint)h+=`<div class="tip"><b>You could say:</b> ${esc(tk.hint.da)}<br><span style="color:var(--muted)">${esc(tk.hint.en)}</span></div>`;
+  return h+(tk.busy?`<div class="spk"><div class="heard">Kanel is thinking…</div></div>`
+    :`<div class="spk"><button class="mic ${tk.rec?'live':''}" data-a="talkmic" aria-label="${tk.rec?'Stop':'Speak'}">${tk.rec?'■':'🎤'}</button><div class="heard">${tk.rec?'Listening… tap when you are done':'Tap and answer in Danish'}</div></div>
+    <div class="acts"><button class="btn sm ghost" data-a="talkhint">💡 Help me</button><button class="btn sm ghost" data-a="talktype">⌨️ Type instead</button></div>
+    ${tk.typing?`<input id="tkin" placeholder="Skriv på dansk" autocomplete="off" autocapitalize="sentences"><button class="btn sm" data-a="talksend" style="align-self:flex-start">Send</button>`:''}`);
+}
+const b64=buf=>{let t='';const u=new Uint8Array(buf);for(let i=0;i<u.length;i+=0x8000)t+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(t)};
+function tkPlay(m){hush();if(m.audio){const a=player=new Audio('data:audio/mpeg;base64,'+m.audio);const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{})}else robot(m.da)}
+async function talkSend(payload){
+  tk.busy=true;tk.msg='';tk.err=false;tk.showHint=false;if(tab==='talk')render();
+  try{
+    const r=await fetch(SYNC+'/talk/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify(Object.assign({scene:{t:tk.scene.en,setup:tk.scene.setup},known:learned(S).slice(-60).map(p=>p.da),history:tk.hist.map(m=>({w:m.w,da:m.da}))},payload))});
+    tk.busy=false;
+    if(r.status===503){tk.msg='Talking with Kanel needs one more setup step from Scott.';tk.err=true}
+    else if(r.status===429){tk.msg='Kanel is out of breath for today. Come back tomorrow.';tk.err=true}
+    else if(!r.ok){tk.msg='Kanel lost the thread. Try that again.';tk.err=true}
+    else{const j=await r.json();
+      if(!j.reply){tk.msg='I could not hear any Danish. Hold the phone a little closer and try again.';tk.err=true}
+      else{if(j.heard){tk.hist.push({w:'me',da:j.heard});tk.turns++}
+        tk.fix=j.fix;tk.praise=j.praise;tk.hint=j.hint;tk.done=j.done;const m={w:'k',da:j.reply.da,en:j.reply.en,audio:j.audio};tk.hist.push(m);
+        if(tab==='talk'&&!cur){render();tkPlay(m)}return}}
+  }catch(e){tk.busy=false;tk.msg='No connection. Check that you are online.';tk.err=true}
+  if(tab==='talk'&&!cur)render();
+}
 function me(){
   return `<div class="hello"><h1>${CODE?esc(NAME):'Me'}</h1><p>${learned(S).length} phrases learned · ${S.speaks} said out loud · best combo ${S.bestCombo}</p></div>
   <label for="trip">When do you leave for Denmark?<input id="trip" type="date" value="${S.trip}"></label>
+  <label for="rt">Remind me to practice every day at<input id="rt" type="time" value="19:00"></label>
+  <button class="btn ghost" data-a="ics">Add the reminder to my calendar</button>
   <button class="btn ghost" data-a="sound">Sound effects: ${S.sound?'on':'off'}</button>
   ${codeBox()}
   <button class="btn ghost" data-a="reset">Sign out and erase this device</button>`;
@@ -1139,7 +1219,7 @@ function renderStep(){
     b=`<div class="ask">${cur.quiet?'Listen and remember':'Listen, then say it back'}</div>
     <div class="teach"><div class="m">${snegl('hi')}</div><button class="bub" data-a="say"><span class="da">${esc(p.da)} 🔊</span><span class="hint">${esc(p.say)}</span><span class="en">${esc(p.en)}</span></button></div>
     ${p.note?`<div class="tip"><b>Tip:</b> ${esc(p.note)}</div>`:''}
-    <div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button><button class="btn sm ghost" data-a="other">🔁 Other voice</button><button class="btn sm ghost" data-a="star" data-v="${p.id}">${S.starred.includes(p.id)?'✓ Saved for Scott':'? Ask Scott'}</button></div>${cur.quiet?'':micBlock()}`;
+    <div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button><button class="btn sm ghost" data-a="other">🔁 Other voice</button>${(fx.voices||[]).includes(slug(p.da))?'<button class="btn sm ghost" data-a="scottsay">❤️ Scott</button>':''}<button class="btn sm ghost" data-a="star" data-v="${p.id}">${S.starred.includes(p.id)?'✓ Saved for Scott':'? Ask Scott'}</button></div>${cur.quiet?'':micBlock()}`;
     if(cur.quiet)foot=`<button class="btn" data-a="next" id="go">Got it</button><button class="link" data-a="unquiet">🎤 I can talk again</button>`;else foot+=skip;
   }else if(s.k==='match'){
     const a=sh(s.ps),e=sh(s.ps);cur.state={left:s.ps.length,miss:false};
@@ -1378,7 +1458,58 @@ const A={
     linkMsg='';render()},
   solo(){S.solo=true;save();render()},
   review(){startReview()},
-  hearmsg(){if(scottNote.cur)say(scottNote.cur.da,false,'m')},
+  scottsay(){scottSay(cur.steps[cur.i].p.da)},
+  wsay(){scottSay(PACK.welcome.da)},
+  wgo(){S.seenW={v:1,t:Date.now()};save();render();sync()},
+  scene(el){Object.assign(tk,{scene:scenes()[+el.dataset.v],hist:[],hint:null,fix:null,praise:'',done:false,msg:'',err:false,turns:0,typing:false,showHint:false});window.scrollTo(0,0);talkSend({})},
+  talkhint(){tk.showHint=true;render()},
+  talktype(){tk.typing=!tk.typing;render();const e=document.getElementById('tkin');if(e)e.focus()},
+  talken(){tk.showEn=!tk.showEn;render()},
+  talksay(el){const m=tk.hist[+el.dataset.v];if(m)tkPlay(m)},
+  talksend(){const e=document.getElementById('tkin'),v=((e&&e.value)||'').trim();if(v)talkSend({text:v})},
+  talkmic(){
+    if(tk.rec){try{tk.rec.rec.state!=='inactive'&&tk.rec.rec.stop()}catch(e){}return}
+    if(!navigator.mediaDevices||!window.MediaRecorder){tk.msg='This browser cannot record. Use "Type instead".';tk.err=true;render();return}
+    hush();
+    navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+      const rec=new MediaRecorder(stream),chunks=[];rec.ondataavailable=e=>chunks.push(e.data);
+      rec.onstop=async()=>{clearTimeout(tk.rec.to);stream.getTracks().forEach(t=>t.stop());tk.rec=null;
+        try{const buf=await decode(await new Blob(chunks,{type:rec.mimeType}).arrayBuffer());
+          if(!feats(buf)){tk.msg='I could not hear you. Hold the phone a little closer and try again.';tk.err=true;render();return}
+          talkSend({audio:b64(wavChunks(buf)[0])})}
+        catch(e){tk.msg='That recording did not work. Try again, or use "Type instead".';tk.err=true;render()}};
+      tk.rec={rec,to:setTimeout(()=>{try{rec.state!=='inactive'&&rec.stop()}catch(e){}},15000)};tk.msg='';rec.start();render();
+    }).catch(()=>{tk.msg='The microphone is blocked. Allow it for this page, or use "Type instead".';tk.err=true;render()});
+  },
+  talkend(){if(tk.rec)A.talkmic();if(tk.turns>=2)return A.talkdone();hush();tk.scene=null;tab='home';render()},
+  talkdone(){
+    hush();const turns=tk.turns,gain=10+turns*2;S.earned+=gain;S.xp+=turns;week().xp+=turns;S.speaks+=turns;today().speaks=(today().speaks||0)+turns;
+    S.stat=Object.assign(stat(),{tk:stat().tk+1,t:Date.now()});bumpStreak();
+    const won=BADGES.filter(b=>!S.badges.includes(b.id)&&b.ok(S));won.forEach(b=>S.badges.push(b.id));save();
+    const title=tk.scene.t;tk.scene=null;tab='home';
+    app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div><h1>Godt snakket!</h1><p>Good talking. You held a real conversation: ${esc(title)}, ${turns} ${turns===1?'answer':'answers'} in your own words.</p>${scottNote()}
+    <div class="won" style="display:flex;gap:10px;justify-content:center"><span class="chip" style="flex:none">🪙 +${gain}<small>kroner</small></span><span class="chip" style="flex:none">🔥 ${S.streak}<small>streak</small></span></div>
+    ${won.length?`<div class="grid" style="width:100%">${won.map(b=>`<div class="tile own new"><i>${b.i}</i><b>${b.t}</b><small>New badge!</small></div>`).join('')}</div>`:''}
+    <button class="btn" data-a="tab" data-v="home">Continue</button></div></div>`;
+    sfx('win');confetti();quests();sync()},
+  vplay(el){hush();const a=player=new Audio(SYNC+'/voice/'+CODE+'/'+el.dataset.v+'?'+Date.now());const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{})},
+  vrec(el){
+    if(vrec){try{vrec.rec.state!=='inactive'&&vrec.rec.stop()}catch(e){}return}
+    const line=vlines()[+el.dataset.v];if(!line||!navigator.mediaDevices||!window.MediaRecorder)return toast('This browser cannot record');
+    hush();
+    navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+      const rec=new MediaRecorder(stream),chunks=[],id=slug(line.da);rec.ondataavailable=e=>chunks.push(e.data);
+      rec.onstop=async()=>{clearTimeout(vrec.to);stream.getTracks().forEach(t=>t.stop());vrec=null;render();
+        try{const blob=new Blob(chunks,{type:rec.mimeType}),r=await fetch(SYNC+'/voice/'+CODE+'/'+id,{method:'POST',headers:{'content-type':(blob.type||'audio/mp4').split(';')[0]},body:blob});
+          if(r.ok){fx.voices=(await r.json()).voices;toast('Saved');render()}else toast('That did not save. Try again.')}catch(e){toast('No connection')}};
+      vrec={rec,id,to:setTimeout(()=>{try{rec.state!=='inactive'&&rec.stop()}catch(e){}},20000)};rec.start();render();
+    }).catch(()=>toast('The microphone is blocked'));
+  },
+  ics(){
+    const t=((document.getElementById('rt')||{}).value||'19:00').replace(':',''),d=new Date(),ymd=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
+    const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Hej Danmark//EN','BEGIN:VEVENT','UID:hej-danmark-daily@reminder','DTSTAMP:'+ymd+'T000000Z','DTSTART:'+ymd+'T'+t+'00','DURATION:PT15M','RRULE:FREQ=DAILY','SUMMARY:Dansk med Kanel','DESCRIPTION:Time for a little Danish. '+location.origin+location.pathname,'URL:'+location.origin+location.pathname,'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Dansk med Kanel','TRIGGER:PT0M','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+    const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));a.download='dansk-med-kanel.ics';document.body.appendChild(a);a.click();a.remove();toast('Open the file to add it to your calendar')},
+  hearmsg(){if(scottNote.cur)scottSay(scottNote.cur.da)},
   resume(){const r=getResume();if(!r)return render();begin(fresh({mode:r.mode,li:r.li,quiet:r.quiet,due:r.due,steps:r.steps,i:r.i,right:r.right,graded:r.graded,combo:r.combo,best:r.best,chat:r.chat||[]}))},
   dropresume(){clearResume();render()},
   fillans(el){const s=cur.steps[cur.i];if(cur.state.done)return;cur.state.done=true;const ok=el.dataset.v===s.ans;el.classList.add(ok?'ok':'no');
