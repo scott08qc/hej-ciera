@@ -281,7 +281,7 @@ details.rev summary{font-weight:700;cursor:pointer}
 <div id="app"></div>
 <canvas id="confetti" hidden></canvas>
 <script>
-/* ---------- course content: p = [Danish, English, say-it hint, note]; d = chat turns [Kanel says, English, index of the right reply] ---------- */
+/* ---------- course content: p = [Danish, English, say-it hint, note]; d = chat turns [Lars says, English, index of the right reply] ---------- */
 const UNITS=[
  {t:'Første ord',en:'First words',c:'#45ab9f',cl:'#2a776e'},
  {t:'Ud i byen',en:'Out and about',c:'#d98670',cl:'#9b5443'},
@@ -406,17 +406,17 @@ const L=[
   ['Tak for sidst','Thanks for last time','tahk for seest','Said the next time you see someone you had a good time with.']],
   d:[['Hvad laver I i Danmark?','What are you two doing in Denmark?',0],['Hvad skal I i dag?','What are you doing today?',2],['Hav en god dag!','Have a nice day!',6]]},
  /* ---- Stories for the first four units. Each is a few lines read aloud, then two questions. ---- */
- {key:'s0',u:0,t:'Kanel siger hej',en:'Kanel says hi',i:'📖',story:[
-  ['Hej! Jeg hedder Kanel.','Hi! My name is Kanel.'],['Jeg kommer fra Danmark.','I come from Denmark.'],['Hvad hedder du?','What is your name?'],['Hyggeligt at møde dig!','Nice to meet you!'],['Vi ses i morgen. Hej hej!','See you tomorrow. Bye!']],
-  q:[['Where does Kanel come from?',['Denmark','The USA','Sweden'],0],['When will you see Kanel again?',['Tomorrow','Today','Never'],0]]},
- {key:'s1',u:1,t:'Kanel på café',en:'Kanel at the café',i:'📖',story:[
-  ['Kanel er på café.','Kanel is at a café.'],['"En kaffe, tak," siger han.','"A coffee, please," he says.'],['"Det koster ti kroner."','"That costs ten kroner."'],['Kanel har kun fem kroner.','Kanel only has five kroner.'],['"Et glas vand, tak."','"A glass of water, please."']],
-  q:[['What does Kanel order first?',['A coffee','A beer','A tea'],0],['Why does he change his order?',['He does not have enough money','He is not thirsty','The café is closed'],0]]},
- {key:'s2',u:2,t:'Kanel og familien',en:'Kanel and the family',i:'📖',story:[
-  ['Det er Kanels familie.','This is Kanel\'s family.'],['Hans mor og far er søde.','His mom and dad are sweet.'],['De spiser rugbrød med ost.','They are eating rye bread with cheese.'],['"Det smager godt," siger Kanel.','"It tastes good," says Kanel.'],['"Tak for mad!" "Velbekomme!"','"Thanks for the meal!" "You are welcome!"']],
-  q:[['What is the family eating?',['Rye bread with cheese','Cake','Hot dogs'],0],['What does Kanel say after the meal?',['Tak for mad','Skål','Godnat'],0]]},
- {key:'s3',u:3,t:'Kanel på ferie',en:'Kanel on vacation',i:'📖',story:[
-  ['Kanel er på ferie.','Kanel is on vacation.'],['Solen skinner, og det er varmt.','The sun is shining, and it is warm.'],['"Hvor er stranden?"','"Where is the beach?"'],['"Lige ud og til højre."','"Straight ahead and to the right."'],['Kanel er træt, men det var sjovt.','Kanel is tired, but it was fun.']],
+ {key:'s0',u:0,t:'Lars siger hej',en:'Lars says hi',i:'📖',story:[
+  ['Hej! Jeg hedder Lars.','Hi! My name is Lars.'],['Jeg kommer fra Danmark.','I come from Denmark.'],['Hvad hedder du?','What is your name?'],['Hyggeligt at møde dig!','Nice to meet you!'],['Vi ses i morgen. Hej hej!','See you tomorrow. Bye!']],
+  q:[['Where does Lars come from?',['Denmark','The USA','Sweden'],0],['When will you see Lars again?',['Tomorrow','Today','Never'],0]]},
+ {key:'s1',u:1,t:'Lars på café',en:'Lars at the café',i:'📖',story:[
+  ['Lars er på café.','Lars is at a café.'],['"En kaffe, tak," siger han.','"A coffee, please," he says.'],['"Det koster ti kroner."','"That costs ten kroner."'],['Lars har kun fem kroner.','Lars only has five kroner.'],['"Et glas vand, tak."','"A glass of water, please."']],
+  q:[['What does Lars order first?',['A coffee','A beer','A tea'],0],['Why does he change his order?',['He does not have enough money','He is not thirsty','The café is closed'],0]]},
+ {key:'s2',u:2,t:'Lars og familien',en:'Lars and the family',i:'📖',story:[
+  ['Det er Lars\' familie.','This is Lars\'s family.'],['Hans mor og far er søde.','His mom and dad are sweet.'],['De spiser rugbrød med ost.','They are eating rye bread with cheese.'],['"Det smager godt," siger Lars.','"It tastes good," says Lars.'],['"Tak for mad!" "Velbekomme!"','"Thanks for the meal!" "You are welcome!"']],
+  q:[['What is the family eating?',['Rye bread with cheese','Cake','Hot dogs'],0],['What does Lars say after the meal?',['Tak for mad','Skål','Godnat'],0]]},
+ {key:'s3',u:3,t:'Lars på ferie',en:'Lars on vacation',i:'📖',story:[
+  ['Lars er på ferie.','Lars is on vacation.'],['Solen skinner, og det er varmt.','The sun is shining, and it is warm.'],['"Hvor er stranden?"','"Where is the beach?"'],['"Lige ud og til højre."','"Straight ahead and to the right."'],['Lars er træt, men det var sjovt.','Lars is tired, but it was fun.']],
   q:[['How is the weather?',['Sunny and warm','Rainy','Cold'],0],['Where is the beach?',['Straight ahead and to the right','To the left','Far away'],0]]},
 
  /* ---- Unit 5: me and you. "mix" lines are new sentences built only from words already taught. ---- */
@@ -453,9 +453,9 @@ const L=[
   ['Det er hendes cykel','That is her bike','day air HEN-es SOOK-el']],
   d:[['Er det din telefon?','Is that your phone?',2],['Hvis bil er det?','Whose car is that?',6]],
   mix:[['Det er min cykel','That is my bike'],['Hvor er din bil?','Where is your car?']]},
- {key:'s5',u:5,t:'Kanel har en ven',en:'Kanel has a friend',i:'📖',story:[
-  ['Det er Kanel.','This is Kanel.'],['Kanel er en snegl.','Kanel is a snail.'],['Han har en ven. Hun hedder Mille.','He has a friend. Her name is Mille.'],['Mille har en cykel. Kanel har ikke en cykel.','Mille has a bike. Kanel does not have a bike.'],['Men Kanel er glad. Han har tid.','But Kanel is happy. He has time.']],
-  q:[['What is Kanel?',['A snail','A dog','A bike'],0],['Who has a bike?',['Mille','Kanel','Nobody'],0]]},
+ {key:'s5',u:5,t:'Lars har en ven',en:'Lars has a friend',i:'📖',story:[
+  ['Det er Lars.','This is Lars.'],['Lars er en snegl.','Lars is a snail.'],['Han har en ven. Hun hedder Mille.','He has a friend. Her name is Mille.'],['Mille har en cykel. Lars har ikke en cykel.','Mille has a bike. Lars does not have a bike.'],['Men Lars er glad. Han har tid.','But Lars is happy. He has time.']],
+  q:[['What is Lars?',['A snail','A dog','A bike'],0],['Who has a bike?',['Mille','Lars','Nobody'],0]]},
 
  /* ---- Unit 6: want, can, will ---- */
  {key:'u6a',u:6,t:'Jeg vil gerne',en:'I would like',i:'🙋',p:[
@@ -491,9 +491,9 @@ const L=[
   ['Det skal nok gå','It will be fine','day skal nok gaw','The Danish answer to almost any worry.']],
   d:[['Jeg er sulten.','I am hungry.',0],['Jeg er lidt nervøs.','I am a little nervous.',7],['Skal vi gå?','Shall we go?',4]],
   mix:[['Skal vi spise?','Shall we eat?'],['Hvad skal vi spise?','What shall we eat?']]},
- {key:'s6',u:6,t:'Kanel vil til stranden',en:'Kanel wants the beach',i:'📖',story:[
-  ['Solen skinner i dag.','The sun is shining today.'],['Kanel vil gerne til stranden.','Kanel would like to go to the beach.'],['Men stranden er langt væk.','But the beach is far away.'],['"Kan du hjælpe mig?" siger Kanel.','"Can you help me?" says Kanel.'],['"Ja," siger Mille. "Vi skal cykle!"','"Yes," says Mille. "We are going to bike!"']],
-  q:[['Where does Kanel want to go?',['To the beach','Home','To a café'],0],['How will they get there?',['By bike','By car','On foot'],0]]},
+ {key:'s6',u:6,t:'Lars vil til stranden',en:'Lars wants the beach',i:'📖',story:[
+  ['Solen skinner i dag.','The sun is shining today.'],['Lars vil gerne til stranden.','Lars would like to go to the beach.'],['Men stranden er langt væk.','But the beach is far away.'],['"Kan du hjælpe mig?" siger Lars.','"Can you help me?" says Lars.'],['"Ja," siger Mille. "Vi skal cykle!"','"Yes," says Mille. "We are going to bike!"']],
+  q:[['Where does Lars want to go?',['To the beach','Home','To a café'],0],['How will they get there?',['By bike','By car','On foot'],0]]},
 
  /* ---- Unit 7: questions and "not" ---- */
  {key:'u7a',u:7,t:'Hvad, hvor, hvem',en:'What, where, who',i:'❓',p:[
@@ -529,9 +529,9 @@ const L=[
   ['Det er nok, tak','That is enough, thanks','day air nok tahk']],
   d:[['Kaffe eller te?','Coffee or tea?',1],['Vil du have mere kage?','Do you want more cake?',6],['Skal vi cykle i dag?','Shall we bike today?',5]],
   mix:[['Te og kage, tak','Tea and cake, please'],['Jeg er også træt','I am tired too']]},
- {key:'s7',u:7,t:'Hvor er Kanel?',en:'Where is Kanel?',i:'📖',story:[
-  ['Mille leder efter Kanel.','Mille is looking for Kanel.'],['"Hvor er du, Kanel?"','"Where are you, Kanel?"'],['Han er ikke i haven. Han er ikke i huset.','He is not in the garden. He is not in the house.'],['"Hvorfor svarer du ikke?"','"Why don\'t you answer?"'],['Kanel er i bageriet. Han spiser kage.','Kanel is at the bakery. He is eating cake.']],
-  q:[['Who is looking for Kanel?',['Mille','A dog','Nobody'],0],['Where is Kanel?',['At the bakery','In the garden','In the house'],0]]},
+ {key:'s7',u:7,t:'Hvor er Lars?',en:'Where is Lars?',i:'📖',story:[
+  ['Mille leder efter Lars.','Mille is looking for Lars.'],['"Hvor er du, Lars?"','"Where are you, Lars?"'],['Han er ikke i haven. Han er ikke i huset.','He is not in the garden. He is not in the house.'],['"Hvorfor svarer du ikke?"','"Why don\'t you answer?"'],['Lars er i bageriet. Han spiser kage.','Lars is at the bakery. He is eating cake.']],
+  q:[['Who is looking for Lars?',['Mille','A dog','Nobody'],0],['Where is Lars?',['At the bakery','In the garden','In the house'],0]]},
 
  /* ---- Unit 8: numbers, time and money ---- */
  {key:'u8a',u:8,t:'Elleve til tyve',en:'Eleven to twenty',i:'🔢',p:[
@@ -556,9 +556,9 @@ const L=[
   ['Kan jeg få kvitteringen?','Can I have the receipt?','ka yigh faw kvit-AIR-ing-en']],
   d:[['Undskyld, hvad er klokken?','Excuse me, what time is it?',1],['Det koster hundrede kroner.','That costs one hundred kroner.',5],['Ellers andet?','Anything else?',7]],
   mix:[['Klokken er fem','It is five o\'clock'],['Det koster ti kroner','It costs ten kroner']]},
- {key:'s8',u:8,t:'Kanel køber kage',en:'Kanel buys cake',i:'📖',story:[
-  ['Kanel er i bageriet.','Kanel is at the bakery.'],['"Hvad koster en kanelsnegl?"','"How much is a cinnamon roll?"'],['"Den koster tyve kroner."','"It costs twenty kroner."'],['Kanel har kun ti kroner.','Kanel only has ten kroner.'],['"Det gør ikke noget," siger bageren. "Værsgo!"','"It doesn\'t matter," says the baker. "Here you go!"']],
-  q:[['How much is the cinnamon roll?',['Twenty kroner','Ten kroner','Fifty kroner'],0],['Does Kanel get the roll?',['Yes, the baker is kind','No, it is too expensive','He buys bread instead'],0]]},
+ {key:'s8',u:8,t:'Lars køber kage',en:'Lars buys cake',i:'📖',story:[
+  ['Lars er i bageriet.','Lars is at the bakery.'],['"Hvad koster en kanelsnegl?"','"How much is a cinnamon roll?"'],['"Den koster tyve kroner."','"It costs twenty kroner."'],['Lars har kun ti kroner.','Lars only has ten kroner.'],['"Det gør ikke noget," siger bageren. "Værsgo!"','"It doesn\'t matter," says the baker. "Here you go!"']],
+  q:[['How much is the cinnamon roll?',['Twenty kroner','Ten kroner','Fifty kroner'],0],['Does Lars get the roll?',['Yes, the baker is kind','No, it is too expensive','He buys bread instead'],0]]},
 
  /* ---- Unit 9: shopping ---- */
  {key:'u9a',u:9,t:'I butikken',en:'In the shop',i:'🛍️',p:[
@@ -589,8 +589,8 @@ const L=[
   d:[['Hvilken farve kan du lide?','Which color do you like?',5],['Hvad synes du om den?','What do you think of it?',7]],
   mix:[['Den er blå','It is blue'],['Hvilken farve er den?','Which color is it?']]},
  {key:'s9',u:9,t:'En gave til Mille',en:'A present for Mille',i:'📖',story:[
-  ['Kanel vil købe en gave til Mille.','Kanel wants to buy a present for Mille.'],['Han finder en rød cykelhjelm.','He finds a red bike helmet.'],['"Den er flot. Hvad koster den?"','"It looks great. How much is it?"'],['"Halvtreds kroner."','"Fifty kroner."'],['"Jeg tager den!" siger Kanel.','"I\'ll take it!" says Kanel.']],
-  q:[['What does Kanel buy?',['A red bike helmet','A blue bag','A cake'],0],['How much is it?',['Fifty kroner','Twenty kroner','One hundred kroner'],0]]},
+  ['Lars vil købe en gave til Mille.','Lars wants to buy a present for Mille.'],['Han finder en rød cykelhjelm.','He finds a red bike helmet.'],['"Den er flot. Hvad koster den?"','"It looks great. How much is it?"'],['"Halvtreds kroner."','"Fifty kroner."'],['"Jeg tager den!" siger Lars.','"I\'ll take it!" says Lars.']],
+  q:[['What does Lars buy?',['A red bike helmet','A blue bag','A cake'],0],['How much is it?',['Fifty kroner','Twenty kroner','One hundred kroner'],0]]},
 
  /* ---- Unit 10: eating out ---- */
  {key:'u10a',u:10,t:'Et bord, tak',en:'A table, please',i:'🍽️',p:[
@@ -624,9 +624,9 @@ const L=[
   ['Vi kommer igen','We will come again','vee KOM-uh ee-GEN']],
   d:[['Smagte det?','Did it taste good?',0],['Vil I have dessert?','Would you like dessert?',1],['Sammen eller hver for sig?','Together or separately?',4]],
   mix:[['Må jeg få regningen?','May I have the check?'],['Jeg er ikke mæt','I am not full']]},
- {key:'s10',u:10,t:'Kanel på restaurant',en:'Kanel eats out',i:'📖',story:[
-  ['Kanel og Mille er på restaurant.','Kanel and Mille are at a restaurant.'],['"Hvad kan du anbefale?" siger Mille.','"What do you recommend?" says Mille.'],['"Salaten er god," siger tjeneren.','"The salad is good," says the waiter.'],['Kanel bliver bleg. Han er en snegl!','Kanel turns pale. He is a snail!'],['"Jeg tager kagen," siger han.','"I will have the cake," he says.']],
-  q:[['What does the waiter recommend?',['The salad','The fish','The cake'],0],['What does Kanel order?',['The cake','The salad','Nothing'],0]]},
+ {key:'s10',u:10,t:'Lars på restaurant',en:'Lars eats out',i:'📖',story:[
+  ['Lars og Mille er på restaurant.','Lars and Mille are at a restaurant.'],['"Hvad kan du anbefale?" siger Mille.','"What do you recommend?" says Mille.'],['"Salaten er god," siger tjeneren.','"The salad is good," says the waiter.'],['Lars bliver bleg. Han er en snegl!','Lars turns pale. He is a snail!'],['"Jeg tager kagen," siger han.','"I will have the cake," he says.']],
+  q:[['What does the waiter recommend?',['The salad','The fish','The cake'],0],['What does Lars order?',['The cake','The salad','Nothing'],0]]},
 
  /* ---- Unit 11: feelings and opinions ---- */
  {key:'u11a',u:11,t:'Hvordan har du det?',en:'How are you?',i:'💛',p:[
@@ -662,9 +662,9 @@ const L=[
   ['Sov godt','Sleep well','sow got']],
   d:[['Jeg har fødselsdag i dag!','It is my birthday today!',4],['Jeg er syg.','I am sick.',5],['Godnat!','Good night!',7]],
   mix:[['Tak for kaffe','Thanks for the coffee'],['Det var sødt','That was sweet']]},
- {key:'s11',u:11,t:'Kanel er nervøs',en:'Kanel is nervous',i:'📖',story:[
-  ['Kanel skal møde Milles familie.','Kanel is going to meet Mille\'s family.'],['Han er lidt nervøs.','He is a little nervous.'],['"Det skal nok gå," siger Mille.','"It will be fine," says Mille.'],['Milles mor siger: "Velkommen, Kanel!"','Mille\'s mother says: "Welcome, Kanel!"'],['Kanel er så glad. "Tak for kaffe!"','Kanel is so happy. "Thanks for the coffee!"']],
-  q:[['How does Kanel feel at first?',['A little nervous','Angry','Hungry'],0],['What does Mille\'s mother say?',['Welcome','Goodbye','Sorry'],0]]},
+ {key:'s11',u:11,t:'Lars er nervøs',en:'Lars is nervous',i:'📖',story:[
+  ['Lars skal møde Milles familie.','Lars is going to meet Mille\'s family.'],['Han er lidt nervøs.','He is a little nervous.'],['"Det skal nok gå," siger Mille.','"It will be fine," says Mille.'],['Milles mor siger: "Velkommen, Lars!"','Mille\'s mother says: "Welcome, Lars!"'],['Lars er så glad. "Tak for kaffe!"','Lars is so happy. "Thanks for the coffee!"']],
+  q:[['How does Lars feel at first?',['A little nervous','Angry','Hungry'],0],['What does Mille\'s mother say?',['Welcome','Goodbye','Sorry'],0]]},
 
  /* ---- Unit 12: with the family ---- */
  {key:'u12a',u:12,t:'Velkommen',en:'Arriving',i:'🚪',p:[
@@ -700,9 +700,9 @@ const L=[
   ['På gensyn','Until we meet again','paw GEN-soon']],
   d:[['Tak for i aften!','Thanks for tonight!',1],['Kom godt hjem!','Get home safely!',2],['Vi ses til sommer.','See you this summer.',7]],
   mix:[['Det var så dejligt','It was so lovely'],['Vi ses snart','See you soon']]},
- {key:'s12',u:12,t:'Kanel siger farvel',en:'Kanel says goodbye',i:'📖',story:[
-  ['Sommeren er slut.','The summer is over.'],['Kanel skal hjem.','Kanel is going home.'],['"Tak for en dejlig sommer," siger han.','"Thank you for a lovely summer," he says.'],['"Vi ses snart igen," siger Mille.','"See you again soon," says Mille.'],['Kanel smiler. Han kan tale dansk nu!','Kanel smiles. He can speak Danish now!']],
-  q:[['What is over?',['The summer','The dinner','The lesson'],0],['What can Kanel do now?',['Speak Danish','Ride a bike','Bake a cake'],0]]}
+ {key:'s12',u:12,t:'Lars siger farvel',en:'Lars says goodbye',i:'📖',story:[
+  ['Sommeren er slut.','The summer is over.'],['Lars skal hjem.','Lars is going home.'],['"Tak for en dejlig sommer," siger han.','"Thank you for a lovely summer," he says.'],['"Vi ses snart igen," siger Mille.','"See you again soon," says Mille.'],['Lars smiler. Han kan tale dansk nu!','Lars smiles. He can speak Danish now!']],
+  q:[['What is over?',['The summer','The dinner','The lesson'],0],['What can Lars do now?',['Speak Danish','Ride a bike','Bake a cake'],0]]}
 ];
 let NAME='Ciera';try{NAME=JSON.parse(localStorage.getItem('hejciera.v1')||'{}').name||'Ciera'}catch(e){}
 const nm=t=>t.replace('{name}',NAME);
@@ -748,15 +748,15 @@ const BADGES=[
  {id:'rv10',i:'🧠',t:'Elefanthukommelse',d:'Finish 10 daily rounds',ok:s=>(s.stat||{}).rv>=10},
  {id:'st3',i:'📖',t:'Bogorm',d:'Read 3 stories',ok:s=>(s.stat||{}).st>=3},
  {id:'dw1',i:'⚔️',t:'Duelvinder',d:'Win a head-to-head',ok:s=>(s.stat||{}).dw>=1},
- {id:'tk1',i:'💬',t:'Samtalepartner',d:'Finish a conversation with Kanel',ok:s=>(s.stat||{}).tk>=1},
- {id:'tk10',i:'🎙️',t:'Sludrechatol',d:'Finish 10 conversations with Kanel',ok:s=>(s.stat||{}).tk>=10},
+ {id:'tk1',i:'💬',t:'Samtalepartner',d:'Finish a conversation with Lars',ok:s=>(s.stat||{}).tk>=1},
+ {id:'tk10',i:'🎙️',t:'Sludrechatol',d:'Finish 10 conversations with Lars',ok:s=>(s.stat||{}).tk>=10},
  {id:'rl1',i:'🍽️',t:'Fra virkeligheden',d:'Finish a real-life lesson',ok:s=>Object.keys(s.done).some(k=>k[0]==='x')},
  {id:'w150',i:'🎓',t:'Ordkunstner',d:'Learn 150 phrases',ok:s=>learned(s).length>=150},
  {id:'half',i:'🧭',t:'Halvvejs',d:'Finish unit 8',ok:s=>unitDone(s,8)},
  {id:'all',i:'🇩🇰',t:'Klar til Danmark',d:'Finish the whole course',ok:s=>L.slice(0,CORE).every(l=>s.done[l.key])}
 ];
 const BAKERY=[
- {id:'kanel',i:'🥐',t:'Kanelsnegl',p:30,d:'"Cinnamon snail". Kanel\'s cousin.'},
+ {id:'kanel',i:'🥐',t:'Kanelsnegl',p:30,d:'"Cinnamon snail". Lars\'s cousin.'},
  {id:'flode',i:'🍫',t:'Flødebolle',p:40,d:'Marshmallow cream under a chocolate shell.'},
  {id:'rom',i:'🟤',t:'Romkugle',p:40,d:'A rum ball made from yesterday\'s cakes.'},
  {id:'wiener',i:'🥮',t:'Wienerbrød',p:50,d:'What the world calls "a Danish".'},
@@ -815,7 +815,7 @@ const rnd=a=>a[Math.floor(Math.random()*a.length)];
 const app=document.getElementById('app');
 let tab='home',cur=null,sheet=null;
 
-/* ---------- Kanel the cinnamon snail ---------- */
+/* ---------- Lars the cinnamon snail ---------- */
 function snegl(m){m=m||'hi';
   const eye=(x,y)=>m==='yay'?`<path d="M${x-4.5} ${y+2} q4.5 -7 9 0" stroke="#3b2a1a" stroke-width="2.6" fill="none" stroke-linecap="round"/>`
     :`<g class="blink"><circle cx="${x}" cy="${y}" r="6" fill="#f1ece0"/><circle cx="${x+1}" cy="${y+(m==='oops'?2.5:0)}" r="2.8" fill="#3b2a1a"/></g>`;
@@ -900,7 +900,7 @@ function home(){
   if(rs)h+=`<div class="note go"><b>Pick up where you left off</b><span>${rs.mode==='review'?"Today's round":esc(L[rs.li].t)} · step ${rs.i+1} of ${rs.steps.length}</span><div class="acts"><button class="btn sm" data-a="resume">Continue</button><button class="btn sm ghost" data-a="dropresume">Start fresh</button></div></div>`;
   const nd=due().length;
   if(learned(S).length)h+=`<button class="rvb ${nd&&!day.review?'hot':''}" data-a="review"><i>🔁</i><span><b>Dagens runde</b><small>${nd?nd+(nd===1?' phrase is':' phrases are')+' ready to come back':'All caught up. Play a bonus round?'}</small></span><em>${day.review?'✓ done':'5 min'}</em></button>`;
-  if(CODE)h+=`<button class="rvb" data-a="tab" data-v="talk"><i>💬</i><span><b>Snak med Kanel</b><small>Answer out loud in your own words. Kanel plays the waiter, the baker, the family.</small></span><em>new</em></button>`;
+  if(CODE)h+=`<button class="rvb" data-a="tab" data-v="talk"><i>💬</i><span><b>Snak med Lars</b><small>Answer out loud in your own words. Lars plays the waiter, the baker, the family.</small></span><em>new</em></button>`;
   if(!CODE)h+=`<button class="note" data-a="tab" data-v="me" style="text-align:left">Got a code from Scott? Enter it under Me to keep your progress on all your devices and join the family race.</button>`;
   const ch=rnd(PACK&&PACK.cheers?CHEER.concat(PACK.cheers):CHEER).map(nm);
   const nextUp=PATH.find(i=>!S.done[L[i].key]&&!L[i].story);
@@ -917,7 +917,7 @@ function home(){
 }
 function sheetHtml(i){const l=L[i],u=UNITS[l.u],dn=S.done[l.key];
   return `<div class="scrim" data-a="closesheet"></div><div class="sheet" style="--c:${u.c}"><div>${l.cards&&l.cards[0]?`<img class="shot" src="${esc(l.cards[0].img)}" alt="">`:`<div class="big">${esc(l.i)}</div>`}<h2>${esc(l.t)}</h2>
-  <p>${l.story?esc(l.en)+' · a short story with Kanel · about 3 minutes':esc(l.en)+' · '+l.p.length+' phrases · about '+(l.x?8:l.p.length>8?20:15)+' minutes'}${l.x&&l.by?' · from '+esc(l.by):''}</p>${dn?`<span class="nst" style="font-size:22px">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}
+  <p>${l.story?esc(l.en)+' · a short story with Lars · about 3 minutes':esc(l.en)+' · '+l.p.length+' phrases · about '+(l.x?8:l.p.length>8?20:15)+' minutes'}${l.x&&l.by?' · from '+esc(l.by):''}</p>${dn?`<span class="nst" style="font-size:22px">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}
   <button class="btn" data-a="start" data-v="${i}">${l.story?(dn?'Read it again':'Read the story'):dn?'Practice again':'Start lesson'}</button>
   ${l.story?'':`<button class="link" data-a="start" data-v="${i}" data-q="1">🤫 Can't talk right now? Start without speaking</button>`}${l.x&&l.mine?`<button class="link" data-a="dellesson" data-v="${l.key}">Delete this lesson for everyone</button>`:''}</div></div>`}
 function rewards(){
@@ -951,7 +951,7 @@ function codeBox(){
   :`<label for="code">Your code from Scott<input id="code" class="codein" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX"></label>
   ${linkMsg?`<div class="err">${esc(linkMsg)}</div>`:''}<button class="btn" data-a="link">Connect</button>`}
 function welcome(){
-  return `<div class="page"><div class="welcome"><div class="m">${snegl('hi')}</div><h1 style="font-size:34px">Velkommen!</h1><p style="color:var(--muted)">Welcome! I'm Kanel. Type the code Scott gave you and we'll start.</p>
+  return `<div class="page"><div class="welcome"><div class="m">${snegl('hi')}</div><h1 style="font-size:34px">Velkommen!</h1><p style="color:var(--muted)">Welcome! I'm Lars. Type the code Scott gave you and we'll start.</p>
   ${codeBox()}<button class="link" data-a="solo">I don't have a code</button></div></div>`}
 let fx={};
 const ago=t=>{const m=Math.round((Date.now()-t)/6e4);return m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' days ago'};
@@ -1036,7 +1036,7 @@ function make(){
   ${mk.rec?`<button class="btn miss" data-a="recstop" id="recbtn">■ Stop recording · 0:00</button>`:`<button class="btn ghost" data-a="rec" ${mk.busy?'disabled':''}>🎙 Or record the conversation</button>`}
   <p class="tipline">Up to three minutes. Let the table know you are recording.</p>
   ${mk.msg?`<div class="${mk.err?'err':'note'}">${esc(mk.msg)}</div>`:''}
-  <button class="btn" data-a="mklesson" ${mk.busy||mk.rec?'disabled':''}>${mk.busy?'Kanel is working…':'Make my lesson'}</button>
+  <button class="btn" data-a="mklesson" ${mk.busy||mk.rec?'disabled':''}>${mk.busy?'Lars is working…':'Make my lesson'}</button>
   <button class="link" data-a="tab" data-v="home">Back</button>`;
 }
 const say2=(msg,err)=>{mk.msg=msg;mk.err=!!err;if(tab==='make'&&!cur)render()};
@@ -1090,20 +1090,20 @@ function voiceScreen(){
     return `<div class="row ${has?'you':''}"><div class="tx"><b>${esc(x.da)}</b><span>${esc(x.en)}${has?' · saved ✓':''}</span></div>${has?`<button class="round" data-a="vplay" data-v="${id}" aria-label="Play">▶</button>`:''}<button class="round ${on?'on':''}" data-a="vrec" data-v="${i}" aria-label="${on?'Stop':'Record'}">${on?'■':'●'}</button></div>`}).join('')}</div>
   <button class="link" data-a="tab" data-v="fam">Back</button>`}
 
-/* ---------- Talk to Kanel: a short spoken role-play, answered in her own words ---------- */
+/* ---------- Talk to Lars: a short spoken role-play, answered in her own words ---------- */
 const SCENES=[
  {i:'☕',t:'På café',en:'Order at a café',setup:'You are a friendly barista in a Copenhagen café. The learner is a customer who orders a drink and maybe a pastry, then pays.'},
  {i:'🥐',t:'Hos bageren',en:'At the bakery',setup:'You are a baker in a Danish bakery. The learner wants bread or a pastry. Ask what they would like, how many, and whether they want anything else.'},
  {i:'🧭',t:'Find vej',en:'Ask for directions',setup:'You are a helpful local on the street. The learner is looking for a place such as the station, the beach or a restroom, and you explain the way simply.'},
  {i:'👨‍👩‍👧',t:'Mød familien',en:'Meet the family',setup:'You are a kind Danish relative meeting the learner for the first time at a family dinner. Ask simple things about them: their name, where they are from, whether they like the food.'},
  {i:'🛍️',t:'I butikken',en:'In a shop',setup:'You are a shop assistant in a Danish clothing shop. The learner is looking for something to buy. Talk about size, color and price.'},
- {i:'💬',t:'Bare snak',en:'Just chat',setup:'You are simply yourself, Kanel, chatting with the learner about their day, the weather, food and plans.'}
+ {i:'💬',t:'Bare snak',en:'Just chat',setup:'You are simply yourself, Lars, chatting with the learner about their day, the weather, food and plans.'}
 ];
 const tk={scene:null,hist:[],hint:null,fix:null,praise:'',busy:false,done:false,rec:null,msg:'',err:false,showEn:false,showHint:false,typing:false,turns:0};
 const scenes=()=>((PACK&&PACK.scenes)||[]).concat(SCENES);
 function talk(){
-  if(!CODE)return `<div class="hello"><h1>Snak med Kanel</h1></div><div class="note">Enter your code under Me first.</div>`;
-  if(!tk.scene)return `<div class="hello"><h1>Snak med Kanel</h1><p>Pick a scene and answer out loud, in your own words. Kanel plays the other person and helps when you get stuck.</p></div>
+  if(!CODE)return `<div class="hello"><h1>Snak med Lars</h1></div><div class="note">Enter your code under Me first.</div>`;
+  if(!tk.scene)return `<div class="hello"><h1>Snak med Lars</h1><p>Pick a scene and answer out loud, in your own words. Lars plays the other person and helps when you get stuck.</p></div>
     <div class="stack">${scenes().map((x,i)=>`<button class="rvb" data-a="scene" data-v="${i}"><i>${esc(x.i)}</i><span><b>${esc(x.t)}</b><small>${esc(x.en)}</small></span><em>${x.mine?'❤️':''}</em></button>`).join('')}</div><button class="link" data-a="tab" data-v="home">Back</button>`;
   const shown=tk.hist.slice(-6),off=tk.hist.length-shown.length;
   let h=`<div class="pbar" style="padding-block:0"><button class="x" data-a="talkend" aria-label="End the conversation">✕</button><b style="flex:1;font-family:var(--display);font-size:18px">${esc(tk.scene.t)}</b><button class="btn sm ghost" data-a="talken">${tk.showEn?'Hide English':'Show English'}</button></div><div class="chat">`;
@@ -1114,7 +1114,7 @@ function talk(){
   if(tk.msg)h+=`<div class="${tk.err?'err':'note'}">${esc(tk.msg)}</div>`;
   if(tk.done)return h+`<button class="btn good" data-a="talkdone">Finish</button>`;
   if(tk.showHint&&tk.hint)h+=`<div class="tip"><b>You could say:</b> ${esc(tk.hint.da)}<br><span style="color:var(--muted)">${esc(tk.hint.en)}</span></div>`;
-  return h+(tk.busy?`<div class="spk"><div class="heard">Kanel is thinking…</div></div>`
+  return h+(tk.busy?`<div class="spk"><div class="heard">Lars is thinking…</div></div>`
     :`<div class="spk"><button class="mic ${tk.rec?'live':''}" data-a="talkmic" aria-label="${tk.rec?'Stop':'Speak'}">${tk.rec?'■':'🎤'}</button><div class="heard">${tk.rec?'Listening… tap when you are done':'Tap and answer in Danish'}</div></div>
     <div class="acts"><button class="btn sm ghost" data-a="talkhint">💡 Help me</button><button class="btn sm ghost" data-a="talktype">⌨️ Type instead</button></div>
     ${tk.typing?`<input id="tkin" placeholder="Skriv på dansk" autocomplete="off" autocapitalize="sentences"><button class="btn sm" data-a="talksend" style="align-self:flex-start">Send</button>`:''}`);
@@ -1124,11 +1124,11 @@ function tkPlay(m){hush();if(m.audio){const a=player=new Audio('data:audio/mpeg;
 async function talkSend(payload){
   tk.busy=true;tk.msg='';tk.err=false;tk.showHint=false;if(tab==='talk')render();
   try{
-    const r=await fetch(SYNC+'/talk/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify(Object.assign({scene:{t:tk.scene.en,setup:tk.scene.setup},known:learned(S).slice(-60).map(p=>p.da),history:tk.hist.map(m=>({w:m.w,da:m.da}))},payload))});
+    const r=await fetch(SYNC+'/talk/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify(Object.assign({scene:{t:tk.scene.en,setup:'In this conversation your name is Lars, not Kanel. If you say your name, say Lars. '+tk.scene.setup},known:learned(S).slice(-60).map(p=>p.da),history:tk.hist.map(m=>({w:m.w,da:m.da}))},payload))});
     tk.busy=false;
-    if(r.status===503){tk.msg='Talking with Kanel needs one more setup step from Scott.';tk.err=true}
-    else if(r.status===429){tk.msg='Kanel is out of breath for today. Come back tomorrow.';tk.err=true}
-    else if(!r.ok){tk.msg='Kanel lost the thread. Try that again.';tk.err=true}
+    if(r.status===503){tk.msg='Talking with Lars needs one more setup step from Scott.';tk.err=true}
+    else if(r.status===429){tk.msg='Lars is out of breath for today. Come back tomorrow.';tk.err=true}
+    else if(!r.ok){tk.msg='Lars lost the thread. Try that again.';tk.err=true}
     else{const j=await r.json();
       if(!j.reply){tk.msg='I could not hear any Danish. Hold the phone a little closer and try again.';tk.err=true}
       else{if(j.heard){tk.hist.push({w:'me',da:j.heard});tk.turns++}
@@ -1226,14 +1226,14 @@ function renderStep(){
     b=`<div class="ask">Tap the matching pairs</div><div class="cols"><div class="opts">${a.map(x=>`<button class="opt" data-a="pair" data-side="da" data-v="${x.id}">${esc(x.da)}</button>`).join('')}</div>
     <div class="opts">${e.map(x=>`<button class="opt" data-a="pair" data-side="en" data-v="${x.id}">${esc(x.en)}</button>`).join('')}</div></div>`;
   }else if(s.k==='hear'){
-    b=`<div class="ask">What did Kanel say?</div><button class="bigplay" data-a="say" aria-label="Play again">🔊</button><div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button></div>
+    b=`<div class="ask">What did Lars say?</div><button class="bigplay" data-a="say" aria-label="Play again">🔊</button><div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button></div>
     <div class="opts">${s.o.map(x=>`<button class="opt" data-a="ans" data-v="${x.id}">${esc(x.en)}</button>`).join('')}</div>`;
   }else if(s.k==='tf'){
     b=`<div class="ask">True or not? Ja or nej!</div><button class="card" data-a="say"><span class="da">${esc(p.da)} 🔊</span><span class="heard">means</span><span class="en" style="font-size:22px;font-weight:700">${esc(s.shown)}</span></button>
     <div class="yn"><button class="btn miss" data-a="tf" data-v="0">✗ Nej</button><button class="btn good" data-a="tf" data-v="1">✓ Ja</button></div>`;
   }else if(s.k==='chat'){
     const hist=s.retry?[]:cur.chat.slice(-4);
-    b=`<div class="ask">Answer Kanel</div><div class="chat">${hist.map(m=>`<div class="msg ${m.w}" style="animation:none">${esc(m.da)}<small>${esc(m.en)}</small></div>`).join('')}
+    b=`<div class="ask">Answer Lars</div><div class="chat">${hist.map(m=>`<div class="msg ${m.w}" style="animation:none">${esc(m.da)}<small>${esc(m.en)}</small></div>`).join('')}
     <div class="who"><div class="m">${snegl('hi')}</div><button class="msg k" data-a="sayline">${esc(s.line.da)} 🔊<small>${esc(s.line.en)}</small></button></div></div>
     <div class="opts">${s.o.map(x=>`<button class="opt" data-a="ans" data-v="${x.id}">${esc(x.da)}</button>`).join('')}</div>`;
   }else if(s.k==='pick'){
@@ -1507,7 +1507,7 @@ const A={
   },
   ics(){
     const t=((document.getElementById('rt')||{}).value||'19:00').replace(':',''),d=new Date(),ymd=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
-    const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Hej Danmark//EN','BEGIN:VEVENT','UID:hej-danmark-daily@reminder','DTSTAMP:'+ymd+'T000000Z','DTSTART:'+ymd+'T'+t+'00','DURATION:PT15M','RRULE:FREQ=DAILY','SUMMARY:Dansk med Kanel','DESCRIPTION:Time for a little Danish. '+location.origin+location.pathname,'URL:'+location.origin+location.pathname,'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Dansk med Kanel','TRIGGER:PT0M','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
+    const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Hej Danmark//EN','BEGIN:VEVENT','UID:hej-danmark-daily@reminder','DTSTAMP:'+ymd+'T000000Z','DTSTART:'+ymd+'T'+t+'00','DURATION:PT15M','RRULE:FREQ=DAILY','SUMMARY:Dansk med Lars','DESCRIPTION:Time for a little Danish. '+location.origin+location.pathname,'URL:'+location.origin+location.pathname,'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Dansk med Lars','TRIGGER:PT0M','END:VALARM','END:VEVENT','END:VCALENDAR'].join('\r\n');
     const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics],{type:'text/calendar'}));a.download='dansk-med-kanel.ics';document.body.appendChild(a);a.click();a.remove();toast('Open the file to add it to your calendar')},
   hearmsg(){if(scottNote.cur)scottSay(scottNote.cur.da)},
   resume(){const r=getResume();if(!r)return render();begin(fresh({mode:r.mode,li:r.li,quiet:r.quiet,due:r.due,steps:r.steps,i:r.i,right:r.right,graded:r.graded,combo:r.combo,best:r.best,chat:r.chat||[]}))},
@@ -1542,13 +1542,13 @@ const A={
   recstop(){try{mk.rec&&mk.rec.rec.state!=='inactive'&&mk.rec.rec.stop()}catch(e){}},
   async mklesson(){
     const text=mk.text.trim();if(text.length<15){say2('Tell me a little more about what was said.',true);return}
-    mk.busy=true;say2('Kanel is writing your lesson. This takes up to a minute.');
+    mk.busy=true;say2('Lars is writing your lesson. This takes up to a minute.');
     try{
       const r=await fetch(SYNC+'/lesson/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify({text})});
       mk.busy=false;
       if(r.status===503){say2('Making lessons needs one more setup step from Scott. Your text stays here until then.',true);return}
       if(r.status===429){say2('That is a lot of lessons for one day. Try again tomorrow.',true);return}
-      if(!r.ok){say2('Kanel could not make a lesson from that. Add a little more detail and try again.',true);return}
+      if(!r.ok){say2('Lars could not make a lesson from that. Add a little more detail and try again.',true);return}
       const j=await r.json();setLessons(j.lessons);mk.text='';mk.msg='';tab='home';sheet=L.findIndex(l=>l.key===j.lesson.id);if(sheet<0)sheet=null;
       window.scrollTo(0,0);render();sfx('win');confetti();
     }catch(e){mk.busy=false;say2('No connection. Check that you are online and try again.',true)}
