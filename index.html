@@ -139,6 +139,26 @@ input,textarea{font:inherit;color:var(--fg);background:var(--surface);border:2px
 textarea{resize:vertical;min-height:130px;line-height:1.4;width:100%}
 textarea:focus-visible{outline:2px solid var(--candle);outline-offset:3px}
 .tipline{color:var(--muted);font-size:13px;margin-top:-10px}
+.rvb{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:12px 14px;box-shadow:0 4px 0 var(--ledge)}
+.rvb:active{transform:translateY(4px);box-shadow:none}
+.rvb.hot{border-color:var(--candle)}
+.rvb i{font-style:normal;font-size:28px}
+.rvb span{flex:1;display:flex;flex-direction:column;min-width:0}
+.rvb b{font-family:var(--display);font-size:18px}
+.rvb small{color:var(--muted);font-size:13px}
+.rvb em{font-style:normal;font-weight:700;color:var(--candle);font-size:13px;flex:none}
+.note.go{border-style:solid;border-color:var(--candle);display:flex;flex-direction:column;gap:6px;color:var(--fg)}
+.note.go span{color:var(--muted)} .note.go .acts{justify-content:flex-start;margin-top:4px}
+.prize{display:flex;gap:12px;align-items:center;background:var(--surface);border:2px solid var(--candle);border-radius:18px;padding:12px 14px}
+.prize i{font-style:normal;font-size:30px}
+.prize small{display:block;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.prize b{font-family:var(--display);font-size:18px}
+.coach{background:var(--surface);border:2px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px}
+.coach span,.coach p{color:var(--muted);font-size:14px} .coach p i{color:var(--candle);font-style:normal;font-weight:700}
+details.rev{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 12px}
+details.rev summary{font-weight:700;cursor:pointer}
+.rv1{display:flex;flex-direction:column;gap:3px;padding:10px 0;border-top:1px solid var(--line);margin-top:8px}
+.rv1 span{color:var(--muted);font-size:13px} .rv1 input{padding:8px;font-size:14px}
 
 /* lesson player */
 .player{flex:1;display:flex;flex-direction:column;min-height:100dvh;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
@@ -251,7 +271,15 @@ const UNITS=[
  {t:'Ud i byen',en:'Out and about',c:'#d98670',cl:'#9b5443'},
  {t:'Familie & hygge',en:'Family and cozy times',c:'#9a8ad8',cl:'#6657a5'},
  {t:'På tur',en:'On the trip',c:'#d9a85c',cl:'#9b7436'},
- {t:'Fra virkeligheden',en:'Real life',c:'#6f9bd6',cl:'#44689c',x:true}
+ {t:'Fra virkeligheden',en:'Real life',c:'#6f9bd6',cl:'#44689c',x:true},
+ {t:'Jeg og du',en:'Me and you',c:'#45ab9f',cl:'#2a776e'},
+ {t:'Jeg vil, jeg kan',en:'Want, can, will',c:'#d98670',cl:'#9b5443'},
+ {t:'Spørgsmål',en:'Questions and "not"',c:'#9a8ad8',cl:'#6657a5'},
+ {t:'Tal, tid og penge',en:'Numbers, time and money',c:'#d9a85c',cl:'#9b7436'},
+ {t:'På indkøb',en:'Shopping',c:'#45ab9f',cl:'#2a776e'},
+ {t:'På restaurant',en:'Eating out',c:'#d98670',cl:'#9b5443'},
+ {t:'Hvad synes du?',en:'Feelings and opinions',c:'#9a8ad8',cl:'#6657a5'},
+ {t:'Hos familien',en:'With the family',c:'#d9a85c',cl:'#9b7436'}
 ];
 const L=[
  {u:0,t:'Hej!',en:'Hello and goodbye',i:'👋',p:[
@@ -360,17 +388,319 @@ const L=[
   ['Jeg er træt','I am tired','yigh air tret'],
   ['Hav en god dag','Have a nice day','ha een go day'],
   ['Tak for sidst','Thanks for last time','tahk for seest','Said the next time you see someone you had a good time with.']],
-  d:[['Hvad laver I i Danmark?','What are you two doing in Denmark?',0],['Hvad skal I i dag?','What are you doing today?',2],['Hav en god dag!','Have a nice day!',6]]}
+  d:[['Hvad laver I i Danmark?','What are you two doing in Denmark?',0],['Hvad skal I i dag?','What are you doing today?',2],['Hav en god dag!','Have a nice day!',6]]},
+ /* ---- Stories for the first four units. Each is a few lines read aloud, then two questions. ---- */
+ {key:'s0',u:0,t:'Kanel siger hej',en:'Kanel says hi',i:'📖',story:[
+  ['Hej! Jeg hedder Kanel.','Hi! My name is Kanel.'],['Jeg kommer fra Danmark.','I come from Denmark.'],['Hvad hedder du?','What is your name?'],['Hyggeligt at møde dig!','Nice to meet you!'],['Vi ses i morgen. Hej hej!','See you tomorrow. Bye!']],
+  q:[['Where does Kanel come from?',['Denmark','The USA','Sweden'],0],['When will you see Kanel again?',['Tomorrow','Today','Never'],0]]},
+ {key:'s1',u:1,t:'Kanel på café',en:'Kanel at the café',i:'📖',story:[
+  ['Kanel er på café.','Kanel is at a café.'],['"En kaffe, tak," siger han.','"A coffee, please," he says.'],['"Det koster ti kroner."','"That costs ten kroner."'],['Kanel har kun fem kroner.','Kanel only has five kroner.'],['"Et glas vand, tak."','"A glass of water, please."']],
+  q:[['What does Kanel order first?',['A coffee','A beer','A tea'],0],['Why does he change his order?',['He does not have enough money','He is not thirsty','The café is closed'],0]]},
+ {key:'s2',u:2,t:'Kanel og familien',en:'Kanel and the family',i:'📖',story:[
+  ['Det er Kanels familie.','This is Kanel\'s family.'],['Hans mor og far er søde.','His mom and dad are sweet.'],['De spiser rugbrød med ost.','They are eating rye bread with cheese.'],['"Det smager godt," siger Kanel.','"It tastes good," says Kanel.'],['"Tak for mad!" "Velbekomme!"','"Thanks for the meal!" "You are welcome!"']],
+  q:[['What is the family eating?',['Rye bread with cheese','Cake','Hot dogs'],0],['What does Kanel say after the meal?',['Tak for mad','Skål','Godnat'],0]]},
+ {key:'s3',u:3,t:'Kanel på ferie',en:'Kanel on vacation',i:'📖',story:[
+  ['Kanel er på ferie.','Kanel is on vacation.'],['Solen skinner, og det er varmt.','The sun is shining, and it is warm.'],['"Hvor er stranden?"','"Where is the beach?"'],['"Lige ud og til højre."','"Straight ahead and to the right."'],['Kanel er træt, men det var sjovt.','Kanel is tired, but it was fun.']],
+  q:[['How is the weather?',['Sunny and warm','Rainy','Cold'],0],['Where is the beach?',['Straight ahead and to the right','To the left','Far away'],0]]},
+
+ /* ---- Unit 5: me and you. "mix" lines are new sentences built only from words already taught. ---- */
+ {key:'u5a',u:5,t:'Jeg er',en:'I am, you are',i:'🙂',p:[
+  ['Jeg er glad','I am happy','yigh air glath'],
+  ['Du er sød','You are sweet','doo air suth','Said to people you like. A lot.'],
+  ['Han er min ven','He is my friend','han air meen ven'],
+  ['Hun er min veninde','She is my friend','hoon air meen ven-IN-uh','A female friend is a "veninde".'],
+  ['Vi er her','We are here','vee air hair'],
+  ['De er søde','They are sweet','dee air SUH-thuh'],
+  ['Er du træt?','Are you tired?','air doo tret','Swap the first two words and a sentence becomes a question.'],
+  ['Ja, jeg er træt','Yes, I am tired','ya yigh air tret']],
+  d:[['Hej! Er du træt?','Hi! Are you tired?',7],['Er du glad i dag?','Are you happy today?',0]],
+  mix:[['Er du glad?','Are you happy?'],['Hun er sød','She is sweet']]},
+ {key:'u5b',u:5,t:'Jeg har',en:'I have, you have',i:'🎒',p:[
+  ['Jeg har en bror','I have a brother','yigh har een broor'],
+  ['Jeg har en søster','I have a sister','yigh har een SUS-tuh'],
+  ['Har du børn?','Do you have children?','har doo burn'],
+  ['Jeg har to børn','I have two children','yigh har toe burn'],
+  ['Vi har en hund','We have a dog','vee har een hoon'],
+  ['Har du tid?','Do you have time?','har doo teeth'],
+  ['Jeg har ikke tid','I don\'t have time','yigh har IG-uh teeth','"Ikke" means not. It goes right after the verb.'],
+  ['Jeg har det godt','I am doing well','yigh har day got','Literally "I have it good".']],
+  d:[['Har du en bror?','Do you have a brother?',0],['Har du tid i dag?','Do you have time today?',6],['Hvordan har du det?','How are you?',7]],
+  mix:[['Jeg har en hund','I have a dog'],['Har du en søster?','Do you have a sister?']]},
+ {key:'u5c',u:5,t:'Min og din',en:'Mine and yours',i:'🏠',p:[
+  ['mit navn','my name','meet nown','"Min" for en-words, "mit" for et-words.'],
+  ['Hvad er dit navn?','What is your name?','va air deet nown'],
+  ['Det er min telefon','That is my phone','day air meen tele-FOHN'],
+  ['Er det din taske?','Is that your bag?','air day deen TASK-uh'],
+  ['Det er vores hus','That is our house','day air VOR-es hoos'],
+  ['Hvor er mine nøgler?','Where are my keys?','vor air MEE-nuh NOY-luh'],
+  ['Det er hans bil','That is his car','day air hans beel'],
+  ['Det er hendes cykel','That is her bike','day air HEN-es SOOK-el']],
+  d:[['Er det din telefon?','Is that your phone?',2],['Hvis bil er det?','Whose car is that?',6]],
+  mix:[['Det er min cykel','That is my bike'],['Hvor er din bil?','Where is your car?']]},
+ {key:'s5',u:5,t:'Kanel har en ven',en:'Kanel has a friend',i:'📖',story:[
+  ['Det er Kanel.','This is Kanel.'],['Kanel er en snegl.','Kanel is a snail.'],['Han har en ven. Hun hedder Mille.','He has a friend. Her name is Mille.'],['Mille har en cykel. Kanel har ikke en cykel.','Mille has a bike. Kanel does not have a bike.'],['Men Kanel er glad. Han har tid.','But Kanel is happy. He has time.']],
+  q:[['What is Kanel?',['A snail','A dog','A bike'],0],['Who has a bike?',['Mille','Kanel','Nobody'],0]]},
+
+ /* ---- Unit 6: want, can, will ---- */
+ {key:'u6a',u:6,t:'Jeg vil gerne',en:'I would like',i:'🙋',p:[
+  ['Jeg vil gerne have vand','I would like water','yigh vil GAIR-nuh ha van'],
+  ['Jeg vil gerne betale','I would like to pay','yigh vil GAIR-nuh be-TAY-luh'],
+  ['Jeg vil gerne se byen','I would like to see the town','yigh vil GAIR-nuh say BOO-en'],
+  ['Vil du med?','Do you want to come along?','vil doo meth'],
+  ['Ja, det vil jeg gerne','Yes, I would like that','ya day vil yigh GAIR-nuh'],
+  ['Jeg vil ikke','I don\'t want to','yigh vil IG-uh'],
+  ['Hvad vil du?','What do you want?','va vil doo'],
+  ['Jeg vil hjem','I want to go home','yigh vil yem','No second verb needed. "Hjem" already means "to home".']],
+  d:[['Vi går en tur. Vil du med?','We are going for a walk. Want to come?',4],['Hvad vil du gerne have?','What would you like?',0],['Er du træt?','Are you tired?',7]],
+  mix:[['Jeg vil gerne have kage','I would like cake'],['Vil du have en kaffe?','Do you want a coffee?']]},
+ {key:'u6b',u:6,t:'Jeg kan',en:'I can',i:'💪',p:[
+  ['Jeg kan tale lidt dansk','I can speak a little Danish','yigh ka TAY-luh lit dansk'],
+  ['Kan du hjælpe mig?','Can you help me?','ka doo YEL-puh migh'],
+  ['Jeg kan ikke finde det','I can\'t find it','yigh ka IG-uh FIN-uh day'],
+  ['Kan jeg få menuen?','Can I get the menu?','ka yigh faw meh-NOO-en'],
+  ['Kan du lide det?','Do you like it?','ka doo lee day'],
+  ['Jeg kan godt lide det','I like it','yigh ka got lee day'],
+  ['Jeg kan ikke lide fisk','I don\'t like fish','yigh ka IG-uh lee fisk'],
+  ['Det kan jeg godt','I can do that','day ka yigh got']],
+  d:[['Kan du tale dansk?','Can you speak Danish?',0],['Her er smørrebrød. Kan du lide det?','Here is smørrebrød. Do you like it?',5],['Kan du hjælpe mig?','Can you help me?',7]],
+  mix:[['Kan du lide kage?','Do you like cake?'],['Jeg kan ikke tale dansk','I can\'t speak Danish']]},
+ {key:'u6c',u:6,t:'Vi skal',en:'We are going to',i:'🗓️',p:[
+  ['Vi skal spise nu','We are going to eat now','vee skal SPEE-suh noo'],
+  ['Hvad skal vi lave?','What shall we do?','va skal vee LAY-vuh'],
+  ['Jeg skal på toilettet','I need the restroom','yigh skal paw toy-LET-eth'],
+  ['Skal vi gå?','Shall we go?','skal vee gaw'],
+  ['Vi skal hjem nu','We are going home now','vee skal yem noo'],
+  ['Hvornår skal vi afsted?','When are we leaving?','vor-NOR skal vee a-STETH'],
+  ['Jeg skal lige se','Let me just see','yigh skal LEE-uh say','"Lige" softens things. Danes use it constantly.'],
+  ['Det skal nok gå','It will be fine','day skal nok gaw','The Danish answer to almost any worry.']],
+  d:[['Jeg er sulten.','I am hungry.',0],['Jeg er lidt nervøs.','I am a little nervous.',7],['Skal vi gå?','Shall we go?',4]],
+  mix:[['Skal vi spise?','Shall we eat?'],['Hvad skal vi spise?','What shall we eat?']]},
+ {key:'s6',u:6,t:'Kanel vil til stranden',en:'Kanel wants the beach',i:'📖',story:[
+  ['Solen skinner i dag.','The sun is shining today.'],['Kanel vil gerne til stranden.','Kanel would like to go to the beach.'],['Men stranden er langt væk.','But the beach is far away.'],['"Kan du hjælpe mig?" siger Kanel.','"Can you help me?" says Kanel.'],['"Ja," siger Mille. "Vi skal cykle!"','"Yes," says Mille. "We are going to bike!"']],
+  q:[['Where does Kanel want to go?',['To the beach','Home','To a café'],0],['How will they get there?',['By bike','By car','On foot'],0]]},
+
+ /* ---- Unit 7: questions and "not" ---- */
+ {key:'u7a',u:7,t:'Hvad, hvor, hvem',en:'What, where, who',i:'❓',p:[
+  ['Hvad er det?','What is that?','va air day'],
+  ['Hvor bor du?','Where do you live?','vor boor doo'],
+  ['Hvem er det?','Who is that?','vem air day'],
+  ['Hvornår kommer du?','When are you coming?','vor-NOR KOM-uh doo'],
+  ['Hvorfor ikke?','Why not?','VOR-for IG-uh'],
+  ['Hvordan siger man det?','How do you say that?','vor-DAN SEE-uh man day'],
+  ['Hvad hedder det på dansk?','What is that called in Danish?','va HEH-thuh day paw dansk','Your most useful question in Denmark.'],
+  ['Hvor mange?','How many?','vor MAHNG-uh']],
+  d:[['Skal vi tage til stranden?','Shall we go to the beach?',4],['Jeg kommer snart.','I am coming soon.',3],['Se der!','Look there!',0]],
+  mix:[['Hvor er det?','Where is that?'],['Hvem er du?','Who are you?']]},
+ {key:'u7b',u:7,t:'Ikke',en:'Saying "not"',i:'🚫',p:[
+  ['Det er ikke mit','That is not mine','day air IG-uh meet'],
+  ['Jeg er ikke sulten','I am not hungry','yigh air IG-uh SOOL-ten'],
+  ['Det gør ikke noget','It doesn\'t matter','day gur IG-uh NO-eth','What you say when someone apologizes.'],
+  ['Ikke endnu','Not yet','IG-uh EN-noo'],
+  ['Det er ikke så langt','It is not that far','day air IG-uh saw lahngt'],
+  ['Jeg drikker ikke kaffe','I don\'t drink coffee','yigh DRIG-uh IG-uh KAH-fuh'],
+  ['Ikke for mig, tak','Not for me, thanks','IG-uh for migh tahk'],
+  ['Det tror jeg ikke','I don\'t think so','day tror yigh IG-uh']],
+  d:[['Undskyld!','Sorry!',2],['Vil du have en øl?','Do you want a beer?',6],['Er du sulten?','Are you hungry?',1]],
+  mix:[['Jeg er ikke træt','I am not tired'],['Det er ikke langt','It is not far']]},
+ {key:'u7c',u:7,t:'Småord',en:'Little words that glue',i:'🔗',p:[
+  ['Kaffe eller te?','Coffee or tea?','KAH-fuh EL-uh tay'],
+  ['Kaffe og kage','Coffee and cake','KAH-fuh oh KAY-uh'],
+  ['Det vil jeg også','I want that too','day vil yigh OS-uh'],
+  ['Men ikke i dag','But not today','men IG-uh ee day'],
+  ['Jeg er glad, fordi du er her','I am happy because you are here','yigh air glath for-DEE doo air hair'],
+  ['Måske i morgen','Maybe tomorrow','MAW-skuh ee morn'],
+  ['Lidt mere, tak','A little more, please','lit MAY-uh tahk'],
+  ['Det er nok, tak','That is enough, thanks','day air nok tahk']],
+  d:[['Kaffe eller te?','Coffee or tea?',1],['Vil du have mere kage?','Do you want more cake?',6],['Skal vi cykle i dag?','Shall we bike today?',5]],
+  mix:[['Te og kage, tak','Tea and cake, please'],['Jeg er også træt','I am tired too']]},
+ {key:'s7',u:7,t:'Hvor er Kanel?',en:'Where is Kanel?',i:'📖',story:[
+  ['Mille leder efter Kanel.','Mille is looking for Kanel.'],['"Hvor er du, Kanel?"','"Where are you, Kanel?"'],['Han er ikke i haven. Han er ikke i huset.','He is not in the garden. He is not in the house.'],['"Hvorfor svarer du ikke?"','"Why don\'t you answer?"'],['Kanel er i bageriet. Han spiser kage.','Kanel is at the bakery. He is eating cake.']],
+  q:[['Who is looking for Kanel?',['Mille','A dog','Nobody'],0],['Where is Kanel?',['At the bakery','In the garden','In the house'],0]]},
+
+ /* ---- Unit 8: numbers, time and money ---- */
+ {key:'u8a',u:8,t:'Elleve til tyve',en:'Eleven to twenty',i:'🔢',p:[
+  ['elleve','eleven','EL-vuh'],['tolv','twelve','tol'],['tretten','thirteen','TRET-en'],['fjorten','fourteen','FYOR-ten'],['femten','fifteen','FEM-ten'],
+  ['seksten','sixteen','SIGH-sten'],['sytten','seventeen','SUH-ten'],['atten','eighteen','AT-en'],['nitten','nineteen','NIT-en'],['tyve','twenty','TOO-vuh']],
+  d:[['Hvad er ti plus to?','What is ten plus two?',1],['Hvad er ti plus ti?','What is ten plus ten?',9],['Hvad er syv plus syv?','What is seven plus seven?',3]]},
+ {key:'u8b',u:8,t:'De store tal',en:'The big numbers',i:'💯',p:[
+  ['tredive','thirty','TRETH-vuh'],['fyrre','forty','FUR-uh'],
+  ['halvtreds','fifty','hal-TRESS','Danish counts in twenties from here. Just memorize these.'],
+  ['tres','sixty','tress'],['halvfjerds','seventy','hal-FYAIRS'],['firs','eighty','feers'],['halvfems','ninety','hal-FEMS'],['hundrede','one hundred','HOON-ruh-thuh'],
+  ['enogtyve','twenty-one','EEN-oh-too-vuh','The ones come first: "one-and-twenty".'],
+  ['femogtredive','thirty-five','FEM-oh-treth-vuh']],
+  d:[['Hvad er tyve plus ti?','What is twenty plus ten?',0],['Hvad er halvtreds plus halvtreds?','What is fifty plus fifty?',7],['Hvad er tyve plus en?','What is twenty plus one?',8]]},
+ {key:'u8c',u:8,t:'Klokken og kroner',en:'Time and money',i:'⏰',p:[
+  ['Hvad er klokken?','What time is it?','va air KLOK-en'],
+  ['Klokken er tre','It is three o\'clock','KLOK-en air tray'],
+  ['Klokken er halv fire','It is half past three','KLOK-en air hal FEE-uh','Careful: "halv fire" means half an hour before four.'],
+  ['Hvornår åbner I?','When do you open?','vor-NOR AWB-nuh ee'],
+  ['Det koster tyve kroner','It costs twenty kroner','day KOS-tuh TOO-vuh KROH-nuh'],
+  ['Det er for dyrt','That is too expensive','day air for doort'],
+  ['Det er billigt','That is cheap','day air BIL-eet'],
+  ['Kan jeg få kvitteringen?','Can I have the receipt?','ka yigh faw kvit-AIR-ing-en']],
+  d:[['Undskyld, hvad er klokken?','Excuse me, what time is it?',1],['Det koster hundrede kroner.','That costs one hundred kroner.',5],['Ellers andet?','Anything else?',7]],
+  mix:[['Klokken er fem','It is five o\'clock'],['Det koster ti kroner','It costs ten kroner']]},
+ {key:'s8',u:8,t:'Kanel køber kage',en:'Kanel buys cake',i:'📖',story:[
+  ['Kanel er i bageriet.','Kanel is at the bakery.'],['"Hvad koster en kanelsnegl?"','"How much is a cinnamon roll?"'],['"Den koster tyve kroner."','"It costs twenty kroner."'],['Kanel har kun ti kroner.','Kanel only has ten kroner.'],['"Det gør ikke noget," siger bageren. "Værsgo!"','"It doesn\'t matter," says the baker. "Here you go!"']],
+  q:[['How much is the cinnamon roll?',['Twenty kroner','Ten kroner','Fifty kroner'],0],['Does Kanel get the roll?',['Yes, the baker is kind','No, it is too expensive','He buys bread instead'],0]]},
+
+ /* ---- Unit 9: shopping ---- */
+ {key:'u9a',u:9,t:'I butikken',en:'In the shop',i:'🛍️',p:[
+  ['Jeg kigger bare','I am just looking','yigh KIG-uh BAH-uh'],
+  ['Har I den i en anden størrelse?','Do you have it in another size?','har ee den ee een AN-en STUR-el-suh'],
+  ['Må jeg prøve den?','May I try it on?','maw yigh PRUH-vuh den'],
+  ['Den er for lille','It is too small','den air for LIL-uh'],
+  ['Den er for stor','It is too big','den air for stoor'],
+  ['Den passer fint','It fits nicely','den PAS-uh feent'],
+  ['Jeg tager den','I will take it','yigh tar den'],
+  ['Må jeg få en pose?','May I have a bag?','maw yigh faw een POH-suh']],
+  d:[['Hej! Kan jeg hjælpe dig?','Hi! Can I help you?',0],['Hvordan passer den?','How does it fit?',5],['Ellers andet?','Anything else?',7]],
+  mix:[['Den er for dyr','It is too expensive'],['Jeg tager den, tak','I will take it, thanks']]},
+ {key:'u9b',u:9,t:'I supermarkedet',en:'At the supermarket',i:'🛒',p:[
+  ['Hvor finder jeg mælk?','Where do I find milk?','vor FIN-uh yigh melk'],
+  ['æbler','apples','EB-luh'],
+  ['jordbær','strawberries','YOR-bair','Danish summer strawberries are a point of national pride.'],
+  ['kartofler','potatoes','ka-TOF-luh'],['smør','butter','smur'],['æg','eggs','eg'],
+  ['Har I mere brød?','Do you have more bread?','har ee MAY-uh bruth'],
+  ['Det var det hele','That is everything','day var day HAY-luh','What you say at the register.']],
+  d:[['Ellers andet?','Anything else?',7],['Kan jeg hjælpe dig?','Can I help you?',0]],
+  mix:[['Hvor finder jeg smør?','Where do I find butter?'],['Har I jordbær?','Do you have strawberries?']]},
+ {key:'u9c',u:9,t:'Farver',en:'Colors',i:'🎨',p:[
+  ['rød','red','ruth'],['blå','blue','blaw'],['grøn','green','grun'],['hvid','white','veeth'],['sort','black','sort'],
+  ['Jeg kan bedst lide den blå','I like the blue one best','yigh ka best lee den blaw'],
+  ['Hvilken farve?','Which color?','VIL-ken FAR-vuh'],
+  ['Den er flot','It looks great','den air flot']],
+  d:[['Hvilken farve kan du lide?','Which color do you like?',5],['Hvad synes du om den?','What do you think of it?',7]],
+  mix:[['Den er blå','It is blue'],['Hvilken farve er den?','Which color is it?']]},
+ {key:'s9',u:9,t:'En gave til Mille',en:'A present for Mille',i:'📖',story:[
+  ['Kanel vil købe en gave til Mille.','Kanel wants to buy a present for Mille.'],['Han finder en rød cykelhjelm.','He finds a red bike helmet.'],['"Den er flot. Hvad koster den?"','"It looks great. How much is it?"'],['"Halvtreds kroner."','"Fifty kroner."'],['"Jeg tager den!" siger Kanel.','"I\'ll take it!" says Kanel.']],
+  q:[['What does Kanel buy?',['A red bike helmet','A blue bag','A cake'],0],['How much is it?',['Fifty kroner','Twenty kroner','One hundred kroner'],0]]},
+
+ /* ---- Unit 10: eating out ---- */
+ {key:'u10a',u:10,t:'Et bord, tak',en:'A table, please',i:'🍽️',p:[
+  ['Et bord til to, tak','A table for two, please','et bor til toe tahk'],
+  ['Har I et bord udenfor?','Do you have a table outside?','har ee et bor OO-then-for'],
+  ['Vi har bestilt bord','We have a reservation','vee har be-STILT bor'],
+  ['Må vi se menukortet?','May we see the menu?','maw vee say meh-NOO-kort-eth'],
+  ['Hvad kan du anbefale?','What do you recommend?','va ka doo AN-be-fay-luh'],
+  ['Jeg er vegetar','I am a vegetarian','yigh air veh-geh-TAR'],
+  ['Er der nødder i?','Are there nuts in it?','air dair NUTH-uh ee'],
+  ['Vi er klar til at bestille','We are ready to order','vee air klar til at be-STIL-uh']],
+  d:[['Velkommen! Har I bestilt?','Welcome! Do you have a reservation?',2],['Indenfor eller udenfor?','Inside or outside?',1],['Er I klar til at bestille?','Are you ready to order?',7]],
+  mix:[['Et bord til fire, tak','A table for four, please'],['Må vi se menukortet, tak?','May we see the menu, please?']]},
+ {key:'u10b',u:10,t:'Mad og drikke',en:'Food and drink',i:'🥂',p:[
+  ['Jeg tager fisken','I will have the fish','yigh tar FISK-en'],
+  ['kylling','chicken','KOOL-ing'],['oksekød','beef','OK-suh-kuth'],['grøntsager','vegetables','GRUNT-say-uh'],
+  ['Et glas hvidvin','A glass of white wine','et glas VEETH-veen'],
+  ['Med eller uden brus?','Sparkling or still?','meth EL-uh OO-then broos'],
+  ['Postevand, tak','Tap water, please','POS-tuh-van tahk'],
+  ['Det samme til mig','The same for me','day SAM-uh til migh']],
+  d:[['Hvad vil du have?','What would you like?',0],['Og at drikke?','And to drink?',4],['Vand? Med eller uden brus?','Water? Sparkling or still?',6]],
+  mix:[['Jeg tager kylling','I will have chicken'],['Et glas vand, tak','A glass of water, please']]},
+ {key:'u10c',u:10,t:'Regningen',en:'The check',i:'🧾',p:[
+  ['Det smagte dejligt','That tasted lovely','day SMAHG-tuh DIGH-lit'],
+  ['Jeg er mæt','I am full','yigh air met'],
+  ['Må vi få regningen?','May we have the check?','maw vee faw RIGH-ning-en','In Denmark the check only comes when you ask.'],
+  ['Kan vi betale hver for sig?','Can we pay separately?','ka vee be-TAY-luh vair for sigh'],
+  ['Jeg betaler','I am paying','yigh be-TAY-luh'],
+  ['Er drikkepenge inkluderet?','Is the tip included?','air DRIG-uh-peng-uh in-kloo-DAIR-eth','It is. Tipping is optional in Denmark.'],
+  ['Tak for i aften','Thanks for tonight','tahk for ee AFT-en'],
+  ['Vi kommer igen','We will come again','vee KOM-uh ee-GEN']],
+  d:[['Smagte det?','Did it taste good?',0],['Vil I have dessert?','Would you like dessert?',1],['Sammen eller hver for sig?','Together or separately?',4]],
+  mix:[['Må jeg få regningen?','May I have the check?'],['Jeg er ikke mæt','I am not full']]},
+ {key:'s10',u:10,t:'Kanel på restaurant',en:'Kanel eats out',i:'📖',story:[
+  ['Kanel og Mille er på restaurant.','Kanel and Mille are at a restaurant.'],['"Hvad kan du anbefale?" siger Mille.','"What do you recommend?" says Mille.'],['"Salaten er god," siger tjeneren.','"The salad is good," says the waiter.'],['Kanel bliver bleg. Han er en snegl!','Kanel turns pale. He is a snail!'],['"Jeg tager kagen," siger han.','"I will have the cake," he says.']],
+  q:[['What does the waiter recommend?',['The salad','The fish','The cake'],0],['What does Kanel order?',['The cake','The salad','Nothing'],0]]},
+
+ /* ---- Unit 11: feelings and opinions ---- */
+ {key:'u11a',u:11,t:'Hvordan har du det?',en:'How are you?',i:'💛',p:[
+  ['Hvordan har du det?','How are you?','vor-DAN har doo day'],
+  ['Jeg har det fint','I am fine','yigh har day feent'],
+  ['Jeg glæder mig','I am looking forward to it','yigh GLEH-thuh migh'],
+  ['Jeg er lidt nervøs','I am a little nervous','yigh air lit nair-VUS'],
+  ['Jeg fryser','I am cold','yigh FROO-suh'],
+  ['Jeg har hovedpine','I have a headache','yigh har HOH-veth-pee-nuh'],
+  ['Jeg savner dig','I miss you','yigh SOW-nuh digh'],
+  ['Jeg er så glad','I am so happy','yigh air saw glath']],
+  d:[['Hej! Hvordan har du det?','Hi! How are you?',1],['Vi skal til Danmark!','We are going to Denmark!',2],['Er du okay?','Are you okay?',5]],
+  mix:[['Jeg er lidt træt','I am a little tired'],['Har du hovedpine?','Do you have a headache?']]},
+ {key:'u11b',u:11,t:'Jeg synes',en:'I think',i:'💭',p:[
+  ['Jeg synes, det er flot','I think it is beautiful','yigh soons day air flot'],
+  ['Hvad synes du?','What do you think?','va soons doo'],
+  ['Det er rigtig godt','That is really good','day air REG-tee got'],
+  ['Det er lækkert','That is delicious','day air LEK-ut'],
+  ['Det er sjovt','That is fun','day air shoat'],
+  ['Det er lidt mærkeligt','That is a little strange','day air lit MAIR-kuh-lit'],
+  ['Jeg er enig','I agree','yigh air EH-nee'],
+  ['Det lyder godt','That sounds good','day LOO-thuh got']],
+  d:[['Skal vi spise ude i aften?','Shall we eat out tonight?',7],['Hvad synes du om maden?','What do you think of the food?',3],['Danmark er dejligt.','Denmark is lovely.',6]],
+  mix:[['Jeg synes, det er sjovt','I think it is fun'],['Det er rigtig lækkert','That is really delicious']]},
+ {key:'u11c',u:11,t:'Søde ord',en:'Kind words',i:'💌',p:[
+  ['Du ser godt ud','You look good','doo sair got ooth'],
+  ['Tak for hjælpen','Thanks for the help','tahk for YEL-pen'],
+  ['Det var sødt af dig','That was sweet of you','day var suth a digh'],
+  ['Godt gået!','Well done!','got GAW-eth'],
+  ['Tillykke!','Congratulations!','til-LOO-kuh','Also how you say happy birthday.'],
+  ['God bedring','Get well soon','go BETH-ring'],
+  ['Held og lykke','Good luck','hel oh LOO-kuh'],
+  ['Sov godt','Sleep well','sow got']],
+  d:[['Jeg har fødselsdag i dag!','It is my birthday today!',4],['Jeg er syg.','I am sick.',5],['Godnat!','Good night!',7]],
+  mix:[['Tak for kaffe','Thanks for the coffee'],['Det var sødt','That was sweet']]},
+ {key:'s11',u:11,t:'Kanel er nervøs',en:'Kanel is nervous',i:'📖',story:[
+  ['Kanel skal møde Milles familie.','Kanel is going to meet Mille\'s family.'],['Han er lidt nervøs.','He is a little nervous.'],['"Det skal nok gå," siger Mille.','"It will be fine," says Mille.'],['Milles mor siger: "Velkommen, Kanel!"','Mille\'s mother says: "Welcome, Kanel!"'],['Kanel er så glad. "Tak for kaffe!"','Kanel is so happy. "Thanks for the coffee!"']],
+  q:[['How does Kanel feel at first?',['A little nervous','Angry','Hungry'],0],['What does Mille\'s mother say?',['Welcome','Goodbye','Sorry'],0]]},
+
+ /* ---- Unit 12: with the family ---- */
+ {key:'u12a',u:12,t:'Velkommen',en:'Arriving',i:'🚪',p:[
+  ['Tak, fordi vi måtte komme','Thank you for having us','tahk for-DEE vee MAW-thuh KOM-uh'],
+  ['Sikke et dejligt hjem','What a lovely home','SIG-uh et DIGH-lit yem'],
+  ['Kan jeg hjælpe med noget?','Can I help with anything?','ka yigh YEL-puh meth NO-eth'],
+  ['Hvor skal jeg sidde?','Where should I sit?','vor skal yigh SITH-uh'],
+  ['Det ser lækkert ud','That looks delicious','day sair LEK-ut ooth'],
+  ['Må jeg få opskriften?','May I have the recipe?','maw yigh faw OP-skrif-ten','The highest compliment to a Danish cook.'],
+  ['Jeg har hørt så meget om jer','I have heard so much about you','yigh har hurt saw MIGH-eth om yair'],
+  ['Værsgo','Here you go','VAIRS-go','Said when handing something over, and when dinner is served.']],
+  d:[['Velkommen! Kom indenfor.','Welcome! Come inside.',0],['Vi skal spise nu.','We are eating now.',3],['Her er min æblekage.','Here is my apple cake.',4]],
+  mix:[['Det ser flot ud','That looks great'],['Kan jeg hjælpe dig?','Can I help you?']]},
+ {key:'u12b',u:12,t:'Ved bordet',en:'At the table',i:'🍲',p:[
+  ['Vil du række mig brødet?','Will you pass me the bread?','vil doo REK-uh migh BRUTH-eth'],
+  ['Må jeg bede om saltet?','May I ask for the salt?','maw yigh bay om SAL-teth'],
+  ['Bare en lille smule','Just a little bit','BAH-uh een LIL-uh SMOO-luh'],
+  ['Jeg kan ikke spise mere','I can\'t eat any more','yigh ka IG-uh SPEE-suh MAY-uh'],
+  ['Det er den bedste kage','That is the best cake','day air den BEST-uh KAY-uh'],
+  ['Skål, og tak for i dag','Cheers, and thanks for today','skawl oh tahk for ee day'],
+  ['Hvem har lavet maden?','Who made the food?','vem har LAY-veth MATH-en'],
+  ['Jeg vasker op','I will do the dishes','yigh VAS-kuh op','Offering this wins you the family.']],
+  d:[['Vil du have mere?','Would you like more?',2],['Mere kage?','More cake?',3],['Skål!','Cheers!',5]],
+  mix:[['Vil du række mig saltet?','Will you pass me the salt?'],['Må jeg bede om brødet?','May I ask for the bread?']]},
+ {key:'u12c',u:12,t:'På gensyn',en:'Saying goodbye',i:'👋',p:[
+  ['Tak for en dejlig aften','Thank you for a lovely evening','tahk for een DIGH-lee AFT-en'],
+  ['Det var så hyggeligt','It was so cozy','day var saw HOO-guh-lit'],
+  ['Vi ses snart igen','See you again soon','vee sehs snart ee-GEN'],
+  ['Kom godt hjem','Get home safely','kom got yem'],
+  ['Hils derhjemme','Say hello at home','hils dair-YEM-uh'],
+  ['I må komme og besøge os','You must come and visit us','ee maw KOM-uh oh be-SUH-uh os'],
+  ['Pas godt på jer selv','Take good care of yourselves','pas got paw yair sel'],
+  ['På gensyn','Until we meet again','paw GEN-soon']],
+  d:[['Tak for i aften!','Thanks for tonight!',1],['Kom godt hjem!','Get home safely!',2],['Vi ses til sommer.','See you this summer.',7]],
+  mix:[['Det var så dejligt','It was so lovely'],['Vi ses snart','See you soon']]},
+ {key:'s12',u:12,t:'Kanel siger farvel',en:'Kanel says goodbye',i:'📖',story:[
+  ['Sommeren er slut.','The summer is over.'],['Kanel skal hjem.','Kanel is going home.'],['"Tak for en dejlig sommer," siger han.','"Thank you for a lovely summer," he says.'],['"Vi ses snart igen," siger Mille.','"See you again soon," says Mille.'],['Kanel smiler. Han kan tale dansk nu!','Kanel smiles. He can speak Danish now!']],
+  q:[['What is over?',['The summer','The dinner','The lesson'],0],['What can Kanel do now?',['Speak Danish','Ride a bike','Bake a cake'],0]]}
 ];
 let NAME='Ciera';try{NAME=JSON.parse(localStorage.getItem('hejciera.v1')||'{}').name||'Ciera'}catch(e){}
 const nm=t=>t.replace('{name}',NAME);
-L.forEach((l,li)=>{l.key=String(li);l.p=l.p.map((a,pi)=>({id:li+'-'+pi,da:nm(a[0]),en:nm(a[1]),say:a[2],note:a[3]||''}));l.d=(l.d||[]).map(d=>[nm(d[0]),nm(d[1]),d[2]])});
+/* The first twelve lessons are keyed by their order (0 to 11) because saved progress uses those; everything newer carries its own key. */
+const PH={};let plain=0;
+L.forEach(l=>{l.key=l.key||String(plain++);l.p=(l.p||[]).map((a,pi)=>PH[l.key+'-'+pi]={id:l.key+'-'+pi,da:nm(a[0]),en:nm(a[1]),say:a[2],note:a[3]||''});l.d=(l.d||[]).map(d=>[nm(d[0]),nm(d[1]),d[2]]);
+  l.mix=(l.mix||[]).map((a,mi)=>PH[l.key+'-m'+mi]={id:l.key+'-m'+mi,da:a[0],en:a[1],say:'',note:'',mix:true})});
 
 /* Lessons the family made from real moments arrive from the sync service and sit after the course lessons. */
-const CORE=L.length;
+const CORE=L.length,PATH=L.map((l,i)=>i).sort((a,b)=>L[a].u-L[b].u||a-b);
+function isOpen(i){const l=L[i];if(l.x)return true;for(let j=PATH.indexOf(i)-1;j>=0;j--){const q=L[PATH[j]];if(l.story||!q.story)return !!S.done[q.key]}return true}
 function setLessons(list){
   L.length=CORE;
-  (list||[]).forEach(x=>L.push({u:4,x:true,key:x.id,t:x.t,en:x.en,i:x.i,by:x.by,mine:!!x.mine,p:x.p.map((a,pi)=>({id:x.id+'-'+pi,da:a[0],en:a[1],say:a[2]||'',note:a[3]||''})),d:x.d||[]}));
+  (list||[]).forEach(x=>L.push({u:4,x:true,key:x.id,t:x.t,en:x.en,i:x.i,by:x.by,mine:!!x.mine,p:x.p.map((a,pi)=>PH[x.id+'-'+pi]={id:x.id+'-'+pi,da:a[0],en:a[1],say:a[2]||'',note:a[3]||''}),d:x.d||[],mix:[]}));
   try{localStorage.setItem('hejciera.lessons',JSON.stringify(list||[]))}catch(e){}
 }
 try{setLessons(JSON.parse(localStorage.getItem('hejciera.lessons')||'[]'))}catch(e){}
@@ -388,7 +718,15 @@ const BADGES=[
  {id:'perf',i:'⭐',t:'Fejlfri',d:'A lesson with no mistakes',ok:s=>s.perfect>0},
  {id:'c10',i:'⚡',t:'Ti i træk',d:'Get 10 right in a row',ok:s=>s.bestCombo>=10},
  {id:'w50',i:'📚',t:'Halvtreds',d:'Learn 50 phrases',ok:s=>learned(s).length>=50},
- {id:'bak3',i:'🍰',t:'Kagekender',d:'Collect 3 pastries',ok:s=>s.bakery.length>=3}
+ {id:'bak3',i:'🍰',t:'Kagekender',d:'Collect 3 pastries',ok:s=>s.bakery.length>=3},
+ {id:'rv1',i:'🔁',t:'Første runde',d:'Finish a daily round',ok:s=>(s.stat||{}).rv>=1},
+ {id:'rv10',i:'🧠',t:'Elefanthukommelse',d:'Finish 10 daily rounds',ok:s=>(s.stat||{}).rv>=10},
+ {id:'st3',i:'📖',t:'Bogorm',d:'Read 3 stories',ok:s=>(s.stat||{}).st>=3},
+ {id:'dw1',i:'⚔️',t:'Duelvinder',d:'Win a head-to-head',ok:s=>(s.stat||{}).dw>=1},
+ {id:'rl1',i:'🍽️',t:'Fra virkeligheden',d:'Finish a real-life lesson',ok:s=>Object.keys(s.done).some(k=>k[0]==='x')},
+ {id:'w150',i:'🎓',t:'Ordkunstner',d:'Learn 150 phrases',ok:s=>learned(s).length>=150},
+ {id:'half',i:'🧭',t:'Halvvejs',d:'Finish unit 8',ok:s=>unitDone(s,8)},
+ {id:'all',i:'🇩🇰',t:'Klar til Danmark',d:'Finish the whole course',ok:s=>L.slice(0,CORE).every(l=>s.done[l.key])}
 ];
 const BAKERY=[
  {id:'kanel',i:'🥐',t:'Kanelsnegl',p:30,d:'"Cinnamon snail". Kanel\'s cousin.'},
@@ -404,7 +742,8 @@ const BAKERY=[
 const QUESTS=[
  {id:'l',t:'Finish a lesson',g:1,v:d=>d.lessons},
  {id:'s',t:'Say 10 phrases out loud',g:10,v:d=>d.speaks},
- {id:'c',t:'Get 5 right in a row',g:5,v:d=>d.combo}
+ {id:'c',t:'Get 5 right in a row',g:5,v:d=>d.combo},
+ {id:'r',t:"Do today's round",g:1,v:d=>d.review}
 ];
 const PRAISE=[['Flot!','Nice!'],['Super!','Super!'],['Godt klaret!','Well done!'],['Perfekt!','Perfect!'],['Sådan!','That\'s it!'],['Dygtig!','Clever!'],['Sejt!','Cool!']];
 const CHEER=[['Kom så!','Let\'s go!'],['Du kan godt!','You can do it!'],['Klar?','Ready?'],['Hej {name}!','Hi {name}!']];
@@ -412,12 +751,29 @@ const CHEER=[['Kom så!','Let\'s go!'],['Du kan godt!','You can do it!'],['Klar?
 /* ---------- state ---------- */
 const KEY='hejciera.v1';
 const CODEKEY='hejciera.code',SYNC='https://sync-production-16d2f.up.railway.app';
-const def=()=>({name:'',earned:0,xp:0,streak:0,lastDay:'',done:{},badges:[],bakery:[],starred:[],speaks:0,perfect:0,bestCombo:0,trip:'',tripAt:0,sound:true,solo:false,day:{k:''},week:{k:'',xp:0}});
+const def=()=>({name:'',earned:0,xp:0,streak:0,lastDay:'',done:{},badges:[],bakery:[],starred:[],speaks:0,perfect:0,bestCombo:0,trip:'',tripAt:0,sound:true,solo:false,day:{k:''},week:{k:'',xp:0},srs:{},fz:null,shop:{spent:0,t:0},boost:{n:0,t:0},stat:{rv:0,st:0,dw:0,t:0}});
 const price=id=>(BAKERY.find(b=>b.id===id)||{p:0}).p;
 let S=def(),CODE='';
 try{const raw=JSON.parse(localStorage.getItem(KEY)||'{}');S=Object.assign(def(),raw);if(raw.earned==null&&raw.kr!=null)S.earned=raw.kr+S.bakery.reduce((t,id)=>t+price(id),0);CODE=localStorage.getItem(CODEKEY)||''}catch(e){}
 delete S.kr;
-const kr=()=>S.earned-S.bakery.reduce((t,id)=>t+price(id),0);
+const kr=()=>S.earned-S.bakery.reduce((t,id)=>t+price(id),0)-((S.shop&&S.shop.spent)||0);
+const fz=()=>S.fz||{n:1,t:0},boost=()=>S.boost||{n:0,t:0},stat=()=>Object.assign({rv:0,st:0,dw:0,t:0},S.stat);
+/* ---------- memory: every phrase has a box; right answers in the daily round move it up and space it out ---------- */
+const dayNo=()=>Math.floor((Date.now()-new Date().getTimezoneOffset()*6e4)/864e5),GAP=[0,1,2,4,8,16,32,64];
+function srsHit(p,ok,retry){
+  if(!p||p.mix||!p.id||!cur||cur.mode==='duel')return;S.srs=S.srs||{};
+  const e=S.srs[p.id]||{b:0,d:0,miss:0},n=dayNo();
+  if(!ok){e.b=1;e.d=n+1;e.miss=(e.miss||0)+1}
+  else if(cur.mode==='review'){if(!retry&&(cur.due||[]).includes(p.id)){e.b=Math.min(7,(e.b||1)+1);e.d=n+GAP[e.b]}}
+  else if(!e.b){e.b=1;e.d=n+1}
+  e.t=Date.now();S.srs[p.id]=e}
+const due=()=>{const n=dayNo();return Object.entries(S.srs||{}).filter(([id,e])=>PH[id]&&e.d<=n).sort((a,b)=>a[1].d-b[1].d).map(x=>x[0])};
+function bumpStreak(){
+  const t=dayKey(),y=dayKey(new Date(Date.now()-864e5)),y2=dayKey(new Date(Date.now()-2*864e5));if(S.lastDay===t)return;
+  if(S.lastDay===y)S.streak++;
+  else if(S.lastDay===y2&&S.streak>0&&fz().n>0){S.fz={n:fz().n-1,t:Date.now()};S.streak++;toast('🧊 Streak freeze used. Your streak is safe!')}
+  else S.streak=1;
+  S.lastDay=t;if(S.streak%7===0&&fz().n<2){S.fz={n:fz().n+1,t:Date.now()};toast('🧊 You earned a streak freeze')}}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const n=s=>Object.keys(s.done).length;
 const unitDone=(s,u)=>L.every(l=>l.u!==u||s.done[l.key]);
@@ -498,7 +854,7 @@ function sim(a,b){a=norm(a);b=norm(b);if(!a||!b)return 0;return 1-lev(a,b)/Math.
 function render(){
   if(cur){renderStep();return}
   if(!CODE&&!n(S)&&!S.solo){app.innerHTML=welcome();return}
-  const body={home,rewards,fam,book,me,make}[tab]();
+  const body={home,rewards,fam,book,me,make,rev}[tab]();
   app.innerHTML=`<div class="page">${body}</div>
   <nav class="tabs"><div>${[['home','🏠','Learn'],['fam','👪','Family'],['rewards','🏅','Rewards'],['book','📖','Phrases'],['me','⚙️','Me']]
     .map(t=>`<button data-a="tab" data-v="${t[0]}" class="${tab===t[0]?'on':''}"><i>${t[1]}</i>${t[2]}</button>`).join('')}</div></nav>${sheet!==null?sheetHtml(sheet):''}`;
@@ -507,17 +863,23 @@ function daysToTrip(){if(!S.trip)return null;return Math.ceil((new Date(S.trip+'
 const XS=[0,-50,-72,-50,0,50,72,50];
 function home(){
   const d=daysToTrip(),lit=S.lastDay===dayKey(),day=today();
-  let h=`<header class="top"><span class="chip ${lit?'lit':'cold'}"><span class="fl">🔥</span>${S.streak}<small>streak</small></span>
+  let h=`<header class="top"><span class="chip ${lit?'lit':'cold'}"><span class="fl">🔥</span>${S.streak}<small>${fz().n?'🧊 '+fz().n:'streak'}</small></span>
   <span class="chip">🪙 ${kr()}<small>kroner</small></span>
   ${d!==null&&d>=0?`<span class="chip">🇩🇰 ${d}<small>days</small></span>`:`<button class="chip" data-a="tab" data-v="me">🇩🇰<small>set trip</small></button>`}</header>
   <section class="quests"><h3>Today's quests <span>+10 🪙 each</span></h3>${QUESTS.map(q=>{const v=Math.min(q.v(day)||0,q.g),dn=v>=q.g;
     return `<div class="q ${dn?'done':''}"><span>${dn?'✓ ':''}${q.t}</span><span>${v}/${q.g}</span><div class="bar"><i style="width:${v/q.g*100}%"></i></div></div>`}).join('')}</section>`;
+  const rs=getResume();
+  if(rs)h+=`<div class="note go"><b>Pick up where you left off</b><span>${rs.mode==='review'?"Today's round":esc(L[rs.li].t)} · step ${rs.i+1} of ${rs.steps.length}</span><div class="acts"><button class="btn sm" data-a="resume">Continue</button><button class="btn sm ghost" data-a="dropresume">Start fresh</button></div></div>`;
+  const nd=due().length;
+  if(learned(S).length)h+=`<button class="rvb ${nd&&!day.review?'hot':''}" data-a="review"><i>🔁</i><span><b>Dagens runde</b><small>${nd?nd+(nd===1?' phrase is':' phrases are')+' ready to come back':'All caught up. Play a bonus round?'}</small></span><em>${day.review?'✓ done':'5 min'}</em></button>`;
   if(!CODE)h+=`<button class="note" data-a="tab" data-v="me" style="text-align:left">Got a code from Scott? Enter it under Me to keep your progress on all your devices and join the family race.</button>`;
   const ch=rnd(CHEER).map(nm);
-  [4,0,1,2,3].forEach(ui=>{const u=UNITS[ui];let k=0;
-    h+=`<section style="--c:${u.c};--cl:${u.cl}"><div class="banner"><small>${u.x?'Your own lessons':'Unit '+(ui+1)}</small><h2>${u.t}</h2><span>${u.en}</span></div>${u.x?`<button class="btn ghost" data-a="tab" data-v="make" style="margin-top:14px">＋ Turn a real moment into a lesson</button>`:''}<div class="path">`;
+  const nextUp=PATH.find(i=>!S.done[L[i].key]&&!L[i].story);
+  const curU=nextUp===undefined?99:L[nextUp].u,ord=u=>u===4?curU+.5:u;
+  UNITS.map((u,i)=>i).sort((a,b)=>ord(a)-ord(b)).forEach(ui=>{const u=UNITS[ui];let k=0;
+    h+=`<section style="--c:${u.c};--cl:${u.cl}"><div class="banner"><small>${u.x?'Your own lessons':'Unit '+(ui>4?ui:ui+1)}</small><h2>${u.t}</h2><span>${u.en}</span></div>${u.x?`<button class="btn ghost" data-a="tab" data-v="make" style="margin-top:14px">＋ Turn a real moment into a lesson</button>`:''}<div class="path">`;
     L.forEach((l,i)=>{if(l.u!==ui)return;
-      const dn=S.done[l.key],open=l.x||i===0||S.done[L[i-1].key],nx=!l.x&&open&&!dn,x=XS[(l.x?k++:i)%8];
+      const dn=S.done[l.key],open=isOpen(i),nx=i===nextUp,x=XS[k++%8];
       h+=`<div class="nw ${nx?'cur':''}" style="--x:${x}px">${nx?`<div class="startb">START</div><div class="buddy ${x>0?'l':'r'}"><div class="say">${ch[0]}<small>${ch[1]}</small></div>${snegl('hi')}</div>`:''}
       <button class="node ${nx?'next':open?'':'locked'}" ${open?`data-a="node" data-v="${i}"`:'disabled'} aria-label="${esc(l.en)}"><span>${esc(l.i)}</span></button>
       ${dn?`<span class="nst">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}<span class="nl">${esc(l.t)}</span></div>`});
@@ -526,11 +888,14 @@ function home(){
 }
 function sheetHtml(i){const l=L[i],u=UNITS[l.u],dn=S.done[l.key];
   return `<div class="scrim" data-a="closesheet"></div><div class="sheet" style="--c:${u.c}"><div><div class="big">${esc(l.i)}</div><h2>${esc(l.t)}</h2>
-  <p>${esc(l.en)} · ${l.p.length} phrases · about ${l.x?8:l.p.length>8?20:15} minutes${l.x&&l.by?' · from '+esc(l.by):''}</p>${dn?`<span class="nst" style="font-size:22px">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}
-  <button class="btn" data-a="start" data-v="${i}">${dn?'Practice again':'Start lesson'}</button>
-  <button class="link" data-a="start" data-v="${i}" data-q="1">🤫 Can't talk right now? Start without speaking</button>${l.x&&l.mine?`<button class="link" data-a="dellesson" data-v="${l.key}">Delete this lesson for everyone</button>`:''}</div></div>`}
+  <p>${l.story?esc(l.en)+' · a short story with Kanel · about 3 minutes':esc(l.en)+' · '+l.p.length+' phrases · about '+(l.x?8:l.p.length>8?20:15)+' minutes'}${l.x&&l.by?' · from '+esc(l.by):''}</p>${dn?`<span class="nst" style="font-size:22px">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}
+  <button class="btn" data-a="start" data-v="${i}">${l.story?(dn?'Read it again':'Read the story'):dn?'Practice again':'Start lesson'}</button>
+  ${l.story?'':`<button class="link" data-a="start" data-v="${i}" data-q="1">🤫 Can't talk right now? Start without speaking</button>`}${l.x&&l.mine?`<button class="link" data-a="dellesson" data-v="${l.key}">Delete this lesson for everyone</button>`:''}</div></div>`}
 function rewards(){
   return `<div class="hello"><h1>Rewards</h1><p>${S.badges.length} of ${BADGES.length} badges · 🪙 ${kr()} kroner to spend</p></div>
+  <section class="unit"><div class="unit-h"><h2>Kiosken</h2><span>Things that help</span></div><div class="grid" style="grid-template-columns:1fr 1fr">
+  <button class="tile ${kr()>=80&&fz().n<2?'buy':'off'}" data-a="shop" data-v="fz" ${kr()>=80&&fz().n<2?'':'disabled'}><i>🧊</i><b>Isterning</b><small>Saves your streak if you miss a day. You have ${fz().n} of 2.</small><small>🪙 80</small></button>
+  <button class="tile ${kr()>=60&&!boost().n?'buy':'off'}" data-a="shop" data-v="boost" ${kr()>=60&&!boost().n?'':'disabled'}><i>☕</i><b>Dobbelt kaffe</b><small>${boost().n?'Ready: your next lesson pays double.':'Double kroner on your next lesson.'}</small><small>🪙 60</small></button></div></section>
   <section class="unit"><div class="unit-h"><h2>Bageriet</h2><span>The bakery</span></div><div class="grid">${BAKERY.map(b=>{
     const own=S.bakery.includes(b.id),can=kr()>=b.p;
     return own?`<div class="tile own ${rewards.just===b.id?'new':''}"><i>${b.i}</i><b>${b.t}</b><small>${b.d}</small></div>`
@@ -558,16 +923,44 @@ function codeBox(){
 function welcome(){
   return `<div class="page"><div class="welcome"><div class="m">${snegl('hi')}</div><h1 style="font-size:34px">Velkommen!</h1><p style="color:var(--muted)">Welcome! I'm Kanel. Type the code Scott gave you and we'll start.</p>
   ${codeBox()}<button class="link" data-a="solo">I don't have a code</button></div></div>`}
+let fx={};
+const ago=t=>{const m=Math.round((Date.now()-t)/6e4);return m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' days ago'};
 function fam(){
   let h=`<div class="hello"><h1>Familien</h1><p>This week's race. One point for every right answer. Starts over each Monday.</p></div>`;
   if(!CODE)return h+`<div class="note">Enter your code under Me to join the family race.</div>`;
   if(!family)return h+`<div class="note">Finding everyone…</div>`;
+  if(fx.prize||fx.coach)h+=`<div class="prize"><i>🏆</i><div><small>This week's prize</small><b>${fx.prize?esc(fx.prize):'Not set yet'}</b></div></div>`;
+  if(fx.coach)h+=`<label for="prize">Set this week's prize<input id="prize" maxlength="120" value="${esc(fx.prize||'')}" placeholder="Winner picks Friday's movie"></label><button class="btn sm ghost" data-a="setprize" style="align-self:flex-start">Save prize</button>`;
   const wk=weekKey(),live=[dayKey(),dayKey(new Date(Date.now()-864e5))];
   const rows=family.map(p=>({...p,pts:p.week&&p.week.k===wk?p.week.xp||0:0,fire:live.includes(p.lastDay)?p.streak:0})).sort((a,b)=>b.pts-a.pts||b.lessons-a.lessons||a.name.localeCompare(b.name));
   const top=Math.max(1,...rows.map(r=>r.pts)),lead=rows[0]&&rows[0].pts>0&&(!rows[1]||rows[0].pts>rows[1].pts)?rows[0]:null;
   h+=`<div class="teach"><div class="m">${snegl(lead?'yay':'hi')}</div><div class="bub"><span class="da" style="font-size:22px">${lead?esc(lead.name)+' fører!':'Hvem starter?'}</span><span class="en">${lead?esc(lead.name)+' is in the lead!':'Who goes first?'}</span></div></div><div class="stack">`;
-  rows.forEach((r,i)=>{h+=`<div class="row ${r.me?'you':''}"><span class="rk">${r.pts>0?(['🥇','🥈','🥉'][i]||i+1):i+1}</span><div class="tx"><b>${esc(r.name)}${r.me?' (you)':''}</b><span>🔥 ${r.fire} · ${r.lessons} lessons · ★ ${r.stars}</span><div class="fbar"><i style="width:${r.pts/top*100}%"></i></div></div><span class="pts">${r.pts}<small>points</small></span></div>`});
-  return h+`</div>`;
+  rows.forEach((r,i)=>{h+=`<div class="row ${r.me?'you':''}"><span class="rk">${r.pts>0?(['🥇','🥈','🥉'][i]||i+1):i+1}</span><div class="tx"><b>${esc(r.name)}${r.me?' (you)':''}</b><span>🔥 ${r.fire} · ${r.lessons} lessons · ★ ${r.stars}</span><div class="fbar"><i style="width:${r.pts/top*100}%"></i></div></div>${!r.me&&!fx.coach?`<button class="round" data-a="duel" data-v="${esc(r.name)}" aria-label="Challenge ${esc(r.name)}">⚔️</button>`:''}<span class="pts">${r.pts}<small>points</small></span></div>`});
+  h+=`</div>`;
+  if(fx.lastWeek)h+=`<div class="note">Last week ${esc(fx.lastWeek.rows[0].name)} won with ${fx.lastWeek.rows[0].xp} points.</div>`;
+  const ds=fx.duels||[];
+  if(ds.length){h+=`<section class="unit"><div class="unit-h"><h2>Dueller</h2><span>Head to head</span></div><div class="stack">`;
+    ds.forEach(d=>{const sec=x=>Math.round(x.ms/1000)+'s';
+      if(!d.b)h+=d.to===NAME?`<div class="row you"><div class="tx"><b>${esc(d.from)} challenged you</b><span>${d.a.score} of ${d.ids.length} right in ${sec(d.a)}. Can you beat it?</span></div><button class="btn sm" data-a="duelplay" data-v="${d.id}">Play</button></div>`
+        :`<div class="row"><div class="tx"><b>Waiting for ${esc(d.to)}</b><span>You got ${d.a.score} of ${d.ids.length} in ${sec(d.a)}.</span></div></div>`;
+      else{const w=d.a.score>d.b.score?d.from:d.b.score>d.a.score?d.to:d.a.ms<=d.b.ms?d.from:d.to;
+        h+=`<div class="row"><div class="tx"><b>${esc(d.from)} ${d.a.score} – ${d.b.score} ${esc(d.to)}</b><span>${w===NAME?'🏆 You won':esc(w)+' won'}${d.a.score===d.b.score?' on time':''}</span></div></div>`}});
+    h+=`</div></section>`}
+  else if(!fx.coach&&rows.length>1)h+=`<div class="note">Tap ⚔️ next to a name to challenge them to a quick head-to-head round.</div>`;
+  if(fx.coach&&fx.coachData){
+    h+=`<section class="unit"><div class="unit-h"><h2>Coach</h2><span>Only you see this</span></div><div class="stack">`;
+    const txt=id=>PH[id]?esc(PH[id].da)+' ('+esc(PH[id].en)+')':'';
+    fx.coachData.players.forEach(pl=>{const asked=pl.starred.map(txt).filter(Boolean),weak=pl.weak.map(w=>txt(w.id)?txt(w.id)+' ×'+w.miss:'').filter(Boolean);
+      h+=`<div class="coach"><b>${esc(pl.name)}</b><span>${pl.lessons} lessons · ${pl.known} phrases · 🔥 ${pl.streak} · ${pl.speaks} said aloud · ${pl.at?'last here '+ago(pl.at):'not started'}</span>${asked.length?`<p><i>Asked you about:</i> ${asked.join(' · ')}</p>`:''}${weak.length?`<p><i>Struggling with:</i> ${weak.join(' · ')}</p>`:''}</div>`});
+    h+=`</div><button class="btn ghost" data-a="tab" data-v="rev">Review the Danish · ${(fx.coachData.notes||[]).length} notes saved</button></section>`}
+  return h;
+}
+function rev(){
+  const notes={};((fx.coachData||{}).notes||[]).forEach(n=>notes[n.id]=n.text);
+  const lines=l=>[...l.p,...l.d.map((d,i)=>({id:l.key+'-d'+i,da:d[0],en:d[1],say:''})),...(l.mix||[]),...(l.story||[]).map((a,i)=>({id:l.key+'-s'+i,da:a[0],en:a[1],say:''}))];
+  return `<div class="hello"><h1>Review the Danish</h1><p>Type a correction or comment under any line, then save. Claude reads these and fixes the course.</p></div>`
+    +L.map(l=>`<details class="rev"><summary>${esc(l.t)} · ${esc(l.en)}</summary>${lines(l).map(p=>`<div class="rv1"><b>${esc(p.da)}</b><span>${esc(p.en)}${p.say?' · '+esc(p.say):''}</span><input data-note="${p.id}" data-da="${esc(p.da)}" data-was="${esc(notes[p.id]||'')}" value="${esc(notes[p.id]||'')}" placeholder="Correction or comment"></div>`).join('')}</details>`).join('')
+    +`<button class="btn" data-a="savenotes">Save my notes</button><button class="link" data-a="tab" data-v="fam">Back</button>`;
 }
 /* ---------- sync: counters take the larger value, collections are joined, dated things take the later date ---------- */
 const dnum=k=>{const a=String(k||'').split('-').map(Number);return a.length===3&&a.every(Number.isFinite)?a[0]*10000+a[1]*100+a[2]:0};
@@ -579,10 +972,14 @@ function merge(a,b){
   const da=dnum(a.lastDay),db=dnum(b.lastDay);
   if(db>da){o.streak=b.streak;o.lastDay=b.lastDay}else if(db===da)o.streak=Math.max(+a.streak||0,+b.streak||0);else{o.streak=a.streak;o.lastDay=a.lastDay}
   const A=a.day||{k:''},B=b.day||{k:''};
-  o.day=A.k===B.k?{k:A.k,lessons:Math.max(A.lessons||0,B.lessons||0),speaks:Math.max(A.speaks||0,B.speaks||0),combo:Math.max(A.combo||0,B.combo||0),q:[...new Set([...(A.q||[]),...(B.q||[])])]}:(dnum(B.k)>dnum(A.k)?B:A);
+  o.day=A.k===B.k?{k:A.k,review:Math.max(A.review||0,B.review||0),lessons:Math.max(A.lessons||0,B.lessons||0),speaks:Math.max(A.speaks||0,B.speaks||0),combo:Math.max(A.combo||0,B.combo||0),q:[...new Set([...(A.q||[]),...(B.q||[])])]}:(dnum(B.k)>dnum(A.k)?B:A);
   const WA=a.week||{k:'',xp:0},WB=b.week||{k:'',xp:0};
   o.week=WA.k===WB.k?{k:WA.k,xp:Math.max(WA.xp||0,WB.xp||0)}:(dnum(WB.k)>dnum(WA.k)?WB:WA);
   if((+b.tripAt||0)>(+a.tripAt||0)){o.trip=b.trip;o.tripAt=b.tripAt}else{o.trip=a.trip||b.trip||'';o.tripAt=a.tripAt||b.tripAt||0}
+  const isO=v=>v&&typeof v==='object'&&!Array.isArray(v),SP=['xp','speaks','perfect','bestCombo','earned','badges','bakery','starred','done','streak','lastDay','day','week','trip','tripAt','name'];
+  new Set([...Object.keys(a),...Object.keys(b)]).forEach(k=>{if(SP.includes(k))return;const va=a[k],vb=b[k];if(!isO(va)||!isO(vb))return;
+    if(typeof va.t==='number'||typeof vb.t==='number'){o[k]=(+vb.t||0)>(+va.t||0)?vb:va;return}
+    const m=Object.assign({},vb);for(const id in va){const x=va[id],y=vb[id];m[id]=isO(x)&&isO(y)&&(+y.t||0)>(+x.t||0)?y:x}o[k]=m});
   return o}
 async function sync(){
   if(!CODE||syncing)return false;syncing=true;
@@ -590,7 +987,7 @@ async function sync(){
     const r=await fetch(SYNC+'/sync/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify({state:S})});
     if(r.status===404){CODE='';try{localStorage.removeItem(CODEKEY)}catch(e){}return false}
     if(!r.ok)return false;
-    const j=await r.json();family=j.family||null;if(j.lessons&&!cur&&sheet===null)setLessons(j.lessons);try{localStorage.setItem(CODEKEY,CODE)}catch(e){}
+    const j=await r.json();family=j.family||null;fx=j;if(j.lessons&&!cur&&sheet===null)setLessons(j.lessons);try{localStorage.setItem(CODEKEY,CODE)}catch(e){}
     const keep={sound:S.sound,solo:S.solo};S=Object.assign(merge(S,j.state||S),keep);
     const renamed=j.name&&j.name!==NAME;S.name=j.name||S.name;save();
     if(renamed){location.reload();return true}
@@ -650,28 +1047,61 @@ function me(){
 }
 
 /* ---------- lesson engine ---------- */
-function pool(li){return L[li].x?[...L[li].p,...learned(S).filter(q=>!q.id.startsWith(L[li].key+'-'))]:L.slice(0,li+1).flatMap(l=>l.p)}
+function pool(li){if(li===-2)return L.slice(0,CORE).flatMap(l=>l.p);if(li<0)return learned(S);return L[li].x?[...L[li].p,...learned(S).filter(q=>!q.id.startsWith(L[li].key+'-'))]:L.slice(0,li+1).flatMap(l=>l.p)}
 function options(p,li,key,k){const o=sh(pool(li).filter(x=>x[key]!==p[key]&&x.id!==p.id));const pick=[];for(const x of o){if(!pick.some(y=>y[key]===x[key]))pick.push(x);if(pick.length===(k||3))break}return sh([p,...pick])}
 function tf(p,li){const truth=Math.random()<.5,o=rnd(pool(li).filter(x=>x.en!==p.en));return {k:'tf',p,truth,shown:truth?p.en:o.en}}
+const words=t=>t.replace(/[?!.,]/g,'').split(' '),multiWord=p=>p.da.split(' ').length>=2;
+const bankWords=li=>[...new Set(pool(li).flatMap(x=>words(x.da)))];
+function tileStep(p,li,listen){const w=words(p.da),extra=sh(bankWords(li).filter(x=>!w.includes(x))).slice(0,3);return {k:'tiles',listen:!!listen,p,w,bank:sh([...w,...extra])}}
+function fillStep(p,li){const w=words(p.da),wi=Math.floor(Math.random()*w.length),ans=w[wi],others=sh(bankWords(li).filter(x=>x.toLowerCase()!==ans.toLowerCase())).slice(0,2);
+  return {k:'fill',p,gap:w.map((x,i)=>i===wi?'____':x).join(' '),ans,opts:sh([ans,...others])}}
+/* Lessons come in three shapes so the order of practice is not the same every time. */
 function build(li){
-  const P=L[li].p,st=[],sm=!!L[li].x;
+  const l=L[li],P=l.p,sm=!!l.x,teach=[],v=sm?0:li%3;
   for(let c=0;c<P.length;c+=4){const ch=P.slice(c,c+4);
-    ch.forEach((p,i)=>{st.push({k:'learn',p});
-      if(i%2===1){const q=ch[i-(Math.random()<.5?1:0)];st.push({k:'hear',p:q,o:options(q,li,'en')})}});
-    if(ch.length>=3)st.push({k:'match',ps:ch});
-    sh(ch).slice(0,sm?0:2).forEach(p=>st.push(tf(p,li)));
+    ch.forEach((p,i)=>{teach.push({k:'learn',p});
+      if(i%2===1){const q=ch[i-(Math.random()<.5?1:0)];teach.push(v===1&&multiWord(q)?fillStep(q,li):{k:'hear',p:q,o:options(q,li,'en')})}});
+    if(ch.length>=3)teach.push({k:'match',ps:ch});
+    sh(ch).slice(0,sm?0:v===2?1:2).forEach(p=>teach.push(tf(p,li)));
   }
-  (L[li].d||[]).forEach(t=>{const p=P[t[2]];st.push({k:'chat',line:{da:t[0],en:t[1]},p,o:options(p,li,'da',2)})});
-  sh(P).slice(0,sm?4:6).forEach(p=>st.push({k:'pick',p,o:options(p,li,'da')}));
-  const multi=sh(P.filter(p=>p.da.split(' ').length>=2)).slice(0,sm?3:4);
-  multi.forEach((p,i)=>{const w=p.da.replace(/[?!.,]/g,'').split(' ');
-    const extra=sh([...new Set(pool(li).flatMap(x=>x.da.replace(/[?!.,]/g,'').split(' ')))].filter(x=>!w.includes(x))).slice(0,3);
-    st.push({k:'tiles',listen:i%2===1,p,w,bank:sh([...w,...extra])})});
-  if(!sm&&multi.length<3)sh(P).slice(0,4).forEach(p=>st.push(tf(p,li)));
-  sh(P).slice(0,sm?3:4).forEach(p=>st.push({k:'speak',p}));
-  return st;
+  const chat=(l.d||[]).map(t=>{const p=P[t[2]];return {k:'chat',line:{da:t[0],en:t[1]},p,o:options(p,li,'da',2)}});
+  const pick=sh(P).slice(0,sm?4:5).map(p=>({k:'pick',p,o:options(p,li,'da')}));
+  const multi=sh(P.filter(multiWord));
+  const tiles=multi.slice(0,3).map((p,i)=>tileStep(p,li,i%2===1));
+  const fill=sm?[]:multi.slice(3,5).concat(multi.slice(0,2)).slice(0,2).map(p=>fillStep(p,li));
+  const mix=(l.mix||[]).map(p=>tileStep(p,li,false));
+  const extra=!sm&&multi.length<3?sh(P).slice(0,4).map(p=>tf(p,li)):[];
+  const speak=sh(P).slice(0,sm?3:4).map(p=>({k:'speak',p}));
+  const blocks=[[chat,pick,tiles,fill,mix],[pick,chat,fill,tiles,mix],[tiles,pick,chat,mix,fill]][v];
+  return [...teach,...blocks.flat(),...extra,...speak];
 }
-function start(li,quiet){sheet=null;cur={quiet:!!quiet,li,steps:build(li),i:0,right:0,graded:0,combo:0,best:0,chat:[],state:{}};window.scrollTo(0,0);sfx('tap');renderStep()}
+const fresh=o=>Object.assign({mode:'lesson',li:-1,quiet:false,i:0,right:0,graded:0,combo:0,best:0,chat:[],state:{}},o);
+const begin=c=>{sheet=null;cur=c;window.scrollTo(0,0);sfx('tap');renderStep()};
+function start(li,quiet){if(L[li].story)return startStory(li);begin(fresh({quiet:!!quiet,li,steps:build(li)}))}
+function startReview(){
+  let ids=due().slice(0,12);const wasDue=ids.slice();
+  if(ids.length<6)ids=ids.concat(sh(learned(S).map(p=>p.id).filter(id=>!wasDue.includes(id))).sort((a,b)=>((S.srs[a]||{}).b||0)-((S.srs[b]||{}).b||0)).slice(0,8-ids.length));
+  if(!ids.length)return;
+  const st=sh(ids).map((id,i)=>{const p=PH[id],t=((((S.srs||{})[id]||{}).b||0)+i)%4,m=multiWord(p);
+    return t===0?{k:'hear',p,o:options(p,-1,'en')}:t===3?{k:'speak',p}:t===2&&m?(i%2?tileStep(p,-1,true):fillStep(p,-1)):{k:'pick',p,o:options(p,-1,'da')}});
+  begin(fresh({mode:'review',due:wasDue,steps:st}))}
+function startStory(li){const l=L[li];
+  begin(fresh({mode:'story',li,steps:[...l.story.map(a=>({k:'read',line:{da:a[0],en:a[1]}})),...l.q.map(q=>({k:'quiz',q:q[0],opts:sh(q[1].slice()),ans:q[1][q[2]]}))]}))}
+function startDuel(to,d){
+  let base=learned(S).filter(p=>p.id[0]!=='x');if(base.length<8)base=L[0].p.concat(L[1].p);
+  const ids=d?d.ids.filter(id=>PH[id]):sh(base).slice(0,8).map(p=>p.id);if(ids.length<4)return toast('Not enough shared phrases yet');
+  begin(fresh({mode:'duel',duel:{to,ids,t0:Date.now(),reply:d||null},steps:ids.map((id,i)=>i%2?{k:'hear',p:PH[id],o:options(PH[id],-2,'en')}:{k:'pick',p:PH[id],o:options(PH[id],-2,'da')})}))}
+/* A lesson left in the middle is kept on this device for a day and a half. */
+const RKEY='hejciera.resume',clearResume=()=>{try{localStorage.removeItem(RKEY)}catch(e){}};
+function saveResume(){
+  if(!cur||(cur.mode!=='lesson'&&cur.mode!=='review'))return;
+  try{const ser=s=>Object.assign({},s,{p:s.p?s.p.id:null,ps:s.ps?s.ps.map(x=>x.id):null,o:s.o?s.o.map(x=>x.id):null});
+    localStorage.setItem(RKEY,JSON.stringify({at:Date.now(),mode:cur.mode,key:cur.li>=0?L[cur.li].key:'',quiet:cur.quiet,due:cur.due||null,i:cur.i,right:cur.right,graded:cur.graded,combo:cur.combo,best:cur.best,chat:cur.chat,steps:cur.steps.map(ser)}))}catch(e){}}
+function getResume(){
+  try{const r=JSON.parse(localStorage.getItem(RKEY)||'null');if(!r||Date.now()-r.at>36*36e5||r.i<1||r.i>=r.steps.length)return null;
+    const li=r.mode==='lesson'?L.findIndex(l=>l.key===r.key):-1;if(r.mode==='lesson'&&li<0)return null;let bad=false;
+    const get=id=>{if(!PH[id])bad=true;return PH[id]},steps=r.steps.map(s=>{const o=Object.assign({},s);if(s.p)o.p=get(s.p);else delete o.p;if(s.ps)o.ps=s.ps.map(get);else delete o.ps;if(s.o)o.o=s.o.map(get);else delete o.o;return o});
+    return bad?null:Object.assign(r,{li,steps})}catch(e){return null}}
 const micBlock=()=>`<div class="spk" id="spk"></div>`;
 function renderStep(){
   const s=cur.steps[cur.i],p=s.p;cur.state={};
@@ -708,6 +1138,17 @@ function renderStep(){
     b=`<div class="ask">${s.listen?'Tap what you hear':'Build it in Danish'}</div>${s.listen?`<button class="bigplay" data-a="say" aria-label="Play again">🔊</button>`:`<div class="card"><div class="en" style="font-size:20px;font-weight:700">${esc(p.en)}</div></div>`}
     <div class="answer" id="ansrow"></div><div class="bank" id="bank">${s.bank.map((w,i)=>`<button class="word" data-a="word" data-v="${i}" style="animation-delay:${i*.04}s">${esc(w)}</button>`).join('')}</div>`;
     foot=`<button class="btn" data-a="check" id="go" disabled>Check</button>`;
+  }else if(s.k==='fill'){
+    b=`<div class="ask">Which word is missing?</div><div class="card"><div class="da" style="font-size:24px">${esc(s.gap)}</div><div class="en">${esc(p.en)}</div></div>
+    <div class="opts">${s.opts.map(x=>`<button class="opt" data-a="fillans" data-v="${esc(x)}">${esc(x)}</button>`).join('')}</div>`;
+  }else if(s.k==='read'){
+    const prev=cur.steps.slice(Math.max(0,cur.i-3),cur.i).filter(x=>x.k==='read');
+    b=`<div class="ask">${esc(L[cur.li].t)}</div><div class="chat">${prev.map(x=>`<div class="msg k" style="animation:none;opacity:.55">${esc(x.line.da)}</div>`).join('')}
+    <div class="who"><div class="m">${snegl('hi')}</div><button class="msg k" data-a="sayline" style="font-size:19px">${esc(s.line.da)} 🔊<small id="enline" hidden>${esc(s.line.en)}</small></button></div></div>
+    <div class="acts"><button class="btn sm ghost" data-a="english">👀 What does it mean?</button><button class="btn sm ghost" data-a="slowline">🐢 Slow</button></div>`;
+    foot=`<button class="btn" data-a="next" id="go">Continue</button>`;
+  }else if(s.k==='quiz'){
+    b=`<div class="ask">${esc(s.q)}</div><div class="opts">${s.opts.map((x,i)=>`<button class="opt" data-a="quizans" data-v="${i}">${esc(x)}</button>`).join('')}</div>`;
   }else if(s.k==='speak'){
     cur.state={tries:0};
     b=`<div class="ask">From memory: say it in Danish</div><div class="card"><div class="en" style="font-size:22px;font-weight:700">${esc(p.en)}</div><div class="da" id="peek" hidden>${esc(p.da)}</div><div class="acts"><button class="btn sm ghost" data-a="peek">👀 Peek</button></div></div>${micBlock()}`;
@@ -716,34 +1157,55 @@ function renderStep(){
   app.innerHTML=`<div class="player"><div class="pbar"><button class="x" data-a="quit" aria-label="Leave lesson">✕</button><div class="track"><div id="prog" style="width:${Math.max(4,cur.i/cur.steps.length*100)}%"></div></div><span class="cmb" id="cmb">${cur.combo>=2?'🔥 '+cur.combo:''}</span></div>
   <div class="step">${b}</div><div class="foot"><div id="fb"></div>${foot}</div></div>`;
   if(s.k==='learn'||s.k==='hear'||s.k==='tf'||(s.k==='tiles'&&s.listen))say(p.da);
-  if(s.k==='chat')say(s.line.da,false,'m');
+  if(s.k==='chat'||s.k==='read')say(s.line.da,false,s.k==='read'&&cur.i%2?'f':'m');
+  saveResume();
   if(!cur.quiet&&(s.k==='learn'||s.k==='speak')){refFeats(p.da,'f').catch(()=>{});drawSpeak('idle',s.k==='learn'?'Your turn! Tap and say it':'')}
 }
 function grade(ok,s,quiet){
   if(!s.retry){cur.graded++;if(ok)cur.right++}
-  if(!ok&&!s.retry)cur.steps.push(Object.assign({},s,{retry:true}));
+  if(!ok&&!s.retry&&cur.mode!=='duel')cur.steps.push(Object.assign({},s,{retry:true}));
+  srsHit(s.p,ok,s.retry);
   cur.combo=ok?cur.combo+1:0;cur.best=Math.max(cur.best,cur.combo);
   const d=today();d.combo=Math.max(d.combo||0,cur.combo);S.bestCombo=Math.max(S.bestCombo,cur.combo);
   const cm=document.getElementById('cmb');if(cm){cm.textContent=cur.combo>=2?'🔥 '+cur.combo:'';cm.classList.remove('bump');void cm.offsetWidth;cm.classList.add('bump')}
   if(ok&&[3,5,8,12,16,20].includes(cur.combo))comboPop(cur.combo);else sfx(ok?'ok':'no');
   const pr=rnd(PRAISE);
   document.getElementById('fb').innerHTML=ok?`<div class="fb ok"><div class="m">${snegl('yay')}</div><div>${pr[0]}<small>${pr[1]}</small></div></div>`
-    :`<div class="fb no"><div class="m">${snegl('oops')}</div><div>Næsten!<small>Almost. "${esc(s.p.da)}" means "${esc(s.p.en)}". You'll get it again.</small></div></div>`;
+    :`<div class="fb no"><div class="m">${snegl('oops')}</div><div>Næsten!<small>${s.p?`Almost. "${esc(s.p.da)}" means "${esc(s.p.en)}".${cur.mode==='duel'?'':" You'll get it again."}`:`The answer was "${esc(s.ans)}".`}</small></div></div>`;
   const go=document.getElementById('go');go.disabled=false;go.dataset.a='next';go.textContent='Continue';go.className='btn '+(ok?'good':'miss');
   const pg=document.getElementById('prog');if(pg&&ok)pg.style.width=(cur.i+1)/cur.steps.length*100+'%';
-  if(!quiet)setTimeout(()=>say(s.p.da,false,s.k==='chat'?'f':undefined),ok?350:500);
+  if(!quiet&&s.p)setTimeout(()=>say(s.p.da,false,s.k==='chat'?'f':undefined),ok?350:500);
   quests();
 }
 function next(){
   hush();stopRec();
   cur.i++;if(cur.i>=cur.steps.length)return finish();window.scrollTo(0,0);renderStep();
 }
+function finishOther(){
+  const m=cur.mode,right=cur.right,total=cur.graded,acc=total?right/total:1;let title='',sub='',gain=0;
+  if(m==='review'){gain=10+Math.round(acc*5);today().review=1;S.stat=Object.assign(stat(),{rv:stat().rv+1,t:Date.now()});bumpStreak();title='Dagens runde er klaret!';sub=`Today's round is done. ${right} of ${total} right.`}
+  else if(m==='story'){const l=L[cur.li],first=!S.done[l.key],stars=acc>=.99?3:acc>=.5?2:1;gain=first?20:5;S.done[l.key]={stars:Math.max(stars,(S.done[l.key]||{}).stars||0)};
+    if(first)S.stat=Object.assign(stat(),{st:stat().st+1,t:Date.now()});bumpStreak();today().lessons=(today().lessons||0)+1;title='Godt læst!';sub=`Well read. ${right} of ${total} questions right.`}
+  else{const d=cur.duel,ms=Date.now()-d.t0,post=(path,body)=>fetch(SYNC+path,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify(body)}).then(r=>r.json()).then(j=>{if(j.duels){fx.duels=j.duels;if(tab==='fam'&&!cur&&!document.querySelector('.fin'))render()}}).catch(()=>{});gain=5;
+    if(d.reply){const a=d.reply.a,win=right>a.score||(right===a.score&&ms<a.ms);if(win)S.stat=Object.assign(stat(),{dw:stat().dw+1,t:Date.now()});
+      title=win?'Du vandt!':'Så tæt på!';sub=`${win?'You won':esc(d.to)+' won'}: you ${right}, ${esc(d.to)} ${a.score}.`;post('/duel/'+CODE+'/'+d.reply.id,{score:right,ms})}
+    else{title='Udfordring sendt!';sub=`Challenge sent. ${esc(d.to)} has to beat ${right} of ${total} in ${Math.round(ms/1000)} seconds.`;post('/duel/'+CODE,{to:d.to,ids:d.ids,score:right,ms})}}
+  S.earned+=gain;S.xp+=right;week().xp+=right;
+  const won=BADGES.filter(b=>!S.badges.includes(b.id)&&b.ok(S));won.forEach(b=>S.badges.push(b.id));
+  save();clearResume();cur=null;tab=m==='duel'?'fam':'home';
+  app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div><h1>${title}</h1><p>${sub}</p>
+  <div class="won" style="display:flex;gap:10px;justify-content:center"><span class="chip" style="flex:none">🪙 +${gain}<small>kroner</small></span><span class="chip" style="flex:none">🔥 ${S.streak}<small>streak</small></span></div>
+  ${won.length?`<div class="grid" style="width:100%">${won.map(b=>`<div class="tile own new"><i>${b.i}</i><b>${b.t}</b><small>New badge!</small></div>`).join('')}</div>`:''}
+  <button class="btn" data-a="tab" data-v="${tab}">Continue</button></div></div>`;
+  sfx('win');confetti();quests();sync();
+}
 function finish(){
+  if(cur.mode!=='lesson')return finishOther();
   const li=cur.li,key=L[li].key,acc=cur.graded?cur.right/cur.graded:1,stars=acc>=.9?3:acc>=.7?2:1,first=!S.done[key],best=cur.best;
-  const gain=15+stars*5+(first?10:0);
+  const dbl=boost().n>0;if(dbl)S.boost={n:0,t:Date.now()};
+  const gain=(15+stars*5+(first?10:0))*(dbl?2:1);
   S.earned+=gain;S.xp+=cur.right;week().xp+=cur.right;if(acc===1)S.perfect++;
-  const t=dayKey(),y=dayKey(new Date(Date.now()-864e5));
-  if(S.lastDay!==t){S.streak=S.lastDay===y?S.streak+1:1;S.lastDay=t}
+  bumpStreak();clearResume();L[li].p.forEach(p=>{if(!S.srs[p.id])S.srs[p.id]={b:1,d:dayNo()+1,miss:0,t:Date.now()}});
   S.done[key]={stars:Math.max(stars,S.done[key]?S.done[key].stars:0)};
   today().lessons++;
   const won=BADGES.filter(b=>!S.badges.includes(b.id)&&b.ok(S));won.forEach(b=>S.badges.push(b.id));
@@ -877,7 +1339,7 @@ async function judge(blob,s,st){
 function allowOn(){const go=document.getElementById('go');if(go){go.disabled=false;go.textContent='Continue anyway'}}
 
 /* ---------- actions ---------- */
-const byId=id=>L.flatMap(l=>l.p).find(p=>p.id===id);
+const byId=id=>PH[id];
 const A={
   tab(el){tab=el.dataset.v;sheet=null;rewards.just=null;window.scrollTo(0,0);sfx('tap');render();if(tab==='fam'||tab==='home')sync()},
   async link(){const el=document.getElementById('code'),c=((el&&el.value)||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
@@ -886,6 +1348,24 @@ const A={
     if(!ok){CODE='';linkMsg='That code did not work. Check it with Scott, and that you are online.';render();return}
     linkMsg='';render()},
   solo(){S.solo=true;save();render()},
+  review(){startReview()},
+  resume(){const r=getResume();if(!r)return render();begin(fresh({mode:r.mode,li:r.li,quiet:r.quiet,due:r.due,steps:r.steps,i:r.i,right:r.right,graded:r.graded,combo:r.combo,best:r.best,chat:r.chat||[]}))},
+  dropresume(){clearResume();render()},
+  fillans(el){const s=cur.steps[cur.i];if(cur.state.done)return;cur.state.done=true;const ok=el.dataset.v===s.ans;el.classList.add(ok?'ok':'no');
+    if(!ok){el.classList.add('shake');[...document.querySelectorAll('.opt')].forEach(o=>{if(o.dataset.v===s.ans)o.classList.add('ok')})}grade(ok,s)},
+  quizans(el){const s=cur.steps[cur.i];if(cur.state.done)return;cur.state.done=true;const ok=s.opts[+el.dataset.v]===s.ans;el.classList.add(ok?'ok':'no');if(!ok)el.classList.add('shake');grade(ok,s,true)},
+  english(){const e=document.getElementById('enline');if(e)e.hidden=false},
+  slowline(){say(cur.steps[cur.i].line.da,true,'m')},
+  duel(el){startDuel(el.dataset.v)},
+  duelplay(el){const d=(fx.duels||[]).find(x=>x.id===el.dataset.v);if(d)startDuel(d.from,d)},
+  async setprize(){try{const r=await fetch(SYNC+'/family/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify({prize:document.getElementById('prize').value})});if(r.ok){fx.prize=(await r.json()).prize;toast('Prize saved')}}catch(e){}render()},
+  async savenotes(el){el.disabled=true;el.textContent='Saving…';let n=0;
+    for(const i of document.querySelectorAll('input[data-note]')){if(i.value.trim()===i.dataset.was)continue;
+      try{const r=await fetch(SYNC+'/note/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify({id:i.dataset.note,da:i.dataset.da,text:i.value})});if(r.ok){fx.coachData.notes=(await r.json()).notes;i.dataset.was=i.value.trim();n++}}catch(e){}}
+    el.disabled=false;el.textContent='Save my notes';toast(n?n+' saved':'Nothing new to save')},
+  shop(el){const k=el.dataset.v,cost=k==='fz'?80:60;if(kr()<cost)return;
+    if(k==='fz'){if(fz().n>=2)return;S.fz={n:fz().n+1,t:Date.now()}}else{if(boost().n)return;S.boost={n:1,t:Date.now()}}
+    S.shop={spent:((S.shop&&S.shop.spent)||0)+cost,t:Date.now()};save();render();sfx('coin');sync()},
   rec(){
     if(!navigator.mediaDevices||!window.MediaRecorder){say2('This browser cannot record. Type what happened instead.',true);return}
     hush();
@@ -921,7 +1401,7 @@ const A={
   start(el){start(+el.dataset.v,!!el.dataset.q)},
   quit(){stopRec();hush();cur=null;render()},
   say(){say(cur.steps[cur.i].p.da)},
-  sayline(){say(cur.steps[cur.i].line.da,false,'m')},
+  sayline(){say(cur.steps[cur.i].line.da,false,cur.steps[cur.i].k==='read'&&cur.i%2?'f':'m')},
   other(){cur.state.who=stepVoice()==='f'?'m':'f';say(cur.steps[cur.i].p.da)},
   slow(){say(cur.steps[cur.i].p.da,true)},
   hear(el){say(byId(el.dataset.v).da)},
@@ -959,7 +1439,7 @@ const A={
   buy(el){const b=BAKERY.find(x=>x.id===el.dataset.v);if(kr()<b.p||S.bakery.includes(b.id))return;S.bakery.push(b.id);rewards.just=b.id;
     BADGES.forEach(x=>{if(!S.badges.includes(x.id)&&x.ok(S))S.badges.push(x.id)});save();render();sfx('coin');confetti();sync()},
   sound(){S.sound=!S.sound;save();render();sfx('ok')},
-  reset(el){if(el.dataset.sure){S=def();CODE='';try{localStorage.removeItem(CODEKEY)}catch(e){}setLessons([]);save();render()}else{el.dataset.sure=1;el.textContent='Tap again to erase this device'}}
+  reset(el){if(el.dataset.sure){S=def();CODE='';try{localStorage.removeItem(CODEKEY)}catch(e){}setLessons([]);clearResume();save();render()}else{el.dataset.sure=1;el.textContent='Tap again to erase this device'}}
 };
 function drawTiles(s){const st=cur.state;
   document.getElementById('ansrow').innerHTML=st.picked.map(i=>`<button class="word" data-a="unword" data-v="${i}">${esc(s.bank[i])}</button>`).join('');
@@ -977,8 +1457,13 @@ function confetti(){
     if(++f<130)requestAnimationFrame(tick);else c.hidden=true})();
 }
 try{const qc=new URLSearchParams(location.search).get('c');if(qc){CODE=qc.toUpperCase().replace(/[^A-Z0-9]/g,'');history.replaceState(null,'',location.pathname)}}catch(e){}
+learned(S).forEach(p=>{if(!S.srs[p.id])S.srs[p.id]={b:1,d:dayNo(),miss:0,t:1}});
 today();week();render();sync();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!cur)sync()});
+if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+/* Fetch the clips for the next lesson quietly so it works without a connection. */
+setTimeout(()=>{const i=PATH.find(k=>!S.done[L[k].key]);if(i===undefined)return;const l=L[i];
+  [...l.p.map(p=>p.da),...l.d.map(d=>d[0]),...(l.mix||[]).map(p=>p.da),...(l.story||[]).map(a=>a[0])].forEach(t=>['f','m'].forEach(w=>fetch('audio/'+w+'/'+slug(t)+'.mp3').catch(()=>{})))},4000);
 if('speechSynthesis'in window){try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice}catch(e){}}
 window.addEventListener('error',e=>{if(!app.innerHTML)app.innerHTML='<div class="page"><div class="note">Something went wrong loading the app. Send Scott this: '+esc(e.message)+'</div></div>'});
 </script>
