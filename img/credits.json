@@ -23,5 +23,65 @@
   "file": "img/rundetaarn.jpg",
   "credit": "Photo: Avda, CC BY-SA 3.0, via Wikimedia Commons",
   "source": "https://commons.wikimedia.org/wiki/File:Copenhagen_-_Rundet%C3%A5rn_-_2013.jpg"
+ },
+ "amalienborg": {
+  "file": "img/amalienborg.jpg",
+  "credit": "Photo: European Commission / Joshua Andrew Gross, CC BY 4.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:Amalienborg_Palace_%28cropped%29.jpg"
+ },
+ "christiania": {
+  "file": "img/christiania.jpg",
+  "credit": "Photo: Franklin Heijnen, CC BY-SA 2.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:Freetown_Christiania_-_main_entrance.jpg"
+ },
+ "amager": {
+  "file": "img/amager.jpg",
+  "credit": "Photo: Stig Nygaard's, CC BY 2.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:Amager_Strandpark_-_kite_surfers.jpg"
+ },
+ "smoerrebroed": {
+  "file": "img/smoerrebroed.jpg",
+  "credit": "Photo: User:Nillerdk, CC BY-SA 3.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:Ida_Davidsen_udsnit_af_glasmontren.JPG"
+ },
+ "raadhus": {
+  "file": "img/raadhus.jpg",
+  "credit": "Photo: European Commission, CC BY 4.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:Copenhagen_City_Hall_on_R%C3%A5dhuspladsen_%28City_Hall_Square%29_2.jpg"
+ },
+ "vordingborg": {
+  "file": "img/vordingborg.jpg",
+  "credit": "Photo: Erik Cleves Kristensen from San Salvador, CC BY 2.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:View_from_G%C3%A5set%C3%A5rnetKlassik.jpg"
+ },
+ "polsevogn": {
+  "file": "img/polsevogn.jpg",
+  "credit": "Photo: User:Nillerdk, CC BY-SA 3.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:P%C3%B8lsevogn_p%C3%A5_N%C3%B8rrebro.jpg"
+ },
+ "magasin": {
+  "file": "img/magasin.jpg",
+  "credit": "Photo: Bahnfrend, CC BY-SA 4.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:Magasin_du_Nord%2C_2019_%2801%29.jpg"
+ },
+ "cbs": {
+  "file": "img/cbs.png",
+  "credit": "Photo: Unknown authorUnknown author, Public domain, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:Logo_CopenhagenBusinessSchool.svg"
+ },
+ "cykler": {
+  "file": "img/cykler.jpg",
+  "credit": "Photo: heb@Wikimedia Commons (mail), CC BY-SA 3.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:Cyclists_at_red_2.jpg"
+ },
+ "kanal": {
+  "file": "img/kanal.jpg",
+  "credit": "Photo: Thomas Rousing from Copenhagen, Denmark, CC BY 2.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:Christianshavns_Kanal_-_Kayaks.jpg"
+ },
+ "dyne": {
+  "file": "img/dyne.jpg",
+  "credit": "Photo: losmininos, CC BY-SA 2.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:La_cama_deshecha_%282724466831%29.jpg"
  }
 }
