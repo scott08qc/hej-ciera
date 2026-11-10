@@ -1630,7 +1630,7 @@ function confetti(){
   let f=0;(function tick(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.vy+=.32;p.x+=p.vx;p.y+=p.vy;p.vx*=.985;p.r+=.15;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.globalAlpha=Math.max(0,1-f/130);x.fillRect(-p.w/2,-p.w/2,p.w,p.w*.6);x.restore()});
     if(++f<130)requestAnimationFrame(tick);else c.hidden=true})();
 }
-try{const qc=new URLSearchParams(location.search).get('c');if(qc){CODE=qc.toUpperCase().replace(/[^A-Z0-9]/g,'');history.replaceState(null,'',location.pathname)}}catch(e){}
+try{const qc=new URLSearchParams(location.search).get('c');if(qc){CODE=qc.toUpperCase().replace(/[^A-Z0-9]/g,'')/* the code stays in the address so a home-screen icon made from this link signs itself in */}}catch(e){}
 learned(S).forEach(p=>{if(!S.srs[p.id])S.srs[p.id]={b:1,d:dayNo(),miss:0,t:1}});
 today();week();render();sync();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!cur)sync()});
