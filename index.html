@@ -781,7 +781,7 @@ function mic(){
   if(recog){try{recog.stop()}catch(e){}return}
   if(media){try{media.rec.stop()}catch(e){}return}
   hush();
-  if(REC){
+  if(REC&&!(CODE&&navigator.mediaDevices&&window.MediaRecorder)){
     let got=false;const r=recog=new REC();r.lang='da-DK';r.maxAlternatives=5;r.interimResults=false;
     const miss=()=>{st.tries++;sfx('tap');drawSpeak('again','I didn\'t catch that. Tap and try again.');if(st.tries>=2)allowOn()};
     r.onresult=e=>{got=true;let best=0,heard='';const res=e.results[0];for(let i=0;i<res.length;i++){const v=sim(res[i].transcript,s.p.da);if(v>=best){best=v;heard=res[i].transcript}}
@@ -812,6 +812,7 @@ function mic(){
 /* Calibrated 2026-11 on the 98 phrases: the same phrase in the other voice scores a gap of 1.8-2.46 (median 2.08),
    a different phrase 1.97-3.1 (median 2.49). Passing is a gap of 2.38 or less, set lenient for a learner. */
 const D_GOOD=1.95,D_BAD=2.73,PASS=45;
+let scoreOn=true;
 const refCache={},refDur={},melCache={};
 const decode=ab=>new Promise((res,rej)=>{AC=AC||new (window.AudioContext||window.webkitAudioContext)();AC.decodeAudioData(ab,res,rej)});
 function fft(re,im){const n=re.length;for(let i=1,j=0;i<n;i++){let b=n>>1;for(;j&b;b>>=1)j^=b;j^=b;if(i<j){let t=re[i];re[i]=re[j];re[j]=t;t=im[i];im[i]=im[j];im[j]=t}}
@@ -843,8 +844,29 @@ function matchPct(d){return Math.round(Math.max(0,Math.min(1,(D_BAD-d)/(D_BAD-D_
 async function judge(blob,s,st){
   drawSpeak('done','Checking…');const here=()=>cur&&cur.steps[cur.i]===s;
   try{
-    const mine=feats(await decode(await blob.arrayBuffer()));if(!here())return;st.tries++;
+    const buf=await decode(await blob.arrayBuffer()),mine=feats(buf);if(!here())return;st.tries++;
     if(!mine){drawSpeak('again','I could not hear you. Hold the phone a little closer and try again.');if(st.tries>=2)allowOn();return}
+    /* First choice: word-by-word pronunciation scoring from the speech service. The sound match below is the backup. */
+    if(CODE&&scoreOn){
+      try{
+        const r=await fetch(SYNC+'/assess/'+CODE+'?t='+encodeURIComponent(s.p.da),{method:'POST',headers:{'content-type':'audio/wav'},body:wavChunks(buf)[0]});
+        if(r.status===503)scoreOn=false;
+        if(r.ok){const j=await r.json();if(!here())return;
+          if(j.ok){
+            /* A name is not a Danish word, so it is left out of the grade. */
+            const all=(j.words||[]).filter(x=>x.err!=='Insertion'),w=all.filter(x=>x.w.toLowerCase()!==NAME.toLowerCase()),named=w.length<all.length&&w.length>0;
+            const miss=w.filter(x=>x.err==='Omission').length,weak=w.filter(x=>x.err!=='Omission'&&x.acc<60).map(x=>esc(x.w)).slice(0,2);
+            const acc=named?w.reduce((t,x)=>t+x.acc,0)/w.length:(j.acc||0),pct=Math.round(named?acc:(j.pron||0)),pass=w.length>0&&miss<=(w.length>=5?1:0)&&acc>=55;
+            if(pass)spoke(`${pct} out of 100. ${pct>=85?'Spot on!':weak.length?'Good! Keep working on "'+weak.join('" and "')+'".':'Nicely said!'}`);
+            else{
+              drawSpeak('compare',!j.heard||j.heard==='.'?'I could not make out the words. Listen once more and try again.'
+                :miss?`${pct} out of 100. I heard "${esc(j.heard)}". Say the whole phrase.`
+                :`${pct} out of 100. Work on "${weak.join('" and "')||esc(s.p.da)}". Listen to both, then try again.`);
+              if(st.tries>=2)allowOn()}
+            return}}
+      }catch(e){}
+      if(!here())return;
+    }
     const refs=(await Promise.all(['f','m'].map(w=>refFeats(s.p.da,w).catch(()=>null)))).filter(Boolean);if(!refs.length)throw 0;if(!here())return;
     const len=Math.min(...refs.map(r=>Math.max(mine.length/r.length,r.length/mine.length)));
     const pct=len>2.6?0:matchPct(Math.min(...refs.map(r=>dtw(mine,r))));

@@ -2,4 +2,6 @@ texts.json
 run.log
 .admin-key
 names.json
+names_repo.json
 players.txt
+rerecord*.log
