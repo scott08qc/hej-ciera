@@ -1151,10 +1151,16 @@ function me(){
 function pool(li){if(li===-2)return L.slice(0,CORE).flatMap(l=>l.p);if(li<0)return learned(S);return L[li].x?[...L[li].p,...learned(S).filter(q=>!q.id.startsWith(L[li].key+'-'))]:L.slice(0,li+1).flatMap(l=>l.p)}
 function options(p,li,key,k){const o=sh(pool(li).filter(x=>x[key]!==p[key]&&x.id!==p.id));const pick=[];for(const x of o){if(!pick.some(y=>y[key]===x[key]))pick.push(x);if(pick.length===(k||3))break}return sh([p,...pick])}
 function tf(p,li){const truth=Math.random()<.5,o=rnd(pool(li).filter(x=>x.en!==p.en));return {k:'tf',p,truth,shown:truth?p.en:o.en}}
-const words=t=>t.replace(/[?!.,]/g,'').split(' '),multiWord=p=>p.da.split(' ').length>=2;
-const bankWords=li=>[...new Set(pool(li).flatMap(x=>words(x.da)))];
-function tileStep(p,li,listen){const w=words(p.da),extra=sh(bankWords(li).filter(x=>!w.includes(x))).slice(0,3);return {k:'tiles',listen:!!listen,p,w,bank:sh([...w,...extra])}}
-function fillStep(p,li){const w=words(p.da),wi=Math.floor(Math.random()*w.length),ans=w[wi],others=sh(bankWords(li).filter(x=>x.toLowerCase()!==ans.toLowerCase())).slice(0,2);
+const words=t=>t.replace(/[?!.,]/g,'').split(' ');
+/* A phrase is only worth building from tiles when it has at least two different words ("Hej hej" does not). */
+const multiWord=p=>new Set(words(p.da).map(x=>x.toLowerCase())).size>=2;
+/* Tiles drop the capital on the first word, so the capital does not give the answer away. Names and the Danish "I" keep theirs. */
+let PROPER=null;
+const proper=()=>{const n=Object.keys(PH).length;if(!PROPER||PROPER.n!==n){PROPER=new Set(Object.values(PH).flatMap(q=>words(q.da).slice(1).filter(x=>/^[A-ZÆØÅ]/.test(x))));PROPER.n=n}return PROPER};
+const tw=p=>{const w=words(p.da);if(w[0]!=='I'&&w[0]!==NAME&&!proper().has(w[0]))w[0]=w[0].toLowerCase();return w};
+const bankWords=li=>[...new Set(pool(li).flatMap(x=>tw(x)))];
+function tileStep(p,li,listen){const w=tw(p),extra=sh(bankWords(li).filter(x=>!w.includes(x))).slice(0,3);return {k:'tiles',listen:!!listen,p,w,bank:sh([...w,...extra])}}
+function fillStep(p,li){const w=words(p.da),wi=w.length>1?1+Math.floor(Math.random()*(w.length-1)):0,ans=w[wi],others=sh(bankWords(li).filter(x=>x.toLowerCase()!==ans.toLowerCase())).slice(0,2);
   return {k:'fill',p,gap:w.map((x,i)=>i===wi?'____':x).join(' '),ans,opts:sh([ans,...others])}}
 /* Lessons come in three shapes so the order of practice is not the same every time. */
 function build(li){
@@ -1589,7 +1595,7 @@ const A={
     el.classList.add('used');st.picked.push(+el.dataset.v);sfx('tap');drawTiles(s)},
   unword(el){const st=cur.state,s=cur.steps[cur.i];if(st.done)return;const i=+el.dataset.v;
     st.picked=st.picked.filter(x=>x!==i);document.querySelector(`#bank .word[data-v="${i}"]`).classList.remove('used');drawTiles(s)},
-  check(){const s=cur.steps[cur.i],st=cur.state;st.done=true;grade(st.picked.map(i=>s.bank[i]).join(' ')===s.w.join(' '),s)},
+  check(){const s=cur.steps[cur.i],st=cur.state;st.done=true;grade(st.picked.map(i=>s.bank[i]).join(' ').toLowerCase()===s.w.join(' ').toLowerCase(),s)},
   mic,
   mine(){myAudio&&myAudio.play().catch(()=>{})},
   selfok(){spoke('Godt! Saying it out loud is the whole trick.')},
