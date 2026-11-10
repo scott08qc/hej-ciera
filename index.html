@@ -139,9 +139,9 @@ input,textarea{font:inherit;color:var(--fg);background:var(--surface);border:2px
 textarea{resize:vertical;min-height:130px;line-height:1.4;width:100%}
 textarea:focus-visible{outline:2px solid var(--candle);outline-offset:3px}
 .tipline{color:var(--muted);font-size:13px;margin-top:-10px}
-.shot{width:100%;max-height:170px;object-fit:cover;border-radius:16px;filter:brightness(.82)}
+.shot{width:100%;max-height:190px;object-fit:cover;object-position:center 28%;border-radius:16px;filter:brightness(.82)}
 .pc{background:var(--surface);border:2px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 4px 0 var(--ledge)}
-.pc img{width:100%;aspect-ratio:4/3;object-fit:cover;filter:brightness(.82)}
+.pc img{width:100%;max-height:52vh;object-fit:cover;object-position:center 28%;filter:brightness(.82)}
 .pct{padding:14px 16px 6px;display:flex;flex-direction:column;gap:4px}
 .pct b{font-family:var(--display);font-size:22px}
 .pc small{padding:0 16px 12px;color:var(--muted);font-size:11px}
@@ -720,11 +720,15 @@ function addPack(){
   (PACK.units||[]).forEach(u=>UNITS.push(Object.assign({pk:true},u)));
   PACK.lessons.forEach(x=>{const l={u:NU+(x.u||0),pk:true,stamp:x.stamp||'',key:x.key,t:x.t,en:x.en,i:x.i,cards:x.cards||[],d:x.d||[]};
     l.p=(x.p||[]).map((a,pi)=>PH[x.key+'-'+pi]={id:x.key+'-'+pi,da:a[0],en:a[1],say:a[2]||'',note:a[3]||''});
-    l.mix=(x.mix||[]).map((a,mi)=>PH[x.key+'-m'+mi]={id:x.key+'-m'+mi,da:a[0],en:a[1],say:'',note:'',mix:true});L.push(l)})}
+    l.mix=(x.mix||[]).map((a,mi)=>PH[x.key+'-m'+mi]={id:x.key+'-m'+mi,da:a[0],en:a[1],say:'',note:'',mix:true});L.push(l)});
+  Object.keys(PACK.core||{}).forEach(k=>{const l=L.slice(0,CORE).find(q=>q.key===k),x=PACK.core[k];if(!l)return;
+    l.cards=x.cards||[];l.p=l.bp.concat((x.p||[]).map((a,i)=>PH[k+'-px'+i]={id:k+'-px'+i,da:a[0],en:a[1],say:a[2]||'',note:a[3]||''}));l.d=l.bd.concat(x.d||[])})}
+const imgUrl=x=>x&&x.indexOf('photo:')===0?SYNC+'/photo/'+CODE+'/'+x.slice(6)+'.jpg':x;
 function setPack(pk){PACK=pk||null;setLessons(famList)}
 function isOpen(i){const l=L[i];if(l.x||l.pk)return true;for(let j=PATH.indexOf(i)-1;j>=0;j--){const q=L[PATH[j]];if(l.story||!q.story)return !!S.done[q.key]}return true}
 function setLessons(list){
-  famList=list||[];L.length=CORE;UNITS.length=NU;addPack();
+  famList=list||[];L.length=CORE;UNITS.length=NU;
+  L.forEach(l=>{if(!l.bp){l.bp=l.p;l.bd=l.d}l.p=l.bp;l.d=l.bd;l.cards=[]});addPack();
   (list||[]).forEach(x=>L.push({u:4,x:true,key:x.id,t:x.t,en:x.en,i:x.i,by:x.by,mine:!!x.mine,p:x.p.map((a,pi)=>PH[x.id+'-'+pi]={id:x.id+'-'+pi,da:a[0],en:a[1],say:a[2]||'',note:a[3]||''}),d:x.d||[],mix:[]}));
   try{localStorage.setItem('hejciera.lessons',JSON.stringify(list||[]))}catch(e){}
 }
@@ -916,7 +920,7 @@ function home(){
   return h+`<div class="note">More lessons are on the way. Scott adds them as you go.</div>`;
 }
 function sheetHtml(i){const l=L[i],u=UNITS[l.u],dn=S.done[l.key];
-  return `<div class="scrim" data-a="closesheet"></div><div class="sheet" style="--c:${u.c}"><div>${l.cards&&l.cards[0]?`<img class="shot" src="${esc(l.cards[0].img)}" alt="">`:`<div class="big">${esc(l.i)}</div>`}<h2>${esc(l.t)}</h2>
+  return `<div class="scrim" data-a="closesheet"></div><div class="sheet" style="--c:${u.c}"><div>${l.cards&&l.cards[0]?`<img class="shot" src="${esc(imgUrl(l.cards[0].img))}" alt="">`:`<div class="big">${esc(l.i)}</div>`}<h2>${esc(l.t)}</h2>
   <p>${l.story?esc(l.en)+' · a short story with Lars · about 3 minutes':esc(l.en)+' · '+l.p.length+' phrases · about '+(l.x?8:l.p.length>8?20:15)+' minutes'}${l.x&&l.by?' · from '+esc(l.by):''}</p>${dn?`<span class="nst" style="font-size:22px">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}
   <button class="btn" data-a="start" data-v="${i}">${l.story?(dn?'Read it again':'Read the story'):dn?'Practice again':'Start lesson'}</button>
   ${l.story?'':`<button class="link" data-a="start" data-v="${i}" data-q="1">🤫 Can't talk right now? Start without speaking</button>`}${l.x&&l.mine?`<button class="link" data-a="dellesson" data-v="${l.key}">Delete this lesson for everyone</button>`:''}</div></div>`}
@@ -1073,7 +1077,7 @@ function scottSay(text){
   if((fx.voices||[]).includes(slug(text))){hush();const a=player=new Audio(SYNC+'/voice/'+CODE+'/'+slug(text));a.onerror=()=>{if(player===a)say(text,false,'m')};const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{})}
   else say(text,false,'m')}
 function welcomePack(){const w=PACK.welcome,d=daysToTrip();
-  return `<div class="page"><div class="welcome"><div class="m">${snegl('yay')}</div><h1 style="font-size:34px">${esc(w.title)}</h1>
+  return `<div class="page"><div class="welcome">${w.img?`<img class="shot" style="max-height:300px" src="${esc(imgUrl(w.img))}" alt="">`:`<div class="m">${snegl('yay')}</div>`}<h1 style="font-size:34px">${esc(w.title)}</h1>
   <button class="love" data-a="wsay" style="animation:none"><i>💌</i><span><small>Fra Scott · tap to listen</small><b>${esc(w.da)}</b><em>${esc(w.en)}</em></span></button>
   <p style="color:var(--muted)">${esc(w.body)}</p>${d!==null&&d>0?`<div class="chips" style="justify-content:center"><span class="chip" style="flex:none">🇩🇰 ${d}<small>days to Denmark</small></span></div>`:''}
   <button class="btn" data-a="wgo">Begynd</button></div></div>`}
@@ -1175,7 +1179,8 @@ function build(li){
   const pick=sh(P).slice(0,sm?4:5).map(p=>({k:'pick',p,o:options(p,li,'da')}));
   const multi=sh(P.filter(multiWord));
   const tiles=multi.slice(0,3).map((p,i)=>tileStep(p,li,i%2===1));
-  const fill=sm?[]:multi.slice(3,5).concat(multi.slice(0,2)).slice(0,2).map(p=>fillStep(p,li));
+  const unfilled=multi.filter(p=>!teach.some(x=>x.k==='fill'&&x.p===p));
+  const fill=sm?[]:unfilled.slice(-2).map(p=>fillStep(p,li));
   const mix=(l.mix||[]).map(p=>tileStep(p,li,false));
   const extra=!sm&&multi.length<3?sh(P).slice(0,4).map(p=>tf(p,li)):[];
   const speak=sh(P).slice(0,sm?3:4).map(p=>({k:'speak',p}));
@@ -1197,7 +1202,7 @@ function startReview(){
 function startStory(li){const l=L[li];
   begin(fresh({mode:'story',li,steps:[...l.story.map(a=>({k:'read',line:{da:a[0],en:a[1]}})),...l.q.map(q=>({k:'quiz',q:q[0],opts:sh(q[1].slice()),ans:q[1][q[2]]}))]}))}
 function startDuel(to,d){
-  let base=learned(S).filter(p=>p.id[0]!=='x'&&p.id.slice(0,2)!=='pk');if(base.length<8)base=L[0].p.concat(L[1].p);
+  let base=learned(S).filter(p=>p.id[0]!=='x'&&p.id.slice(0,2)!=='pk'&&p.id.indexOf('-px')<0);if(base.length<8)base=L[0].p.concat(L[1].p);
   const ids=d?d.ids.filter(id=>PH[id]):sh(base).slice(0,8).map(p=>p.id);if(ids.length<4)return toast('Not enough shared phrases yet');
   begin(fresh({mode:'duel',duel:{to,ids,t0:Date.now(),reply:d||null},steps:ids.map((id,i)=>i%2?{k:'hear',p:PH[id],o:options(PH[id],-2,'en')}:{k:'pick',p:PH[id],o:options(PH[id],-2,'da')})}))}
 /* A lesson left in the middle is kept on this device for a day and a half. */
@@ -1218,7 +1223,7 @@ function renderStep(){
   let b='',foot=`<button class="btn" data-a="next" id="go" disabled>Continue</button>`;
   const skip=`<button class="link" data-a="goquiet">🤫 Can't talk right now? Finish without speaking</button>`;
   if(s.k==='card'){
-    b=`<div class="pc"><img src="${esc(s.card.img)}" alt=""><div class="pct"><b>${esc(s.card.t)}</b><span>${esc(s.card.c||'')}</span></div><small>${esc(s.card.credit||'')}</small></div>`;
+    b=`<div class="pc"><img src="${esc(imgUrl(s.card.img))}" alt=""><div class="pct"><b>${esc(s.card.t)}</b><span>${esc(s.card.c||'')}</span></div><small>${esc(s.card.credit||'')}</small></div>`;
     foot=`<button class="btn" data-a="next" id="go">Continue</button>`;
   }else if(s.k==='learn'){
     cur.state={tries:0};

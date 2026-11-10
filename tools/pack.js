@@ -6,7 +6,8 @@ const root = path.join(__dirname, '..'), who = process.argv[2];
 const src = JSON.parse(fs.readFileSync(path.join(root, 'private', who + '_pack.src.json'), 'utf8'));
 const credits = JSON.parse(fs.readFileSync(path.join(root, 'img', 'credits.json'), 'utf8'));
 src.lessons.forEach(l => {
-  l.cards = (l.cards || []).filter(c => credits[c.img]).map(c => ({ img: credits[c.img].file, t: c.t, c: c.c, credit: credits[c.img].credit }));
+  const card = c => c.img.startsWith('photo:') ? { img: c.img, t: c.t, c: c.c, credit: '' } : credits[c.img] ? { img: credits[c.img].file, t: c.t, c: c.c, credit: credits[c.img].credit } : null;
+  l.cards = (l.cards || []).map(card).filter(Boolean);
   (l.d || []).forEach(d => { if (!l.p[d[2]]) throw new Error(l.key + ': chat reply index ' + d[2]); });
   l.p.forEach(p => { if (p[0].split(' ').length > 8) throw new Error('too long: ' + p[0]); });
 });
@@ -15,6 +16,7 @@ if (process.argv.includes('--texts')) {
   src.lessons.forEach(l => [l.p, l.d, l.mix].forEach(list => (list || []).forEach(a => all.add(a[0]))));
   (src.msgs || []).forEach(m => all.add(m.da));
   if (src.welcome) all.add(src.welcome.da);
+  Object.values(src.core || {}).forEach(x => [x.p, x.d].forEach(list => (list || []).forEach(a => all.add(a[0]))));
   process.stdout.write(JSON.stringify([...all]));
 } else {
   src.t = Date.now();
