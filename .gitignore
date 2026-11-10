@@ -8,3 +8,5 @@ rerecord*.log
 photos.log
 private/
 pack_texts.json
+pack_todo.json
+photos-from-scott/

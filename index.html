@@ -1423,6 +1423,7 @@ const getBuf=u=>fetch(u).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()});
 const getClip=k=>getBuf('audio/'+k+'.mp3').catch(()=>getBuf(SYNC+'/audio/'+k+'.mp3'));
 function refFeats(text,who){const k=who+'/'+slug(text);return refCache[k]||(refCache[k]=getClip(k).then(decode).then(buf=>{refDur[slug(text)]=buf.duration;return feats(buf)}))}
 function matchPct(d){return Math.round(Math.max(0,Math.min(1,(D_BAD-d)/(D_BAD-D_GOOD)))*100)}
+function spLog(p,v,pass,svc){if(!p||!p.id)return;S.sp=S.sp||{};const e=S.sp[p.id]||{n:0,f:0,s:0,lo:100};v=Math.round(v)||0;e.n++;if(!pass)e.f++;e.s+=v;e.lo=Math.min(e.lo,v);e.last=v;e.svc=svc?1:0;e.t=Date.now();S.sp[p.id]=e;save()}
 async function judge(blob,s,st){
   drawSpeak('done','Checking…');const here=()=>cur&&cur.steps[cur.i]===s;
   try{
@@ -1438,7 +1439,7 @@ async function judge(blob,s,st){
             /* A name is not a Danish word, so it is left out of the grade. */
             const all=(j.words||[]).filter(x=>x.err!=='Insertion'),w=all.filter(x=>x.w.toLowerCase()!==NAME.toLowerCase()),named=w.length<all.length&&w.length>0;
             const miss=w.filter(x=>x.err==='Omission').length,weak=w.filter(x=>x.err!=='Omission'&&x.acc<60).map(x=>esc(x.w)).slice(0,2);
-            const acc=named?w.reduce((t,x)=>t+x.acc,0)/w.length:(j.acc||0),pct=Math.round(named?acc:(j.pron||0)),pass=w.length>0&&miss<=(w.length>=5?1:0)&&acc>=55;
+            const acc=named?w.reduce((t,x)=>t+x.acc,0)/w.length:(j.acc||0),pct=Math.round(named?acc:(j.pron||0)),pass=w.length>0&&miss<=(w.length>=5?1:0)&&acc>=55;spLog(s.p,acc,pass,1);
             if(pass)spoke(`${pct} out of 100. ${pct>=85?'Spot on!':weak.length?'Good! Keep working on "'+weak.join('" and "')+'".':'Nicely said!'}`);
             else{
               drawSpeak('compare',!j.heard||j.heard==='.'?'I could not make out the words. Listen once more and try again.'
@@ -1452,6 +1453,7 @@ async function judge(blob,s,st){
     const refs=(await Promise.all(['f','m'].map(w=>refFeats(s.p.da,w).catch(()=>null)))).filter(Boolean);if(!refs.length)throw 0;if(!here())return;
     const len=Math.min(...refs.map(r=>Math.max(mine.length/r.length,r.length/mine.length)));
     const pct=len>2.6?0:matchPct(Math.min(...refs.map(r=>dtw(mine,r))));
+    spLog(s.p,pct,pct>=PASS,0);
     if(pct>=PASS)spoke(`${pct}% match. ${pct>=75?'Spot on!':'Close enough to be understood!'}`);
     else{drawSpeak('compare',`${pct}% match. Listen to both, then try again.`);if(st.tries>=2)allowOn()}
   }catch(e){if(here())drawSpeak('review')}
