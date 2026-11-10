@@ -5,3 +5,6 @@ names.json
 names_repo.json
 players.txt
 rerecord*.log
+photos.log
+private/
+pack_texts.json

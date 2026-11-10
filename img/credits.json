@@ -1,0 +1,27 @@
+{
+ "tivoli": {
+  "file": "img/tivoli.jpg",
+  "credit": "Photo: European Commission, CC BY 4.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:Tivoli_Gardens_4.jpg"
+ },
+ "nyhavn": {
+  "file": "img/nyhavn.jpg",
+  "credit": "Photo: European Commission, CC BY 4.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:The_Nyhavn_Canal_3.jpg"
+ },
+ "stroeget": {
+  "file": "img/stroeget.jpg",
+  "credit": "Photo: Olga Itenberg, CC BY 2.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:Str%C3%B8get%2C_Copenhagen.jpg"
+ },
+ "havfrue": {
+  "file": "img/havfrue.jpg",
+  "credit": "Photo: Avda-berlin, CC-BY-SA-3.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:Copenhagen_-_the_little_mermaid_statue_-_2013.jpg"
+ },
+ "rundetaarn": {
+  "file": "img/rundetaarn.jpg",
+  "credit": "Photo: Avda, CC BY-SA 3.0, via Wikimedia Commons",
+  "source": "https://commons.wikimedia.org/wiki/File:Copenhagen_-_Rundet%C3%A5rn_-_2013.jpg"
+ }
+}
