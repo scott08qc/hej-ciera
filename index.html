@@ -718,7 +718,7 @@ try{PACK=JSON.parse(localStorage.getItem('hejciera.v1')||'{}').pack||null}catch(
 function addPack(){
   if(!PACK||!PACK.lessons)return;
   (PACK.units||[]).forEach(u=>UNITS.push(Object.assign({pk:true},u)));
-  PACK.lessons.forEach(x=>{const l={u:NU+(x.u||0),pk:true,stamp:x.stamp||'',key:x.key,t:x.t,en:x.en,i:x.i,cards:x.cards||[],d:x.d||[]};
+  PACK.lessons.forEach(x=>{const l={u:NU+(x.u||0),pk:true,stamp:x.stamp||'',at:x.at||0,key:x.key,t:x.t,en:x.en,i:x.i,cards:x.cards||[],d:x.d||[]};
     l.p=(x.p||[]).map((a,pi)=>PH[x.key+'-'+pi]={id:x.key+'-'+pi,da:a[0],en:a[1],say:a[2]||'',note:a[3]||''});
     l.mix=(x.mix||[]).map((a,mi)=>PH[x.key+'-m'+mi]={id:x.key+'-m'+mi,da:a[0],en:a[1],say:'',note:'',mix:true});L.push(l)});
   Object.keys(PACK.core||{}).forEach(k=>{const l=L.slice(0,CORE).find(q=>q.key===k),x=PACK.core[k];if(!l)return;
@@ -726,10 +726,12 @@ function addPack(){
 const imgUrl=x=>x&&x.indexOf('photo:')===0?SYNC+'/photo/'+CODE+'/'+x.slice(6)+'.jpg':x;
 function setPack(pk){PACK=pk||null;setLessons(famList)}
 function isOpen(i){const l=L[i];if(l.x||l.pk)return true;for(let j=PATH.indexOf(i)-1;j>=0;j--){const q=L[PATH[j]];if(l.story||!q.story)return !!S.done[q.key]}return true}
+/* A lesson added in the last two weeks is marked new until it is opened or finished. */
+const isNew=l=>!!l.at&&Date.now()-l.at<14*864e5&&!S.done[l.key]&&!(S.seenK&&S.seenK[l.key]);
 function setLessons(list){
   famList=list||[];L.length=CORE;UNITS.length=NU;
   L.forEach(l=>{if(!l.bp){l.bp=l.p;l.bd=l.d}l.p=l.bp;l.d=l.bd;l.cards=[]});addPack();
-  (list||[]).forEach(x=>L.push({u:4,x:true,key:x.id,t:x.t,en:x.en,i:x.i,by:x.by,mine:!!x.mine,p:x.p.map((a,pi)=>PH[x.id+'-'+pi]={id:x.id+'-'+pi,da:a[0],en:a[1],say:a[2]||'',note:a[3]||''}),d:x.d||[],mix:[]}));
+  (list||[]).forEach(x=>L.push({u:4,x:true,at:x.at||0,key:x.id,t:x.t,en:x.en,i:x.i,by:x.by,mine:!!x.mine,p:x.p.map((a,pi)=>PH[x.id+'-'+pi]={id:x.id+'-'+pi,da:a[0],en:a[1],say:a[2]||'',note:a[3]||''}),d:x.d||[],mix:[]}));
   try{localStorage.setItem('hejciera.lessons',JSON.stringify(list||[]))}catch(e){}
 }
 try{setLessons(JSON.parse(localStorage.getItem('hejciera.lessons')||'[]'))}catch(e){}
@@ -905,6 +907,7 @@ function home(){
   const nd=due().length;
   if(learned(S).length)h+=`<button class="rvb ${nd&&!day.review?'hot':''}" data-a="review"><i>🔁</i><span><b>Dagens runde</b><small>${nd?nd+(nd===1?' phrase is':' phrases are')+' ready to come back':'All caught up. Play a bonus round?'}</small></span><em>${day.review?'✓ done':'5 min'}</em></button>`;
   if(CODE)h+=`<button class="rvb" data-a="tab" data-v="talk"><i>💬</i><span><b>Snak med Lars</b><small>Answer out loud in your own words. Lars plays the waiter, the baker, the family.</small></span><em>new</em></button>`;
+  L.map((l,i)=>i).filter(i=>isNew(L[i])).slice(0,2).forEach(i=>{h+=`<button class="rvb hot" data-a="node" data-v="${i}"><i>${esc(L[i].i)}</i><span><b>Ny lektion: ${esc(L[i].t)}</b><small>${esc(L[i].en)}. A new lesson is waiting for you.</small></span><em>new</em></button>`});
   if(!CODE)h+=`<button class="note" data-a="tab" data-v="me" style="text-align:left">Got a code from Scott? Enter it under Me to keep your progress on all your devices and join the family race.</button>`;
   const ch=rnd(PACK&&PACK.cheers?CHEER.concat(PACK.cheers):CHEER).map(nm);
   const nextUp=PATH.find(i=>!S.done[L[i].key]&&!L[i].story);
@@ -915,7 +918,7 @@ function home(){
       const dn=S.done[l.key],open=isOpen(i),nx=i===nextUp,x=XS[k++%8];
       h+=`<div class="nw ${nx?'cur':''}" style="--x:${x}px">${nx?`<div class="startb">START</div><div class="buddy ${x>0?'l':'r'}"><div class="say">${ch[0]}<small>${ch[1]}</small></div>${snegl('hi')}</div>`:''}
       <button class="node ${nx?'next':open?'':'locked'}" ${open?`data-a="node" data-v="${i}"`:'disabled'} aria-label="${esc(l.en)}"><span>${esc(l.i)}</span></button>
-      ${dn?`<span class="nst">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}<span class="nl">${esc(l.t)}</span></div>`});
+      ${dn?`<span class="nst">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}<span class="nl">${isNew(l)?'🆕 ':''}${esc(l.t)}</span></div>`});
     h+=`</div></section>`});
   return h+`<div class="note">More lessons are on the way. Scott adds them as you go.</div>`;
 }
@@ -1579,7 +1582,7 @@ const A={
     if(!el.dataset.sure){el.dataset.sure=1;el.textContent='Tap again to delete it for everyone';return}
     try{const r=await fetch(SYNC+'/lesson/'+CODE+'/'+el.dataset.v,{method:'DELETE'});if(r.ok)setLessons((await r.json()).lessons)}catch(e){}
     sheet=null;render()},
-  node(el){sheet=+el.dataset.v;sfx('tap');render()},
+  node(el){sheet=+el.dataset.v;const l=L[sheet];if(l&&isNew(l)){S.seenK=S.seenK||{};S.seenK[l.key]={t:Date.now()};save()}sfx('tap');render()},
   closesheet(){sheet=null;render()},
   start(el){start(+el.dataset.v,!!el.dataset.q)},
   quit(){stopRec();hush();cur=null;render()},
