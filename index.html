@@ -1423,6 +1423,9 @@ const getBuf=u=>fetch(u).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()});
 const getClip=k=>getBuf('audio/'+k+'.mp3').catch(()=>getBuf(SYNC+'/audio/'+k+'.mp3'));
 function refFeats(text,who){const k=who+'/'+slug(text);return refCache[k]||(refCache[k]=getClip(k).then(decode).then(buf=>{refDur[slug(text)]=buf.duration;return feats(buf)}))}
 function matchPct(d){return Math.round(Math.max(0,Math.min(1,(D_BAD-d)/(D_BAD-D_GOOD)))*100)}
+/* The speech service writes numbers as digits ("2." for "to"), so they are turned back into words before comparing. */
+const NUMW={0:'nul',1:'en',2:'to',3:'tre',4:'fire',5:'fem',6:'seks',7:'syv',8:'otte',9:'ni',10:'ti',11:'elleve',12:'tolv',13:'tretten',14:'fjorten',15:'femten',16:'seksten',17:'sytten',18:'atten',19:'nitten',20:'tyve',30:'tredive',40:'fyrre',50:'halvtreds',60:'tres',70:'halvfjerds',80:'firs',90:'halvfems',100:'hundrede'};
+const numWords=t=>String(t||'').replace(/\d+/g,m=>NUMW[m]||m).replace(/\+/g,' plus ');
 function spLog(p,v,pass,svc){if(!p||!p.id)return;S.sp=S.sp||{};const e=S.sp[p.id]||{n:0,f:0,s:0,lo:100};v=Math.round(v)||0;e.n++;if(!pass)e.f++;e.s+=v;e.lo=Math.min(e.lo,v);e.last=v;e.svc=svc?1:0;e.t=Date.now();S.sp[p.id]=e;save()}
 async function judge(blob,s,st){
   drawSpeak('done','Checking…');const here=()=>cur&&cur.steps[cur.i]===s;
@@ -1430,6 +1433,7 @@ async function judge(blob,s,st){
     const buf=await decode(await blob.arrayBuffer()),mine=feats(buf);if(!here())return;st.tries++;
     if(!mine){drawSpeak('again','I could not hear you. Hold the phone a little closer and try again.');if(st.tries>=2)allowOn();return}
     /* First choice: word-by-word pronunciation scoring from the speech service. The sound match below is the backup. */
+    let second='';
     if(CODE&&scoreOn){
       try{
         const r=await fetch(SYNC+'/assess/'+CODE+'?t='+encodeURIComponent(s.p.da),{method:'POST',headers:{'content-type':'audio/wav'},body:wavChunks(buf)[0]});
@@ -1439,22 +1443,27 @@ async function judge(blob,s,st){
             /* A name is not a Danish word, so it is left out of the grade. */
             const all=(j.words||[]).filter(x=>x.err!=='Insertion'),w=all.filter(x=>x.w.toLowerCase()!==NAME.toLowerCase()),named=w.length<all.length&&w.length>0;
             const miss=w.filter(x=>x.err==='Omission').length,weak=w.filter(x=>x.err!=='Omission'&&x.acc<60).map(x=>esc(x.w)).slice(0,2);
-            const acc=named?w.reduce((t,x)=>t+x.acc,0)/w.length:(j.acc||0),pct=Math.round(named?acc:(j.pron||0)),pass=w.length>0&&miss<=(w.length>=5?1:0)&&acc>=55;spLog(s.p,acc,pass,1);
+            const acc=named?w.reduce((t,x)=>t+x.acc,0)/w.length:(j.acc||0),pct=Math.round(named?acc:(j.pron||0));
+            const heardOk=sim(numWords(j.heard),s.p.da)>=(norm(s.p.da).length<=5?1:.9),pass=w.length>0&&miss<=(w.length>=5?1:0)&&acc>=55;spLog(s.p,acc,pass,1);
             if(pass)spoke(`${pct} out of 100. ${pct>=85?'Spot on!':weak.length?'Good! Keep working on "'+weak.join('" and "')+'".':'Nicely said!'}`);
             else{
-              drawSpeak('compare',!j.heard||j.heard==='.'?'I could not make out the words. Listen once more and try again.'
+              const msg=(!j.heard||j.heard==='.'?'I could not make out the words. Listen once more and try again.'
                 :miss?`${pct} out of 100. I heard "${esc(j.heard)}". Say the whole phrase.`
                 :`${pct} out of 100. Work on "${weak.join('" and "')||esc(s.p.da)}". Listen to both, then try again.`);
-              if(st.tries>=2)allowOn()}
-            return}}
+              /* One or two words: the service's score is unreliable there (it fails the teacher's own "fem" and "ni"), and what it
+                 heard leans toward the expected word. So when it heard the right Danish, the sound match below decides. */
+              if(all.length<=2&&heardOk)second=msg;else{drawSpeak('compare',msg);if(st.tries>=2)allowOn()}}
+            if(!second)return}}
       }catch(e){}
       if(!here())return;
     }
     const refs=(await Promise.all(['f','m'].map(w=>refFeats(s.p.da,w).catch(()=>null)))).filter(Boolean);if(!refs.length)throw 0;if(!here())return;
     const len=Math.min(...refs.map(r=>Math.max(mine.length/r.length,r.length/mine.length)));
     const pct=len>2.6?0:matchPct(Math.min(...refs.map(r=>dtw(mine,r))));
-    spLog(s.p,pct,pct>=PASS,0);
-    if(pct>=PASS)spoke(`${pct}% match. ${pct>=75?'Spot on!':'Close enough to be understood!'}`);
+    if(!second)spLog(s.p,pct,pct>=PASS,0);
+    if(pct>=PASS&&second)spoke(`I heard "${esc(s.p.da)}". Nicely said!`);
+    else if(second){drawSpeak('compare',second);if(st.tries>=2)allowOn()}
+    else if(pct>=PASS)spoke(`${pct}% match. ${pct>=75?'Spot on!':'Close enough to be understood!'}`);
     else{drawSpeak('compare',`${pct}% match. Listen to both, then try again.`);if(st.tries>=2)allowOn()}
   }catch(e){if(here())drawSpeak('review')}
 }
