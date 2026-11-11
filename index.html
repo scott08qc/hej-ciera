@@ -197,6 +197,13 @@ details.rev summary{font-weight:700;cursor:pointer}
 .en{font-size:17px}
 .tip{background:var(--raised);border-radius:14px;padding:10px 14px;color:var(--fg);font-size:14px}
 .tip b{color:var(--candle)}
+.ag{color:var(--muted);font-weight:400}
+.atext p{margin:0 0 14px;font-size:18px;line-height:1.7}
+.wd{cursor:pointer;border-radius:5px}
+.wd.on{background:var(--candle);color:var(--ink);padding:0 2px}
+.astrip{position:fixed;left:50%;transform:translateX(-50%);width:min(448px,calc(100% - 32px));bottom:calc(68px + env(safe-area-inset-bottom,0px));z-index:6;background:var(--surface);border:2px solid var(--candle);border-radius:16px;padding:10px 12px;display:flex;gap:8px;align-items:center;box-shadow:0 4px 0 var(--ledge)}
+.astrip .tx{flex:1;min-width:0}
+.astrip small{display:block;color:var(--good);font-size:12px;font-weight:700}
 .card{background:var(--surface);border:2px solid var(--line);border-radius:22px;padding:20px 18px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center;box-shadow:0 4px 0 var(--ledge)}
 .acts{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .bigplay{width:104px;height:98px;border-radius:28px;background:#5d8fd0;box-shadow:0 7px 0 #3d659b;font-size:42px;margin:2px auto 8px;color:var(--ink)}
@@ -888,7 +895,7 @@ function render(){
   if(cur){renderStep();return}
   if(CODE&&PACK&&PACK.welcome&&!(S.seenW&&S.seenW.v)){app.innerHTML=welcomePack();return}
   if(!CODE&&!n(S)&&!S.solo){app.innerHTML=welcome();return}
-  const body={home,rewards,fam,book,me,make,rev,talk,voice:voiceScreen}[tab]();
+  const body={home,rewards,fam,book,me,make,rev,talk,voice:voiceScreen,avocab:advCards,aplay:advCards,around:advCards,apiece:advPiece,agender:advGender,apat:advPat,aw:advWords}[tab]();
   app.innerHTML=`<div class="page">${body}</div>
   <nav class="tabs"><div>${[['home','🏠','Learn'],['fam','👪','Family'],['rewards','🏅','Rewards'],['book','📖','Phrases'],['me','⚙️','Me']]
     .map(t=>`<button data-a="tab" data-v="${t[0]}" class="${tab===t[0]?'on':''}"><i>${t[1]}</i>${t[2]}</button>`).join('')}</div></nav>${sheet!==null?sheetHtml(sheet):''}`;
@@ -896,10 +903,11 @@ function render(){
 function daysToTrip(){if(!S.trip)return null;return Math.ceil((new Date(S.trip+'T00:00')-new Date())/864e5)}
 const XS=[0,-50,-72,-50,0,50,72,50];
 function home(){
+  if(isAdv())return advHome();
   const d=daysToTrip(),lit=S.lastDay===dayKey(),day=today();
   let h=`<header class="top"><span class="chip ${lit?'lit':'cold'}"><span class="fl">🔥</span>${S.streak}<small>${fz().n?'🧊 '+fz().n:'streak'}</small></span>
   <span class="chip">🪙 ${kr()}<small>kroner</small></span>
-  ${d!==null&&d>=0?`<span class="chip">🇩🇰 ${d}<small>days</small></span>`:`<button class="chip" data-a="tab" data-v="me">🇩🇰<small>set trip</small></button>`}</header>
+  ${d!==null&&d>=0?`<span class="chip">🇩🇰 ${d}<small>days</small></span>`:`<button class="chip" data-a="tab" data-v="me">🇩🇰<small>set trip</small></button>`}</header>${ADV&&advOff?`<button class="rvb" data-a="advview"><i>🇩🇰</i><span><b>Mit eget dansk</b><small>Tilbage til den avancerede side</small></span></button>`:''}
   <section class="quests"><h3>Today's quests <span>+10 🪙 each</span></h3>${QUESTS.map(q=>{const v=Math.min(q.v(day)||0,q.g),dn=v>=q.g;
     return `<div class="q ${dn?'done':''}"><span>${dn?'✓ ':''}${q.t}</span><span>${v}/${q.g}</span><div class="bar"><i style="width:${v/q.g*100}%"></i></div></div>`}).join('')}</section>`;
   const rs=getResume();
@@ -1024,7 +1032,7 @@ async function sync(){
     const r=await fetch(SYNC+'/sync/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify({state:S})});
     if(r.status===404){CODE='';try{localStorage.removeItem(CODEKEY)}catch(e){}return false}
     if(!r.ok)return false;
-    const j=await r.json();family=j.family||null;fx=j;if(j.lessons&&!cur&&sheet===null)setLessons(j.lessons);try{localStorage.setItem(CODEKEY,CODE)}catch(e){}
+    const j=await r.json();family=j.family||null;fx=j;ADV=j.adv===true;try{ADV?localStorage.setItem('hejciera.adv','1'):localStorage.removeItem('hejciera.adv')}catch(e){}if(j.lessons&&!cur&&sheet===null)setLessons(j.lessons);try{localStorage.setItem(CODEKEY,CODE)}catch(e){}
     const keep={sound:S.sound,solo:S.solo};S=Object.assign(merge(S,j.state||S),keep);if(!cur&&sheet===null&&((S.pack||{}).t||0)!==((PACK||{}).t||0))setPack(S.pack);
     addTalkWords();const renamed=j.name&&j.name!==NAME;S.name=j.name||S.name;save();
     if(renamed){location.reload();return true}
@@ -1107,8 +1115,9 @@ const SCENES=[
  {i:'💬',t:'Bare snak',en:'Just chat',setup:'You are simply yourself, Lars, chatting with the learner about their day, the weather, food and plans.'}
 ];
 const tk={scene:null,hist:[],hint:null,fix:null,praise:'',busy:false,done:false,rec:null,msg:'',err:false,showEn:false,showHint:false,typing:false,turns:0};
-const scenes=()=>((PACK&&PACK.scenes)||[]).concat(SCENES);
+const scenes=()=>isAdv()?ADV_SCENES:((PACK&&PACK.scenes)||[]).concat(SCENES);
 function talk(){
+  if(isAdv())return advTalk();
   if(!CODE)return `<div class="hello"><h1>Snak med Lars</h1></div><div class="note">Enter your code under Me first.</div>`;
   if(!tk.scene)return `<div class="hello"><h1>Snak med Lars</h1><p>Pick a scene and answer out loud, in your own words. Lars plays the other person and helps when you get stuck.</p></div>
     <div class="stack">${scenes().map((x,i)=>`<button class="rvb" data-a="scene" data-v="${i}"><i>${esc(x.i)}</i><span><b>${esc(x.t)}</b><small>${esc(x.en)}</small></span><em>${x.mine?'❤️':''}</em></button>`).join('')}</div><button class="link" data-a="tab" data-v="home">Back</button>`;
@@ -1133,6 +1142,7 @@ function tkPlay(m){hush();if(m.audio){const a=player=new Audio('data:audio/mpeg;
 function tkKeep(x){if(!x||!x.da||!slug(x.da))return;tk.keep=tk.keep||[];if(!tk.keep.some(k=>slug(k.da)===slug(x.da)))tk.keep.push({da:x.da,en:x.en||''})}
 function addTalkWords(){Object.entries(S.tkw||{}).forEach(([id,x])=>{if(x&&x.da)PH[id]={id,da:x.da,en:x.en||'',say:'',note:''}})}
 async function talkSend(payload){
+  if(isAdv())return advTalkSend(payload);
   tk.busy=true;tk.msg='';tk.err=false;tk.showHint=false;if(tab==='talk')render();
   try{
     const r=await fetch(SYNC+'/talk/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify(Object.assign({scene:{t:tk.scene.en,setup:'In this conversation your name is Lars, not Kanel. If you say your name, say Lars. '+tk.scene.setup},known:learned(S).slice(-60).map(p=>p.da),history:tk.hist.map(m=>({w:m.w,da:m.da}))},payload))});
@@ -1157,6 +1167,303 @@ function me(){
   ${codeBox()}
   <button class="btn ghost" data-a="reset">Sign out and erase this device</button>`;
 }
+
+/* ---------- advanced mode: one player, switched on by the sync service (adv:true), all in Danish ---------- */
+/* How many times in total a new word comes back (in the words round and worked into conversations with Lars). */
+const ADV_REPS=4;
+let ADV=false,advOff=false;try{ADV=localStorage.getItem('hejciera.adv')==='1';advOff=localStorage.getItem('hejciera.advoff')==='1'}catch(e){}
+const isAdv=()=>ADV&&!advOff;
+const tkTx=(en,da)=>isAdv()?da:en;
+const gp=g=>g==='en'||g==='et'?`<span class="ag">${g} </span>`:'';
+const awLive=()=>Object.entries(S.aw||{}).filter(([k,x])=>x&&!x.x&&x.da);
+function addWord(w,src){if(!w||!w.da)return false;const k=slug(w.da);if(!k)return false;S.aw=S.aw||{};const e=S.aw[k];if(e&&!e.x&&e.da)return false;
+  S.aw[k]={da:w.da,en:w.en||'',g:w.g==='en'||w.g==='et'?w.g:'',ex:w.ex||'',src,n:0,d:dayNo(),t:Date.now()};save();return true}
+function awDel(k){S.aw=S.aw||{};S.aw[k]={x:1,t:Date.now()};save()}
+/* Ready for the words round: new words at once, then words that have not come back for three days. */
+function awReady(all){const t=dayNo(),r=awLive().filter(([k,x])=>(x.n||0)<ADV_REPS&&(x.d||0)<=t&&(!x.n||t-(x.d||0)>=3)).sort((a,b)=>(a[1].d||0)-(b[1].d||0));return all?r:r.slice(0,10)}
+/* Words Lars should work into the next conversation: seen at least once, not yet learned, due. */
+function awTargets(){const t=dayNo();return awLive().filter(([k,x])=>(x.n||0)>=1&&x.n<ADV_REPS&&(x.d||0)<=t).sort((a,b)=>(a[1].d||0)-(b[1].d||0)).slice(0,6).map(([k,x])=>x.da)}
+const advErr=s=>s===403?'Den avancerede side er ikke slået til for denne kode.':s===429?'Lars er træt for i dag. Prøv igen i morgen.':s===503?'Det mangler et sidste trin i opsætningen.':'Det gik ikke. Prøv igen.';
+async function advPost(path,body){
+  try{const r=await fetch(SYNC+'/adv/'+CODE+path,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify(body)});if(!r.ok)return {err:advErr(r.status)};return {j:await r.json()}}
+  catch(e){return {err:'Det gik ikke. Tjek forbindelsen og prøv igen.'}}}
+let advFlip=0,advTok=0;const advAudio={};
+async function advSay(text,who){
+  text=String(text||'').trim();if(!text)return;who=who||(advFlip++%2?'m':'f');hush();const tok=++advTok,k=who+'|'+text;if(text.length>200)toast('Lars læser op…');
+  try{let a=advAudio[k];
+    if(!a){const r=await fetch(SYNC+'/adv/'+CODE+'/say',{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify({text,who})});if(!r.ok)throw 0;a=(await r.json()).audio;if(!a)throw 0;advAudio[k]=a}
+    if(tok===advTok)tkPlay({audio:a,da:text})}
+  catch(e){if(tok===advTok)robot(text)}}
+function advGo(t){tab=t;sheet=null;window.scrollTo(0,0);sfx('tap');render()}
+const advBusy=msg=>`<div class="fin"><div class="m">${snegl('hi')}</div><h1 style="font-size:24px">${msg}</h1><p style="color:var(--muted)">Det tager op til et halvt minut.</p></div>`;
+const advErrBox=(msg,retry)=>`<div class="teach"><div class="m">${snegl('oops')}</div><div class="bub"><span class="en">${esc(msg)}</span></div></div><button class="btn" data-a="${retry}">Prøv igen</button><button class="link" data-a="tab" data-v="home">Hjem</button>`;
+
+function advHome(){
+  const lit=S.lastDay===dayKey(),words=awLive().length,ready=awReady(true).length,miss=Object.values(S.ag||{}).filter(x=>x&&(x.miss||0)>(x.ok||0)).length;
+  const hi=['Godt at se dig. Hvad skal vi kaste os over i dag?','Klar til et par ord, du ikke havde i forvejen?','Velkommen tilbage. Jeg har gemt dine ord.'][dayNo()%3];
+  return `<header class="top"><span class="chip ${lit?'lit':'cold'}"><span class="fl">🔥</span>${S.streak}<small>${fz().n?'🧊 '+fz().n:'dage'}</small></span><span class="chip">📚 ${words}<small>ord</small></span></header>
+  <div class="teach"><div class="m">${snegl('hi')}</div><div class="bub"><span class="en">${hi}</span></div></div>
+  <div class="stack">
+  <button class="rvb" data-a="tab" data-v="talk"><i>💬</i><span><b>Snak med Lars</b><small>Voksne emner, kun dansk, naturligt tempo.</small></span></button>
+  <button class="rvb ${ready?'hot':''}" data-a="awords"><i>🔁</i><span><b>Mine ord</b><small>${ready?ready+' ord er klar til at komme igen':words?'Ingen ord venter lige nu.':'Ord du gemmer, kommer igen her og i samtaler.'}</small></span><em>${ready||''}</em></button>
+  <button class="rvb" data-a="avocab"><i>📚</i><span><b>Voksenord</b><small>Fra det præcise engelske ord til det danske.</small></span></button>
+  <button class="rvb" data-a="aplay"><i>🎭</i><span><b>Ordleg</b><small>Talemåder, ordspil, falske venner.</small></span></button>
+  <button class="rvb" data-a="apiece"><i>📰</i><span><b>Lars fortæller</b><small>En kort tekst. Tryk på de ord, du ikke kender.</small></span></button>
+  <button class="rvb ${miss?'hot':''}" data-a="agender"><i>⚖️</i><span><b>en eller et</b><small>${miss?miss+' navneord venter fra tidligere runder.':'Femten navneord ad gangen.'}</small></span><em>${miss||''}</em></button>
+  </div>
+  <button class="link" data-a="tab" data-v="aw">Se alle mine ord</button>
+  <button class="link" data-a="advview">Se begynderkurset</button>`}
+
+/* Voksenord, Ordleg and the Mine ord round share one card engine. */
+const AREAS=[['work','Arbejde og penge','💼'],['politics','Politik og nyheder','🗞️'],['feelings','Følelser og karakter','🫀'],['health','Helbred','🩺'],['argument','Argumenter og overtalelse','⚖️'],['','Bland det hele','🎲']];
+let acard={tab:'',phase:'pick'};
+function cardLoad(){
+  if(acard.phase==='busy')return;const me=acard;me.phase='busy';me.err='';render();
+  /* A set that comes back with fewer than four cards is asked for once more. */
+  const body=me.tab==='avocab'?{kind:'vocab',area:me.area||''}:{kind:'play'},list=r=>r.j&&Array.isArray(r.j.items)?r.j.items.filter(x=>x&&x.da&&x.en):[];
+  advPost('',body).then(r=>!r.err&&list(r).length<4?advPost('',body):r).then(r=>{if(acard!==me)return;
+    const it=list(r);
+    if(!it.length){me.phase='err';me.err=r.err||'Det gik ikke. Prøv igen.'}else Object.assign(me,{phase:'card',items:it,i:0,back:false,saved:[]});
+    if(tab===me.tab&&!cur)render()})}
+function cardDone(){acard.phase='done';bumpStreak();save();sfx('win');sync()}
+/* The example with the word blanked out; an inflected form ("misunder" for "misunde") is blanked whole. */
+function blankEx(ex,da){if(!ex)return '';const lo=ex.toLowerCase(),L=/[\p{L}\p{N}]/u;for(const w of [da,da.replace(/^at /i,'')]){let i=lo.indexOf(w.toLowerCase());if(!w||i<0)continue;let e=i+w.length;while(i>0&&L.test(ex[i-1]))i--;while(e<ex.length&&L.test(ex[e]))e++;return ex.slice(0,i)+'_____'+ex.slice(e)}return ''}
+function advCards(){
+  const c=acard;
+  if(c.phase==='pick')return `<div class="hello"><h1>Voksenord</h1><p>Vælg et område. Lars finder otte ord, som voksne danskere bruger.</p></div>
+    <div class="stack">${AREAS.map(a=>`<button class="rvb" data-a="aarea" data-v="${a[0]}"><i>${a[2]}</i><span><b>${a[1]}</b></span></button>`).join('')}</div><button class="link" data-a="tab" data-v="home">Hjem</button>`;
+  if(c.phase==='busy')return advBusy(c.tab==='avocab'?'Lars finder ord…':'Lars finder udtryk…');
+  if(c.phase==='err')return advErrBox(c.err,'aretry');
+  if(c.phase==='done'){const sv=c.saved||[];
+    if(c.tab==='around')return `<div class="fin"><div class="m">${snegl('yay')}</div><h1>Runden er klaret</h1><p>${sv.length} sidder fast · ${c.items.length-sv.length} kommer igen snart</p>
+      <button class="btn" data-a="tab" data-v="home">Hjem</button><button class="btn ghost" data-a="tab" data-v="aw">Se alle mine ord</button></div>`;
+    return `<div class="fin"><div class="m">${snegl('yay')}</div><h1>${sv.length} ${sv.length===1?'nyt ord':'nye ord'} gemt</h1>
+      ${sv.length?`<div class="stack" style="width:100%;text-align:left">${sv.map(w=>`<div class="row"><div class="tx"><b>${gp(w.g)}${esc(w.da)}</b><span>${esc(w.en)}</span></div></div>`).join('')}</div>`:'<p>Du kendte dem alle. Flot!</p>'}
+      <button class="btn" data-a="amore">Et sæt mere</button><button class="btn ghost" data-a="tab" data-v="home">Hjem</button></div>`}
+  const it=c.items[c.i],n=c.items.length;if(!it)return '';
+  let h=`<div class="pbar"><button class="x" data-a="tab" data-v="home" aria-label="Hjem">✕</button><div class="track"><div style="width:${Math.max(4,c.i/n*100)}%"></div></div><span class="cmb">${c.i+1} / ${n}</span></div>`;
+  const tools=`<div class="acts"><button class="btn sm ghost" data-a="asay" data-v="${esc(it.da+(it.ex?'. '+it.ex:''))}">🔊 Lyt</button>${c.tab==='around'?'':'<button class="btn sm ghost" data-a="aflag">🚩 Forkert?</button>'}</div>`;
+  const unsure=it.sure===false?`<div class="err">Lars er ikke helt sikker på denne.</div>`:'';
+  const ans=(a,b)=>`<div class="yn"><button class="btn ghost" style="font-size:18px" data-a="aans" data-v="0">${a}</button><button class="btn good" style="font-size:18px" data-a="aans" data-v="1">${b}</button></div>`;
+  if(c.tab==='avocab'){
+    if(!c.back)return h+`<div class="card"><div class="da">${esc(it.en)}</div>${it.nuance_en?`<div class="en" style="color:var(--muted)">${esc(it.nuance_en)}</div>`:''}</div><div class="ask" style="text-align:center">Hvad ville du sige på dansk?</div><button class="btn" data-a="aflip">Vis det danske</button>`;
+    return h+`<div class="card"><span style="color:var(--muted)">${esc(it.en)}</span><div class="da">${gp(it.g)}${esc(it.da)}</div>${it.reg?`<span class="chip" style="flex:none">${esc(it.reg)}</span>`:''}${it.ex?`<div class="en">${esc(it.ex)}</div>`:''}${it.note_da?`<div style="color:var(--muted);font-size:15px">${esc(it.note_da)}</div>`:''}${tools}</div>${unsure}${ans('Kendte jeg','Ny for mig')}`}
+  if(c.tab==='aplay'){
+    if(!c.back)return h+`<div class="card">${it.kind?`<span class="chip" style="flex:none">${esc(it.kind)}</span>`:''}<div class="da">${esc(it.da)}</div></div><div class="ask" style="text-align:center">Hvad betyder det?</div><button class="btn" data-a="aflip">Vis betydningen</button>`;
+    return h+`<div class="card">${it.kind?`<span class="chip" style="flex:none">${esc(it.kind)}</span>`:''}<div class="da" style="font-size:23px">${esc(it.da)}</div><div class="en"><b>${esc(it.en)}</b></div>${it.lit_en?`<div style="color:var(--muted);font-size:15px">Ordret: ${esc(it.lit_en)}</div>`:''}${it.ex?`<div class="en">${esc(it.ex)}</div>`:''}${it.note_da?`<div style="color:var(--muted);font-size:15px">${esc(it.note_da)}</div>`:''}${tools}</div>${unsure}${ans('Kendte jeg','Ny for mig')}`}
+  const bl=blankEx(it.ex,it.da);
+  if(!c.back)return h+`<div class="card"><div class="da" style="font-size:24px">${esc(it.en)}</div>${bl?`<div class="en">${esc(bl)}</div>`:''}</div><div class="ask" style="text-align:center">Hvad hedder det på dansk?</div><button class="btn" data-a="aflip">Vis ordet</button>`;
+  return h+`<div class="card"><span style="color:var(--muted)">${esc(it.en)}</span><div class="da">${gp(it.g)}${esc(it.da)}</div>${it.ex?`<div class="en">${esc(it.ex)}</div>`:''}${tools}</div>${ans('Én gang til','Sidder fast')}`;
+}
+
+/* Lars fortæller: a short text; every word can be tapped, looked up and saved. */
+let apz={phase:'pick',on:{}};
+function pieceLoad(){
+  if(apz.phase==='busy')return;const me=apz={phase:'busy',style:apz.style||'',on:{}};render();
+  advPost('',{kind:'piece',style:me.style}).then(r=>{if(apz!==me)return;const d=r.j;
+    if(!d||!d.text){me.phase='err';me.err=r.err||'Det gik ikke. Prøv igen.'}
+    else{const toks=[],re=/[\p{L}\p{N}]+(?:[-'’][\p{L}\p{N}]+)*/gu;
+      const sentAt=(p,o)=>{let a=o;while(a>0&&!/[.!?…]/.test(p[a-1]))a--;let b=o;while(b<p.length&&!/[.!?…]/.test(p[b]))b++;return p.slice(a,b+1).trim()};
+      me.paras=String(d.text).split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean).map(p=>{const seg=[];let last=0,m;re.lastIndex=0;
+        while((m=re.exec(p))){if(m.index>last)seg.push(p.slice(last,m.index));seg.push(toks.length);toks.push({w:m[0],s:sentAt(p,m.index)});last=m.index+m[0].length}
+        if(last<p.length)seg.push(p.slice(last));return seg});
+      Object.assign(me,{phase:'read',data:d,toks,strip:null,counted:false})}
+    if(tab==='apiece'&&!cur)render()})}
+function pieceDone(){if(apz.data&&!apz.counted){apz.counted=true;bumpStreak();save();sync()}}
+function glossFor(t){
+  const w=t.w.toLowerCase(),G=(apz.data.gloss||[]).filter(g=>g&&g.w&&g.da),low=String(apz.data.text).toLowerCase();
+  return G.find(g=>!/\s/.test(g.w.trim())&&g.w.trim().toLowerCase()===w)
+    ||G.find(g=>/\s/.test(g.w.trim())&&g.w.toLowerCase().split(/[^\p{L}\p{N}'’-]+/u).includes(w)&&low.includes(g.w.trim().toLowerCase()))}
+function advPiece(){
+  const p=apz;
+  if(p.phase==='pick')return `<div class="hello"><h1>Lars fortæller</h1><p>En kort tekst på naturligt dansk. Tryk på de ord, du ikke kender. De bliver gemt i Mine ord.</p></div>
+    <div class="stack">${[['historie','📖','Historie'],['nyhed','📰','Nyhed'],['vittighed','😄','Vittighed'],['','🎲','Overrask mig']].map(s=>`<button class="rvb" data-a="apstyle" data-v="${s[0]}"><i>${s[1]}</i><span><b>${s[2]}</b></span></button>`).join('')}</div><button class="link" data-a="tab" data-v="home">Hjem</button>`;
+  if(p.phase==='busy')return advBusy('Lars skriver en tekst…');
+  if(p.phase==='err')return advErrBox(p.err,'apretry');
+  const s=p.strip;let strip='';
+  if(s)strip=`<div class="astrip">${s.busy?`<div class="tx">Slår «${esc(s.w)}» op…</div>`:s.err?`<div class="tx err" style="text-align:left">${esc(s.err)}</div>`
+    :`<div class="tx"><b>${gp(s.g)}${esc(s.da)}</b> — ${esc(s.en)}<small>${s.added?'Gemt i Mine ord':'Står allerede i Mine ord'}</small></div>${s.added?'<button class="btn sm ghost" data-a="aundo">Fortryd</button>':''}<button class="round" data-a="asay" data-v="${esc(s.da)}" aria-label="Lyt">🔊</button>`}</div><div style="height:80px"></div>`;
+  return `<div class="pbar" style="padding-block:0"><button class="x" data-a="apdone" data-v="home" aria-label="Hjem">✕</button><b style="flex:1;font-family:var(--display);font-size:20px">${esc(p.data.title||'Lars fortæller')}</b></div>
+  <button class="btn sm ghost" data-a="apsay" style="align-self:flex-start">🔊 Hør det</button>
+  <div class="atext">${p.paras.map(sg=>`<p>${sg.map(x=>typeof x==='string'?esc(x):`<span class="wd ${p.on[p.toks[x].w.toLowerCase()]?'on':''}" data-a="atap" data-v="${x}">${esc(p.toks[x].w)}</span>`).join('')}</p>`).join('')}</div>
+  <div class="acts"><button class="btn sm" data-a="apdone" data-v="more">En til</button><button class="btn sm ghost" data-a="apdone" data-v="home">Hjem</button></div>${strip}`}
+
+/* en eller et */
+/* [noun, 0 = en / 1 = et, English]. Only nouns whose gender is undisputed in standard Danish. */
+const NOUNS=[
+ /* everyday, en */
+ ['bil',0,'car'],['dør',0,'door'],['nøgle',0,'key'],['seng',0,'bed'],['gade',0,'street'],['by',0,'town'],
+ ['lejlighed',0,'apartment'],['have',0,'garden'],['nabo',0,'neighbor'],['ferie',0,'vacation'],['rejse',0,'trip'],
+ ['billet',0,'ticket'],['lufthavn',0,'airport'],['kø',0,'line, queue'],['fødselsdag',0,'birthday'],
+ /* everyday, et */
+ ['hus',1,'house'],['bord',1,'table'],['vindue',1,'window'],['værelse',1,'room'],['køkken',1,'kitchen'],['æble',1,'apple'],
+ ['brev',1,'letter'],['billede',1,'picture'],['sted',1,'place'],['år',1,'year'],['navn',1,'name'],['bryllup',1,'wedding'],
+ /* work and money, en */
+ ['løn',0,'salary'],['skat',0,'tax'],['regning',0,'bill'],['gæld',0,'debt'],['rente',0,'interest rate'],['aftale',0,'agreement'],
+ ['opgave',0,'task'],['stilling',0,'position, post'],['chef',0,'boss'],['kollega',0,'colleague'],['virksomhed',0,'business'],['kunde',0,'customer'],
+ ['kontrakt',0,'contract'],['beslutning',0,'decision'],['pension',0,'pension'],['opsparing',0,'savings'],['krise',0,'crisis'],['økonomi',0,'economy'],
+ /* work and money, et */
+ ['job',1,'job'],['arbejde',1,'work'],['firma',1,'firm'],['kontor',1,'office'],['møde',1,'meeting'],['projekt',1,'project'],
+ ['budget',1,'budget'],['lån',1,'loan'],['beløb',1,'amount'],['marked',1,'market'],['selskab',1,'company, corporation'],['tilbud',1,'offer'],
+ ['ansvar',1,'responsibility'],['tab',1,'loss'],['forbrug',1,'consumption'],
+ /* society, en */
+ ['regering',0,'government'],['minister',0,'minister'],['politiker',0,'politician'],['valgkamp',0,'election campaign'],['debat',0,'debate'],['lov',0,'law'],
+ ['domstol',0,'court'],['dommer',0,'judge'],['borger',0,'citizen'],['kommune',0,'municipality'],['stat',0,'state'],['afstemning',0,'vote'],
+ ['nyhed',0,'piece of news'],['krig',0,'war'],['magt',0,'power'],['trussel',0,'threat'],['udvikling',0,'development'],
+ /* society, et */
+ ['samfund',1,'society'],['parti',1,'party'],['valg',1,'election'],['land',1,'country'],['folk',1,'people, nation'],['flertal',1,'majority'],
+ ['mindretal',1,'minority'],['demokrati',1,'democracy'],['forslag',1,'proposal'],['krav',1,'demand'],['system',1,'system'],['miljø',1,'environment'],
+ ['klima',1,'climate'],
+ /* health, en */
+ ['sygdom',0,'illness'],['læge',0,'doctor'],['sygeplejerske',0,'nurse'],['patient',0,'patient'],['behandling',0,'treatment'],['medicin',0,'medicine'],
+ ['smerte',0,'pain'],['feber',0,'fever'],['forkølelse',0,'cold'],['skade',0,'injury'],['operation',0,'surgery'],['diagnose',0,'diagnosis'],
+ ['allergi',0,'allergy'],['søvn',0,'sleep'],['krop',0,'body'],['ryg',0,'back'],['mave',0,'stomach'],['hjerne',0,'brain'],
+ /* health, et */
+ ['hospital',1,'hospital'],['hjerte',1,'heart'],['hoved',1,'head'],['øje',1,'eye'],['sår',1,'wound'],['symptom',1,'symptom'],
+ ['blodtryk',1,'blood pressure'],['ansigt',1,'face'],
+ /* feelings, character and argument, en */
+ ['følelse',0,'feeling'],['glæde',0,'joy'],['sorg',0,'grief'],['vrede',0,'anger'],['angst',0,'anxiety'],['skam',0,'shame'],
+ ['skyld',0,'guilt'],['misundelse',0,'envy'],['skuffelse',0,'disappointment'],['ensomhed',0,'loneliness'],['tålmodighed',0,'patience'],['personlighed',0,'personality'],
+ ['påstand',0,'claim'],['begrundelse',0,'justification'],['fordel',0,'advantage'],['ulempe',0,'drawback'],['sandhed',0,'truth'],['løgn',0,'lie'],
+ ['undskyldning',0,'apology'],['indvending',0,'objection'],['mening',0,'opinion'],['holdning',0,'stance, attitude'],
+ /* feelings, character and argument, et */
+ ['humør',1,'mood'],['håb',1,'hope'],['venskab',1,'friendship'],['ægteskab',1,'marriage'],['forhold',1,'relationship'],['argument',1,'argument'],
+ ['kompromis',1,'compromise'],['indtryk',1,'impression'],['menneske',1,'human being'],['barn',1,'child'],['medlem',1,'member'],['vidne',1,'witness']
+];
+const PAT=[
+ 'Omkring tre ud af fire navneord er en-ord. Er du i tvivl, så gæt på en.',
+ 'Næsten altid en: ord på -hed (en mulighed), -else (en oplevelse; men et værelse, et spøgelse), -ing/-ning (en regning), -dom (en sygdom), -tion/-sion (en situation), -isme (en optimisme).',
+ 'Som regel et: ord på -um (et museum), -eri (et bageri), -ment (et argument), -tek (et bibliotek), -gram (et program).',
+ 'Mennesker og dyr er for det meste en-ord (en læge, en hund). Dem, der ikke er, skal bare læres: et barn, et menneske, et dyr, et medlem, et vidne.',
+ 'Sammensatte ord arver kønnet fra det sidste led: et hus, et sommerhus; en bog, en lærebog.',
+ 'Hvad følger med: en-ord tager den, min, din, sin, nogen, anden. Et-ord tager det, mit, dit, sit, noget, andet, og tillægsordet får -t: en stor bil, et stort hus; bilen er stor, huset er stort.'
+];
+let agr={phase:'start'};
+function agRound(){
+  const seen=new Set(),out=[],add=(w,g,en)=>{const k=String(w||'').trim();if(!k||/\s/.test(k)||seen.has(k.toLowerCase()))return false;seen.add(k.toLowerCase());out.push([k,g,en||'']);return true};
+  const enOf=w=>{const x=NOUNS.find(q=>q[0]===w);if(x)return x[2];const a=awLive().find(([k,y])=>y.da===w);return a?a[1].en:''};
+  let c=0;Object.entries(S.ag||{}).filter(([w,x])=>x&&(x.miss||0)>(x.ok||0)&&(x.g==='en'||x.g==='et')).sort((a,b)=>(b[1].t||0)-(a[1].t||0)).forEach(([w,x])=>{if(c<6&&add(w,x.g==='et'?1:0,enOf(w)))c++});
+  c=0;sh(awLive().filter(([k,x])=>x.g==='en'||x.g==='et')).forEach(([k,x])=>{if(c<4&&add(x.da,x.g==='et'?1:0,x.en))c++});
+  sh(NOUNS).forEach(x=>{if(out.length<15)add(x[0],x[1],x[2])});
+  return sh(out)}
+function agNext(){agr.i++;agr.ans=null;window.scrollTo(0,0);if(agr.i>=agr.items.length){agr.phase='done';bumpStreak();save();sfx('win');sync()}render()}
+function advGender(){
+  const g=agr;
+  if(g.phase==='start'){const miss=Object.values(S.ag||{}).filter(x=>x&&(x.miss||0)>(x.ok||0)).length;
+    return `<div class="hello"><h1>en eller et</h1><p>Femten navneord. Tryk en eller et.${miss?' '+miss+' navneord fra tidligere runder venter.':''}</p></div>
+    <div class="teach"><div class="m">${snegl('hi')}</div><div class="bub"><span class="en">Er du i tvivl, så gæt på en. Det er rigtigt tre ud af fire gange.</span></div></div>
+    <button class="btn" data-a="agstart">Start runden</button><button class="btn ghost" data-a="tab" data-v="apat">Mønstrene</button><button class="link" data-a="tab" data-v="home">Hjem</button>`}
+  if(g.phase==='done')return `<div class="fin"><div class="m">${snegl('yay')}</div><h1>${g.right} af ${g.items.length}</h1><p>${g.miss.length?'De her kommer igen næste gang:':'Fejlfrit!'}</p>
+    ${g.miss.length?`<div class="stack" style="width:100%;text-align:left">${g.miss.map(m=>`<div class="row"><div class="tx"><b>${m[1]?'et':'en'} ${esc(m[0])}</b><span>${esc(m[2])}</span></div></div>`).join('')}</div>`:''}
+    <button class="btn" data-a="agstart">En runde til</button><button class="btn ghost" data-a="tab" data-v="apat">Mønstrene</button><button class="btn ghost" data-a="tab" data-v="home">Hjem</button></div>`;
+  const it=g.items[g.i],n=g.items.length,a=g.ans,cls=v=>a==null?'ghost':v===it[1]?'good':v===a?'miss':'ghost';
+  const w=esc(it[0]),line=it[1]?`et ${w} · det ${w} · mit ${w} · et stort ${w}`:`en ${w} · den ${w} · min ${w} · en stor ${w}`;
+  return `<div class="pbar"><button class="x" data-a="tab" data-v="home" aria-label="Hjem">✕</button><div class="track"><div style="width:${Math.max(4,g.i/n*100)}%"></div></div><span class="cmb">${g.i+1} / ${n}</span></div>
+  <div class="card"><div class="da" style="font-size:34px">${w}</div>${it[2]?`<div class="en" style="color:var(--muted)">${esc(it[2])}</div>`:''}</div>
+  <div class="yn"><button class="btn ${cls(0)}" data-a="agans" data-v="0">en</button><button class="btn ${cls(1)}" data-a="agans" data-v="1">et</button></div>
+  ${a==null?'':`<div class="tip" style="text-align:center">${line}</div>${a===it[1]?'':'<button class="btn" data-a="agnext">Videre</button>'}`}`}
+function advPat(){
+  return `<div class="hello"><h1>Mønstrene</h1><p>Hvornår er det en, og hvornår er det et?</p></div><div class="stack">${PAT.map(t=>`<div class="tip">${esc(t)}</div>`).join('')}</div>
+  <button class="btn" data-a="agstart">Start en runde</button><button class="link" data-a="tab" data-v="home">Hjem</button>`}
+
+/* Mine ord: the full list */
+function advWords(){
+  const all=awLive().sort((a,b)=>(b[1].t||0)-(a[1].t||0)),on=all.filter(x=>(x[1].n||0)<ADV_REPS),done=all.filter(x=>(x[1].n||0)>=ADV_REPS);
+  const row=([k,x])=>{const n=Math.min(x.n||0,ADV_REPS);return `<div class="row"><div class="tx"><b>${gp(x.g)}${esc(x.da)}</b><span>${esc(x.en)}${n<ADV_REPS?' · '+'●'.repeat(n)+'○'.repeat(ADV_REPS-n):''}</span></div><button class="round" data-a="asay" data-v="${esc(x.da)}" aria-label="Lyt">🔊</button><button class="round" data-a="adel" data-v="${esc(k)}" aria-label="Fjern">✕</button></div>`};
+  let h=`<div class="hello"><h1>Mine ord</h1><p>${all.length} ord. Hvert nyt ord kommer igen ${ADV_REPS} gange, mest i samtaler med Lars.</p></div>`;
+  if(!all.length)h+=`<div class="note">Ingen ord endnu. Tryk "Ny for mig" i Voksenord eller Ordleg, eller tryk på et ord i Lars fortæller.</div>`;
+  if(on.length)h+=`<section class="unit"><div class="unit-h"><h2>På vej</h2><span>${on.length}</span></div><div class="stack">${on.map(row).join('')}</div></section>`;
+  if(done.length)h+=`<section class="unit"><div class="unit-h"><h2>Lært</h2><span>${done.length}</span></div><div class="stack">${done.map(row).join('')}</div></section>`;
+  return h+`<button class="link" data-a="tab" data-v="home">Hjem</button>`}
+
+/* Advanced Talk to Lars: Danish only, adult topics; Lars works the player's recent words in and offers adult words. */
+const ADV_SCENES=[
+ {i:'🗞️',t:'Nyheder og politik',en:'Samfund, klima, bolig, økonomi',setup:'Talk with the other person about society and current affairs in Denmark and the wider world: politics, the welfare state, climate, housing, the economy. Keep it to general terms and ask for their views. You do not know today\'s actual news, so never claim specific recent events, names or figures; if they mention one, ask them about it.'},
+ {i:'💼',t:'Arbejde og penge',en:'Job, løn, skat, ambitioner',setup:'Talk with the other person about work and money: careers, workplaces, colleagues, salaries, taxes, prices, saving and spending, ambitions.'},
+ {i:'🫀',t:'Følelser og mennesker',en:'Venskaber, karakter, hvad der driver folk',setup:'Talk with the other person about people and feelings: friendships, family, character, what makes people tick, and how one deals with disappointment, joy, stress or regret.'},
+ {i:'🩺',t:'Helbred',en:'Søvn, stress, motion, lægen',setup:'Talk with the other person about health: sleep, stress, exercise, food, illness, visits to the doctor and the Danish health system.'},
+ {i:'⚔️',t:'Diskussion',en:'Lars er uenig, uanset hvad du siger',setup:'Open by stating a debatable everyday claim, for example about cycling, coffee, holidays, working hours or city versus country life. Then argue the opposite of whatever the other person says, politely but with real arguments, so they have to defend their view.'},
+ {i:'💬',t:'Bare snak',en:'Som over en kop kaffe',setup:'Chat freely, like two adult friends over a coffee, about whatever comes up.'}
+];
+function advTalk(){
+  if(!tk.scene)return `<div class="hello"><h1>Snak med Lars</h1><p>Kun dansk, voksne emner, naturligt tempo. Lars bruger dine nye ord, når det passer.</p></div>
+    <div class="stack">${ADV_SCENES.map((x,i)=>`<button class="rvb" data-a="scene" data-v="${i}"><i>${x.i}</i><span><b>${esc(x.t)}</b><small>${esc(x.en)}</small></span></button>`).join('')}</div><button class="link" data-a="tab" data-v="home">Hjem</button>`;
+  const shown=tk.hist.slice(-6),off=tk.hist.length-shown.length;
+  let h=`<div class="pbar" style="padding-block:0"><button class="x" data-a="talkend" aria-label="Afslut">✕</button><b style="flex:1;font-family:var(--display);font-size:18px">${esc(tk.scene.t)}</b></div><div class="chat">`;
+  shown.forEach((m,i)=>{h+=m.w==='k'?`<div class="who"><div class="m">${i===shown.length-1?snegl(tk.done?'yay':'hi'):''}</div><button class="msg k" style="animation:none" data-a="talksay" data-v="${off+i}">${esc(m.da)} 🔊</button></div>`:`<div class="msg me" style="animation:none">${esc(m.da)}</div>`});
+  h+=`</div>`;
+  if(tk.fix)h+=`<div class="tip"><b>Lars retter:</b> ${esc(tk.fix.da)}${tk.fix.en?`<br><span style="color:var(--muted)">${esc(tk.fix.en)}</span>`:''}</div>`;
+  (tk.ups||[]).forEach(u=>{h+=`<div class="tip"><b>Et voksent ord:</b> «${esc(u.said||'')}» → ${gp(u.g)}<b>${esc(u.da)}</b>${u.en?' · '+esc(u.en):''}${u.note_da?`<br><span style="color:var(--muted)">${esc(u.note_da)}</span>`:''}<br><span style="color:var(--good)">Gemt i Mine ord</span></div>`});
+  if(tk.msg)h+=`<div class="${tk.err?'err':'note'}">${esc(tk.msg)}</div>`;
+  if(tk.done)return h+`<button class="btn good" data-a="talkdone">Afslut</button>`;
+  return h+(tk.busy?`<div class="spk"><div class="heard">Lars tænker…</div></div>`
+    :`<div class="spk"><button class="mic ${tk.rec?'live':''}" data-a="talkmic" aria-label="${tk.rec?'Stop':'Tal'}">${tk.rec?'■':'🎤'}</button><div class="heard">${tk.rec?'Lytter… tryk når du er færdig':'Tryk og svar'}</div></div>
+    <div class="acts"><button class="btn sm ghost" data-a="talktype">⌨️ Skriv i stedet</button><button class="btn sm ghost" data-a="talkend">Afslut</button></div>
+    ${tk.typing?`<input id="tkin" placeholder="Skriv på dansk" autocomplete="off" autocapitalize="sentences"><button class="btn sm" data-a="talksend" style="align-self:flex-start">Send</button>`:''}`);
+}
+async function advTalkSend(payload){
+  tk.busy=true;tk.msg='';tk.err=false;tk.asaved=tk.asaved||[];tk.aused=tk.aused||[];if(tab==='talk')render();
+  try{
+    const r=await fetch(SYNC+'/talk/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify(Object.assign({scene:{t:tk.scene.t,setup:tk.scene.setup},known:[],adv:true,words:awTargets(),history:tk.hist.map(m=>({w:m.w,da:m.da}))},payload))});
+    tk.busy=false;
+    if(!r.ok){tk.msg=advErr(r.status);tk.err=true}
+    else{const j=await r.json();
+      if(!j.reply||!j.reply.da){tk.msg='Jeg kunne ikke høre noget dansk. Hold telefonen lidt tættere på og prøv igen.';tk.err=true}
+      else{if(j.heard){tk.hist.push({w:'me',da:j.heard});tk.turns++}
+        tk.fix=j.fix&&j.fix.da?j.fix:null;tk.ups=(Array.isArray(j.ups)?j.ups:[]).filter(u=>u&&u.da);
+        tk.ups.forEach(u=>{addWord({da:u.da,en:u.en,g:u.g,ex:u.note_da||''},'t');if(!tk.asaved.some(w=>slug(w.da)===slug(u.da)))tk.asaved.push({da:u.da,en:u.en||'',g:u.g||''})});
+        /* A word counts as used only when it stands in the reply as a word of its own (endings allowed), and once per conversation. */
+        const inReply=w=>{const nz=t=>String(t||'').toLowerCase().replace(/[^\p{L}]+/gu,' ').trim();w=nz(w.replace(/^at /i,''));const r=' '+nz(j.reply&&j.reply.da)+' ',i=r.indexOf(' '+w);return !!w&&i>=0&&r.slice(i+1+w.length).indexOf(' ')<=4};
+        (Array.isArray(j.used)?j.used:[]).forEach(da=>{const e=(S.aw||{})[slug(String(da))];if(e&&!e.x&&e.da&&inReply(e.da)&&!tk.aused.includes(e.da)){e.n=(e.n||0)+1;e.d=dayNo()+1+e.n;e.t=Date.now();if(!tk.aused.includes(e.da))tk.aused.push(e.da)}});
+        save();if(j.recap)tk.recap=j.recap;tk.done=!!j.done;const m={w:'k',da:j.reply.da,en:'',audio:j.audio};tk.hist.push(m);
+        if(tab==='talk'&&!cur){render();tkPlay(m)}return}}
+  }catch(e){tk.busy=false;tk.msg='Det gik ikke. Tjek forbindelsen og prøv igen.';tk.err=true}
+  if(tab==='talk'&&!cur)render();
+}
+function advTalkDone(){
+  hush();const turns=tk.turns,recap=tk.recap||'',sv=tk.asaved||[],us=tk.aused||[],title=tk.scene.t;
+  S.stat=Object.assign(stat(),{tk:stat().tk+1,t:Date.now()});bumpStreak();save();tk.scene=null;tab='home';
+  app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div><h1>Godt snakket!</h1><p>${esc(title)} · ${turns} svar</p>
+  ${recap?`<div class="tip" style="text-align:left;width:100%"><b>Lars:</b> ${esc(recap)}</div>`:''}
+  ${sv.length?`<div class="tip" style="text-align:left;width:100%"><b>Nye ord, gemt i Mine ord</b>${sv.map(w=>`<div style="margin-top:6px">${gp(w.g)}${esc(w.da)}${w.en?` <span style="color:var(--muted)">· ${esc(w.en)}</span>`:''}</div>`).join('')}</div>`:''}
+  ${us.length?`<div class="tip" style="text-align:left;width:100%"><b>Dine ord, som Lars brugte</b><div style="margin-top:6px">${us.map(esc).join(' · ')}</div></div>`:''}
+  <button class="btn" data-a="tab" data-v="home">Hjem</button></div></div>`;
+  sfx('win');confetti();sync()}
+const ADVA={
+  advview(){advOff=!advOff;try{advOff?localStorage.setItem('hejciera.advoff','1'):localStorage.removeItem('hejciera.advoff')}catch(e){}advGo('home')},
+  avocab(){acard={tab:'avocab',phase:'pick'};advGo('avocab')},
+  aplay(){acard={tab:'aplay',phase:'pick'};tab='aplay';sheet=null;window.scrollTo(0,0);cardLoad()},
+  awords(){const r=awReady();if(!r.length)return advGo('aw');acard={tab:'around',phase:'card',items:r.map(([k,x])=>Object.assign({k},x)),i:0,back:false,saved:[]};advGo('around')},
+  aarea(el){acard.area=el.dataset.v;cardLoad()},
+  aretry(){cardLoad()},
+  amore(){acard.phase='pick';cardLoad()},
+  aflip(){if(acard.phase!=='card')return;acard.back=true;sfx('tap');render()},
+  aans(el){const c=acard,it=c.items&&c.items[c.i];if(c.phase!=='card'||!it||!c.back)return;const yes=el.dataset.v==='1';
+    if(c.tab==='around'){const e=(S.aw||{})[it.k];if(e&&!e.x){if(yes){e.n=(e.n||0)+1;e.d=dayNo()+2}else e.d=dayNo()+1;e.t=Date.now()}if(yes)c.saved.push(it)}
+    else if(yes){const w={da:it.da,en:it.en,g:c.tab==='avocab'?it.g:'',ex:it.ex||''};if(addWord(w,c.tab==='avocab'?'v':'p'))c.saved.push(w)}
+    save();c.i++;c.back=false;window.scrollTo(0,0);if(c.i>=c.items.length)cardDone();else sfx('tap');render()},
+  async aflag(el){const it=acard.items&&acard.items[acard.i];if(!it||el.dataset.sent)return;el.dataset.sent=1;el.disabled=true;
+    try{const r=await fetch(SYNC+'/note/'+CODE,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify({id:'adv-'+slug(it.da).slice(0,34),da:it.da,text:(it.en||'')+(it.ex?' · '+it.ex:'')})});toast(r.ok?'Sendt. Tak!':'Kunne ikke sende')}
+    catch(e){toast('Kunne ikke sende')}},
+  asay(el){advSay(el.dataset.v)},
+  adel(el){awDel(el.dataset.v);render()},
+  apiece(){apz={phase:'pick',on:{}};advGo('apiece')},
+  apstyle(el){apz.style=el.dataset.v;pieceLoad()},
+  apretry(){pieceLoad()},
+  apdone(el){pieceDone();hush();if(el.dataset.v==='more'){window.scrollTo(0,0);return pieceLoad()}advGo('home')},
+  apsay(){const d=apz.data;if(d)advSay((d.title?d.title+'. ':'')+String(d.text).replace(/\s*\n\s*/g,' '),String(d.text).length>200?'m':undefined)},
+  async atap(el){const p=apz,t=p.toks&&p.toks[+el.dataset.v];if(!t||p.busyW)return;let g=glossFor(t);
+    if(!g){p.busyW=true;p.strip={busy:1,w:t.w};render();const r=await advPost('',{kind:'word',word:t.w,sentence:t.s});p.busyW=false;if(apz!==p)return;
+      if(!r.j||!r.j.da){p.strip={err:r.err||'Det gik ikke. Prøv igen.'};if(tab==='apiece'&&!cur)render();return}g=r.j}
+    const added=addWord({da:g.da,en:g.en,g:g.g,ex:t.s},'r');p.on[t.w.toLowerCase()]=1;p.strip={da:g.da,g:g.g,en:g.en||'',k:slug(g.da),added,w:t.w.toLowerCase()};sfx('tap');if(tab==='apiece'&&!cur)render()},
+  aundo(){const s=apz.strip;if(!s||!s.added)return;awDel(s.k);delete apz.on[s.w];apz.strip=null;render()},
+  agender(){agr={phase:'start'};advGo('agender')},
+  agstart(){agr={phase:'q',items:agRound(),i:0,ans:null,right:0,miss:[]};advGo('agender')},
+  agans(el){const g=agr,it=g.items&&g.items[g.i];if(g.phase!=='q'||!it||g.ans!=null)return;const v=+el.dataset.v,ok=v===it[1];g.ans=v;if(ok)g.right++;else g.miss.push(it);
+    S.ag=S.ag||{};const e=S.ag[it[0]]||{};S.ag[it[0]]={g:it[1]?'et':'en',ok:(e.ok||0)+(ok?1:0),miss:(e.miss||0)+(ok?0:1),t:Date.now()};save();sfx(ok?'ok':'no');render();
+    if(ok){const i=g.i;setTimeout(()=>{if(agr===g&&g.phase==='q'&&g.i===i&&g.ans!=null&&tab==='agender'&&!cur)agNext()},900)}},
+  agnext(){if(agr.phase==='q'&&agr.ans!=null)agNext()}
+};
 
 /* ---------- lesson engine ---------- */
 function pool(li){if(li===-2)return L.slice(0,CORE).flatMap(l=>l.p);if(li<0)return learned(S);return L[li].x?[...L[li].p,...learned(S).filter(q=>!q.id.startsWith(L[li].key+'-'))]:L.slice(0,li+1).flatMap(l=>l.p)}
@@ -1479,7 +1786,7 @@ function allowOn(){const go=document.getElementById('go');if(go){go.disabled=fal
 /* ---------- actions ---------- */
 const byId=id=>PH[id];
 const A={
-  tab(el){tab=el.dataset.v;sheet=null;rewards.just=null;window.scrollTo(0,0);sfx('tap');render();if(tab==='fam'||tab==='home')sync()},
+  tab(el){if(tab==='apiece')pieceDone();tab=el.dataset.v;sheet=null;rewards.just=null;window.scrollTo(0,0);sfx('tap');render();if(tab==='fam'||tab==='home')sync()},
   async link(){const el=document.getElementById('code'),c=((el&&el.value)||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
     if(c.length<8){linkMsg='A code has 8 letters and numbers.';render();return}
     linkMsg='Checking…';render();CODE=c;const ok=await sync();
@@ -1490,7 +1797,7 @@ const A={
   scottsay(){scottSay(cur.steps[cur.i].p.da)},
   wsay(){scottSay(PACK.welcome.da)},
   wgo(){S.seenW={v:1,t:Date.now()};save();render();sync()},
-  scene(el){Object.assign(tk,{scene:scenes()[+el.dataset.v],hist:[],hint:null,fix:null,praise:'',done:false,msg:'',err:false,turns:0,typing:false,showHint:false,keep:[],clean:0,recap:''});window.scrollTo(0,0);talkSend({})},
+  scene(el){Object.assign(tk,{scene:scenes()[+el.dataset.v],hist:[],hint:null,fix:null,praise:'',done:false,msg:'',err:false,turns:0,typing:false,showHint:false,keep:[],clean:0,recap:'',ups:[],asaved:[],aused:[]});window.scrollTo(0,0);talkSend({})},
   talkhint(){tk.showHint=true;tkKeep(tk.hint);render()},
   talktype(){tk.typing=!tk.typing;render();const e=document.getElementById('tkin');if(e)e.focus()},
   talken(){tk.showEn=!tk.showEn;render()},
@@ -1498,20 +1805,21 @@ const A={
   talksend(){const e=document.getElementById('tkin'),v=((e&&e.value)||'').trim();if(v)talkSend({text:v})},
   talkmic(){
     if(tk.rec){try{tk.rec.rec.state!=='inactive'&&tk.rec.rec.stop()}catch(e){}return}
-    if(!navigator.mediaDevices||!window.MediaRecorder){tk.msg='This browser cannot record. Use "Type instead".';tk.err=true;render();return}
+    if(!navigator.mediaDevices||!window.MediaRecorder){tk.msg=tkTx('This browser cannot record. Use "Type instead".','Denne browser kan ikke optage. Brug "Skriv i stedet".');tk.err=true;render();return}
     hush();
     navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
       const rec=new MediaRecorder(stream),chunks=[];rec.ondataavailable=e=>chunks.push(e.data);
       rec.onstop=async()=>{clearTimeout(tk.rec.to);stream.getTracks().forEach(t=>t.stop());tk.rec=null;
         try{const buf=await decode(await new Blob(chunks,{type:rec.mimeType}).arrayBuffer());
-          if(!feats(buf)){tk.msg='I could not hear you. Hold the phone a little closer and try again.';tk.err=true;render();return}
+          if(!feats(buf)){tk.msg=tkTx('I could not hear you. Hold the phone a little closer and try again.','Jeg kunne ikke høre dig. Hold telefonen lidt tættere på og prøv igen.');tk.err=true;render();return}
           talkSend({audio:b64(wavChunks(buf)[0])})}
-        catch(e){tk.msg='That recording did not work. Try again, or use "Type instead".';tk.err=true;render()}};
+        catch(e){tk.msg=tkTx('That recording did not work. Try again, or use "Type instead".','Optagelsen virkede ikke. Prøv igen, eller skriv i stedet.');tk.err=true;render()}};
       tk.rec={rec,to:setTimeout(()=>{try{rec.state!=='inactive'&&rec.stop()}catch(e){}},15000)};tk.msg='';rec.start();render();
-    }).catch(()=>{tk.msg='The microphone is blocked. Allow it for this page, or use "Type instead".';tk.err=true;render()});
+    }).catch(()=>{tk.msg=tkTx('The microphone is blocked. Allow it for this page, or use "Type instead".','Mikrofonen er blokeret. Giv siden lov til at bruge den, eller skriv i stedet.');tk.err=true;render()});
   },
   talkend(){if(tk.rec)A.talkmic();if(tk.turns>=2)return A.talkdone();hush();tk.scene=null;tab='home';render()},
   talkdone(){
+    if(isAdv())return advTalkDone();
     hush();const turns=tk.turns,gain=10+turns*2;S.earned+=gain;S.xp+=turns;week().xp+=turns;S.speaks+=turns;today().speaks=(today().speaks||0)+turns;
     S.stat=Object.assign(stat(),{tk:stat().tk+1,t:Date.now()});bumpStreak();
     const have=Object.values(PH),kept=(tk.keep||[]).filter(k=>!have.some(q=>!String(q.id).startsWith('tk-')&&slug(q.da)===slug(k.da))).filter((k,i,all)=>!all.some(o=>o!==k&&slug(o.da).length<slug(k.da).length&&slug(k.da).includes(slug(o.da)))).slice(0,5);
@@ -1636,8 +1944,9 @@ const A={
   buy(el){const b=BAKERY.find(x=>x.id===el.dataset.v);if(kr()<b.p||S.bakery.includes(b.id))return;S.bakery.push(b.id);rewards.just=b.id;
     BADGES.forEach(x=>{if(!S.badges.includes(x.id)&&x.ok(S))S.badges.push(x.id)});save();render();sfx('coin');confetti();sync()},
   sound(){S.sound=!S.sound;save();render();sfx('ok')},
-  reset(el){if(el.dataset.sure){S=def();CODE='';try{localStorage.removeItem(CODEKEY)}catch(e){}PACK=null;setLessons([]);clearResume();save();render()}else{el.dataset.sure=1;el.textContent='Tap again to erase this device'}}
+  reset(el){if(el.dataset.sure){try{localStorage.removeItem('hejciera.adv');localStorage.removeItem('hejciera.advoff')}catch(e){}ADV=false;S=def();CODE='';try{localStorage.removeItem(CODEKEY)}catch(e){}PACK=null;setLessons([]);clearResume();save();render()}else{el.dataset.sure=1;el.textContent='Tap again to erase this device'}}
 };
+Object.assign(A,ADVA);
 function drawTiles(s){const st=cur.state;
   document.getElementById('ansrow').innerHTML=st.picked.map(i=>`<button class="word" data-a="unword" data-v="${i}">${esc(s.bank[i])}</button>`).join('');
   document.getElementById('go').disabled=!st.picked.length}
