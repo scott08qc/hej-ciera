@@ -729,7 +729,7 @@ function isOpen(i){const l=L[i];if(l.x||l.pk)return true;for(let j=PATH.indexOf(
 /* A lesson added in the last two weeks is marked new until it is opened or finished. */
 const isNew=l=>!!l.at&&Date.now()-l.at<14*864e5&&!S.done[l.key]&&!(S.seenK&&S.seenK[l.key]);
 function setLessons(list){
-  famList=list||[];L.length=CORE;UNITS.length=NU;
+  famList=list||[];L.length=CORE;UNITS.length=NU;try{addTalkWords()}catch(e){}
   L.forEach(l=>{if(!l.bp){l.bp=l.p;l.bd=l.d}l.p=l.bp;l.d=l.bd;l.cards=[]});addPack();
   (list||[]).forEach(x=>L.push({u:4,x:true,at:x.at||0,key:x.id,t:x.t,en:x.en,i:x.i,by:x.by,mine:!!x.mine,p:x.p.map((a,pi)=>PH[x.id+'-'+pi]={id:x.id+'-'+pi,da:a[0],en:a[1],say:a[2]||'',note:a[3]||''}),d:x.d||[],mix:[]}));
   try{localStorage.setItem('hejciera.lessons',JSON.stringify(list||[]))}catch(e){}
@@ -1026,7 +1026,7 @@ async function sync(){
     if(!r.ok)return false;
     const j=await r.json();family=j.family||null;fx=j;if(j.lessons&&!cur&&sheet===null)setLessons(j.lessons);try{localStorage.setItem(CODEKEY,CODE)}catch(e){}
     const keep={sound:S.sound,solo:S.solo};S=Object.assign(merge(S,j.state||S),keep);if(!cur&&sheet===null&&((S.pack||{}).t||0)!==((PACK||{}).t||0))setPack(S.pack);
-    const renamed=j.name&&j.name!==NAME;S.name=j.name||S.name;save();
+    addTalkWords();const renamed=j.name&&j.name!==NAME;S.name=j.name||S.name;save();
     if(renamed){location.reload();return true}
     const typing=document.activeElement&&/INPUT|TEXTAREA/.test(document.activeElement.tagName);
     if(!cur&&!typing&&!document.querySelector('.fin')&&sheet===null&&!(tab==='talk'&&tk.scene)&&!vrec)render();
@@ -1128,6 +1128,10 @@ function talk(){
 }
 const b64=buf=>{let t='';const u=new Uint8Array(buf);for(let i=0;i<u.length;i+=0x8000)t+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(t)};
 function tkPlay(m){hush();if(m.audio){const a=player=new Audio('data:audio/mpeg;base64,'+m.audio);const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{})}else robot(m.da)}
+/* Phrases worth practicing from a conversation (what a Dane would have said, and hints she asked for) are kept,
+   shown in the debrief, and come back in the daily round like any lesson phrase. */
+function tkKeep(x){if(!x||!x.da||!slug(x.da))return;tk.keep=tk.keep||[];if(!tk.keep.some(k=>slug(k.da)===slug(x.da)))tk.keep.push({da:x.da,en:x.en||''})}
+function addTalkWords(){Object.entries(S.tkw||{}).forEach(([id,x])=>{if(x&&x.da)PH[id]={id,da:x.da,en:x.en||'',say:'',note:''}})}
 async function talkSend(payload){
   tk.busy=true;tk.msg='';tk.err=false;tk.showHint=false;if(tab==='talk')render();
   try{
@@ -1139,7 +1143,7 @@ async function talkSend(payload){
     else{const j=await r.json();
       if(!j.reply){tk.msg='I could not hear any Danish. Hold the phone a little closer and try again.';tk.err=true}
       else{if(j.heard){tk.hist.push({w:'me',da:j.heard});tk.turns++}
-        tk.fix=j.fix;tk.praise=j.praise;tk.hint=j.hint;tk.done=j.done;const m={w:'k',da:j.reply.da,en:j.reply.en,audio:j.audio};tk.hist.push(m);
+        if(j.heard&&!j.fix)tk.clean=(tk.clean||0)+1;tkKeep(j.fix);if(j.recap)tk.recap=j.recap;tk.fix=j.fix;tk.praise=j.praise;tk.hint=j.hint;tk.done=j.done;const m={w:'k',da:j.reply.da,en:j.reply.en,audio:j.audio};tk.hist.push(m);
         if(tab==='talk'&&!cur){render();tkPlay(m)}return}}
   }catch(e){tk.busy=false;tk.msg='No connection. Check that you are online.';tk.err=true}
   if(tab==='talk'&&!cur)render();
@@ -1486,8 +1490,8 @@ const A={
   scottsay(){scottSay(cur.steps[cur.i].p.da)},
   wsay(){scottSay(PACK.welcome.da)},
   wgo(){S.seenW={v:1,t:Date.now()};save();render();sync()},
-  scene(el){Object.assign(tk,{scene:scenes()[+el.dataset.v],hist:[],hint:null,fix:null,praise:'',done:false,msg:'',err:false,turns:0,typing:false,showHint:false});window.scrollTo(0,0);talkSend({})},
-  talkhint(){tk.showHint=true;render()},
+  scene(el){Object.assign(tk,{scene:scenes()[+el.dataset.v],hist:[],hint:null,fix:null,praise:'',done:false,msg:'',err:false,turns:0,typing:false,showHint:false,keep:[],clean:0,recap:''});window.scrollTo(0,0);talkSend({})},
+  talkhint(){tk.showHint=true;tkKeep(tk.hint);render()},
   talktype(){tk.typing=!tk.typing;render();const e=document.getElementById('tkin');if(e)e.focus()},
   talken(){tk.showEn=!tk.showEn;render()},
   talksay(el){const m=tk.hist[+el.dataset.v];if(m)tkPlay(m)},
@@ -1510,9 +1514,16 @@ const A={
   talkdone(){
     hush();const turns=tk.turns,gain=10+turns*2;S.earned+=gain;S.xp+=turns;week().xp+=turns;S.speaks+=turns;today().speaks=(today().speaks||0)+turns;
     S.stat=Object.assign(stat(),{tk:stat().tk+1,t:Date.now()});bumpStreak();
-    const won=BADGES.filter(b=>!S.badges.includes(b.id)&&b.ok(S));won.forEach(b=>S.badges.push(b.id));save();
+    const have=Object.values(PH),kept=(tk.keep||[]).filter(k=>!have.some(q=>!String(q.id).startsWith('tk-')&&slug(q.da)===slug(k.da))).filter((k,i,all)=>!all.some(o=>o!==k&&slug(o.da).length<slug(k.da).length&&slug(k.da).includes(slug(o.da)))).slice(0,5);
+    if(kept.length){S.tkw=S.tkw||{};S.srs=S.srs||{};kept.forEach(k=>{const id='tk-'+slug(k.da).slice(0,60);S.tkw[id]={da:k.da,en:k.en,t:Date.now()};S.srs[id]={b:1,d:dayNo()+1,miss:0,t:Date.now()}});addTalkWords();
+      fetch(SYNC+'/talk/'+CODE+'/keep',{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify({lines:kept.map(k=>k.da)})}).catch(()=>{})}
+    const recap=tk.recap||`${tk.clean||0} of your ${turns} ${turns===1?'answer':'answers'} needed no fixing.`;
+    const won=BADGES.filter(b=>!S.badges.includes(b.id)&&b.ok(S));won.forEach(b=>S.badges.push(b.id));save();sync();
     const title=tk.scene.t;tk.scene=null;tab='home';
-    app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div><h1>Godt snakket!</h1><p>Good talking. You held a real conversation: ${esc(title)}, ${turns} ${turns===1?'answer':'answers'} in your own words.</p>${scottNote()}
+    app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div><h1>Godt snakket!</h1><p>Good talking. You held a real conversation: ${esc(title)}, ${turns} ${turns===1?'answer':'answers'} in your own words.</p>
+    <div class="tip" style="text-align:left;width:100%"><b>Lars says:</b> ${esc(recap)}</div>
+    ${kept.length?`<div class="tip" style="text-align:left;width:100%"><b>Worth practicing</b>${kept.map(k=>`<div style="margin-top:8px">${esc(k.da)}<br><span style="color:var(--muted)">${esc(k.en)}</span></div>`).join('')}<div style="margin-top:10px;color:var(--muted)">Saved to your daily round. They come back tomorrow.</div></div>`:''}
+    ${scottNote()}
     <div class="won" style="display:flex;gap:10px;justify-content:center"><span class="chip" style="flex:none">🪙 +${gain}<small>kroner</small></span><span class="chip" style="flex:none">🔥 ${S.streak}<small>streak</small></span></div>
     ${won.length?`<div class="grid" style="width:100%">${won.map(b=>`<div class="tile own new"><i>${b.i}</i><b>${b.t}</b><small>New badge!</small></div>`).join('')}</div>`:''}
     <button class="btn" data-a="tab" data-v="home">Continue</button></div></div>`;
@@ -1643,7 +1654,7 @@ function confetti(){
     if(++f<130)requestAnimationFrame(tick);else c.hidden=true})();
 }
 try{const qc=new URLSearchParams(location.search).get('c');if(qc){CODE=qc.toUpperCase().replace(/[^A-Z0-9]/g,'')/* the code stays in the address so a home-screen icon made from this link signs itself in */}}catch(e){}
-learned(S).forEach(p=>{if(!S.srs[p.id])S.srs[p.id]={b:1,d:dayNo(),miss:0,t:1}});
+addTalkWords();learned(S).forEach(p=>{if(!S.srs[p.id])S.srs[p.id]={b:1,d:dayNo(),miss:0,t:1}});
 today();week();render();sync();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!cur)sync()});
 if('serviceWorker'in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
