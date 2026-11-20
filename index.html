@@ -461,8 +461,8 @@ const L=[
   d:[['Er det din telefon?','Is that your phone?',2],['Hvis bil er det?','Whose car is that?',6]],
   mix:[['Det er min cykel','That is my bike'],['Hvor er din bil?','Where is your car?']]},
  {key:'s5',u:5,t:'Lars har en ven',en:'Lars has a friend',i:'📖',story:[
-  ['Det er Lars.','This is Lars.'],['Lars er en snegl.','Lars is a snail.'],['Han har en ven. Hun hedder Mille.','He has a friend. Her name is Mille.'],['Mille har en cykel. Lars har ikke en cykel.','Mille has a bike. Lars does not have a bike.'],['Men Lars er glad. Han har tid.','But Lars is happy. He has time.']],
-  q:[['What is Lars?',['A snail','A dog','A bike'],0],['Who has a bike?',['Mille','Lars','Nobody'],0]]},
+  ['Det er Lars.','This is Lars.'],['Lars er en skildpadde.','Lars is a turtle.'],['Han har en ven. Hun hedder Mille.','He has a friend. Her name is Mille.'],['Mille har en cykel. Lars har ikke en cykel.','Mille has a bike. Lars does not have a bike.'],['Men Lars er glad. Han har tid.','But Lars is happy. He has time.']],
+  q:[['What is Lars?',['A turtle','A dog','A bike'],0],['Who has a bike?',['Mille','Lars','Nobody'],0]]},
 
  /* ---- Unit 6: want, can, will ---- */
  {key:'u6a',u:6,t:'Jeg vil gerne',en:'I would like',i:'🙋',p:[
@@ -632,8 +632,8 @@ const L=[
   d:[['Smagte det?','Did it taste good?',0],['Vil I have dessert?','Would you like dessert?',1],['Sammen eller hver for sig?','Together or separately?',4]],
   mix:[['Må jeg få regningen?','May I have the check?'],['Jeg er ikke mæt','I am not full']]},
  {key:'s10',u:10,t:'Lars på restaurant',en:'Lars eats out',i:'📖',story:[
-  ['Lars og Mille er på restaurant.','Lars and Mille are at a restaurant.'],['"Hvad kan du anbefale?" siger Mille.','"What do you recommend?" says Mille.'],['"Salaten er god," siger tjeneren.','"The salad is good," says the waiter.'],['Lars bliver bleg. Han er en snegl!','Lars turns pale. He is a snail!'],['"Jeg tager kagen," siger han.','"I will have the cake," he says.']],
-  q:[['What does the waiter recommend?',['The salad','The fish','The cake'],0],['What does Lars order?',['The cake','The salad','Nothing'],0]]},
+  ['Lars og Mille er på restaurant.','Lars and Mille are at a restaurant.'],['"Hvad kan du anbefale?" siger Mille.','"What do you recommend?" says Mille.'],['"Salaten er god," siger tjeneren.','"The salad is good," says the waiter.'],['Lars smiler. Han er en skildpadde!','Lars smiles. He is a turtle!'],['"Jeg tager salaten. Og kagen!" siger han.','"I will have the salad. And the cake!" he says.']],
+  q:[['What does the waiter recommend?',['The salad','The fish','The cake'],0],['What does Lars order?',['The salad and the cake','Only the cake','Nothing'],0]]},
 
  /* ---- Unit 11: feelings and opinions ---- */
  {key:'u11a',u:11,t:'Hvordan har du det?',en:'How are you?',i:'💛',p:[
@@ -769,7 +769,7 @@ const BADGES=[
  {id:'all',i:'🇩🇰',t:'Klar til Danmark',d:'Finish the whole course',ok:s=>L.slice(0,CORE).every(l=>s.done[l.key])}
 ];
 const BAKERY=[
- {id:'kanel',i:'🥐',t:'Kanelsnegl',p:30,d:'"Cinnamon snail". Lars\'s cousin.'},
+ {id:'kanel',i:'🥐',t:'Kanelsnegl',p:30,d:'"Cinnamon snail". Lars\'s favorite.'},
  {id:'flode',i:'🍫',t:'Flødebolle',p:40,d:'Marshmallow cream under a chocolate shell.'},
  {id:'rom',i:'🟤',t:'Romkugle',p:40,d:'A rum ball made from yesterday\'s cakes.'},
  {id:'wiener',i:'🥮',t:'Wienerbrød',p:50,d:'What the world calls "a Danish".'},
@@ -828,21 +828,23 @@ const rnd=a=>a[Math.floor(Math.random()*a.length)];
 const app=document.getElementById('app');
 let tab='home',cur=null,sheet=null;
 
-/* ---------- Lars the cinnamon snail ---------- */
+/* ---------- Lars the turtle (the function keeps its old name) ---------- */
 function snegl(m){m=m||'hi';
   const eye=(x,y)=>m==='yay'?`<path d="M${x-4.5} ${y+2} q4.5 -7 9 0" stroke="#3b2a1a" stroke-width="2.6" fill="none" stroke-linecap="round"/>`
     :`<g class="blink"><circle cx="${x}" cy="${y}" r="6" fill="#f1ece0"/><circle cx="${x+1}" cy="${y+(m==='oops'?2.5:0)}" r="2.8" fill="#3b2a1a"/></g>`;
   const mouth=m==='yay'?'<path d="M90 59 q7 11 14 0 z" fill="#8a3b3b"/>':m==='oops'?'<ellipse cx="97" cy="63" rx="3" ry="3.6" fill="#8a3b3b"/>'
     :'<path d="M91 60 q6 6 12 0" stroke="#3b2a1a" stroke-width="2.4" fill="none" stroke-linecap="round"/>';
   return `<svg class="snegl ${m}" viewBox="0 0 124 96" aria-hidden="true">
-  <path d="M8 88 Q4 71 22 71 H100 Q119 71 115 88 Z" fill="#e2c08a"/>
-  <path d="M83 76 Q81 40 97 38 Q113 40 111 76 Z" fill="#e2c08a"/>
-  <path d="M91 42 L87 23 M103 42 L107 23" stroke="#e2c08a" stroke-width="4.5" stroke-linecap="round"/>
-  ${eye(87,19)}${eye(107,19)}
-  <circle cx="87" cy="57" r="3.2" fill="#e08f84" opacity=".7"/><circle cx="107" cy="57" r="3.2" fill="#e08f84" opacity=".7"/>${mouth}
-  <circle cx="50" cy="46" r="31" fill="#b57843"/>
-  <path d="M50 46 a4 4 0 0 1 8 0 a8 8 0 0 1 -16 0 a12 12 0 0 1 24 0 a16 16 0 0 1 -32 0 a20 20 0 0 1 40 0 a24 24 0 0 1 -48 0" fill="none" stroke="#7b4a22" stroke-width="4" stroke-linecap="round"/>
-  <path d="M29 31 q8 -11 21 -11 M63 23 q10 6 12 17" stroke="#f1ece0" stroke-width="3.6" fill="none" stroke-linecap="round" opacity=".85"/></svg>`}
+  <path d="M12 72 L1 80 L14 80 Z" fill="#9cbf7a"/>
+  <rect x="20" y="68" width="17" height="23" rx="8" fill="#9cbf7a"/><rect x="54" y="68" width="17" height="23" rx="8" fill="#9cbf7a"/>
+  <path d="M70 72 Q84 72 92 58" stroke="#9cbf7a" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <path d="M7 76 Q7 26 44 26 Q81 26 81 76 Z" fill="#b57843"/>
+  <path d="M44 38 l13 8 v14 l-13 8 l-13 -8 v-14 z M31 46 L16 42 M57 46 L71 42 M31 60 L15 66 M57 60 L73 66 M44 38 V28" fill="none" stroke="#7b4a22" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="3" y="70" width="82" height="10" rx="5" fill="#7b4a22"/>
+  <path d="M17 44 q6 -11 19 -13" stroke="#f1ece0" stroke-width="3.4" fill="none" stroke-linecap="round" opacity=".8"/>
+  <circle cx="97" cy="50" r="19" fill="#9cbf7a"/>
+  ${eye(89,44)}${eye(105,44)}
+  <circle cx="86" cy="57" r="3.2" fill="#e08f84" opacity=".7"/><circle cx="108" cy="57" r="3.2" fill="#e08f84" opacity=".7"/>${mouth}</svg>`}
 
 /* ---------- sound and touch ---------- */
 let AC=null;
