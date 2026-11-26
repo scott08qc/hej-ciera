@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#121826">
+<meta name="theme-color" content="#0f1424">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Hej Danmark">
@@ -11,14 +11,14 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700&display=swap">
 <style>
 /* Layout: a winding lesson path on one phone column, a bottom tab bar, a full-screen lesson player.
-   Look: Danish "blue hour" - dusk navy with soft candy colors per unit. Dark only, never bright. */
+   Look: a dark ground (bright screens give the player headaches) with vivid color on top, one strong color per unit. Dark only. */
 :root{
   color-scheme:dark;
-  --bg:#121826; --surface:#1b2434; --raised:#253146; --line:#324059; --ledge:#0b1019;
-  --fg:#dcd6c8; --muted:#8e97a9; --ink:#141a26;
-  --candle:#e0a95a; --candle-d:#a17434;
-  --good:#6fbf85; --good-d:#3f8455; --good-bg:#1c3328;
-  --miss:#d97a7c; --miss-d:#9a4a4d; --miss-bg:#38222a;
+  --bg:#0f1424; --surface:#1a2238; --raised:#27324f; --line:#34416a; --ledge:#080b16;
+  --fg:#f4f1ea; --muted:#9aa4bf; --ink:#1a1405;
+  --candle:#ffd23f; --candle-d:#c79a12; --red:#ff5a6e; --blue:#4d8dff; --blue-d:#2b5fc7;
+  --good:#5fe39a; --good-d:#2a9c62; --good-bg:#143a2c;
+  --miss:#ff7a85; --miss-d:#c2414f; --miss-bg:#3d1a26;
   --display:"Fredoka","Trebuchet MS",system-ui,sans-serif;
   --body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
@@ -263,6 +263,84 @@ details.rev summary{font-weight:700;cursor:pointer}
 .chest.open{border-style:solid} .chest.open i{animation:pop .5s both}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:8}
 
+/* ---------- the brighter look, Today card, levels, celebrations, wardrobe, photos ---------- */
+.tabs{background:#0a0e1a}
+.tabs button i{filter:grayscale(.45) opacity(.8)}
+.banner{background:linear-gradient(135deg,var(--c),color-mix(in srgb,var(--c) 62%,#fff))}
+.node.locked{background:#27324f;box-shadow:0 8px 0 #161d33}
+.node.locked span{filter:grayscale(1);opacity:.55}
+.node.locked::after{content:"🔒";position:absolute;right:-4px;bottom:-2px;font-size:17px}
+.nl{color:#b4bdd4}
+.bigplay,.mic{background:var(--blue);box-shadow:0 7px 0 var(--blue-d)}
+.opt.sel{border-color:var(--blue);box-shadow:0 4px 0 var(--blue-d);background:#1b2c55}
+.msg.me{background:#2a4fa3}
+.shot,.pc img{filter:none}
+.chip{border-color:transparent;background:var(--surface)}
+.tile b{overflow-wrap:anywhere;hyphens:auto}
+.tile .bar,.nxt .bar{width:100%;height:6px;border-radius:6px;background:var(--raised);overflow:hidden;margin-top:2px}
+.tile .bar i,.nxt .bar i{display:block;height:100%;width:0;background:var(--candle);border-radius:6px;filter:none;opacity:1;animation:none}
+.tile.own{border-color:var(--candle);background:linear-gradient(170deg,#2b2a1c,var(--surface))}
+.tile.on{border-color:var(--good);background:var(--good-bg)}
+.tile.off i{opacity:.5}
+.stat{text-align:center}
+.tile .mm{width:74px;display:block} .tile .mm .snegl{animation:none} .tile.off .mm{opacity:.5}
+.today{background:linear-gradient(160deg,#243a78,#1a2238 70%);border:2px solid var(--blue);border-radius:22px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.today .hi{display:flex;gap:10px;align-items:center}
+.today .m{width:108px;flex:none;padding:0}
+.today h2{font-size:22px} .today p{color:#c9d1e6;font-size:14px} .today p b{color:var(--candle);font-family:var(--display)}
+.today .link{margin-top:-8px}
+.wk{display:flex;justify-content:space-between}
+.wk span{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:600;font-size:14px;background:var(--raised);color:var(--muted)}
+.wk span.on{background:#ff8a3d;color:#3a1a00;box-shadow:0 0 14px rgba(255,138,61,.5)}
+.wk span.now{border:2px dashed #ff8a3d;background:none;color:#ff8a3d}
+.qs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qc{background:var(--surface);border-radius:14px;padding:9px 11px;font-size:13px;font-weight:700;display:flex;flex-direction:column;gap:6px;min-width:0}
+.qc span{display:flex;justify-content:space-between;gap:6px;white-space:nowrap}
+.qc em{font-style:normal;color:var(--candle)}
+.qc .bar{height:6px;border-radius:6px;background:var(--raised);overflow:hidden}
+.qc .bar i{display:block;height:100%;background:var(--candle);border-radius:6px;transition:width .5s}
+.qc.done{background:var(--good-bg);color:var(--good)} .qc.done em{color:var(--good)} .qc.done .bar i{background:var(--good)}
+.qchest{grid-column:1/-1;border:2px dashed #a78bfa;color:#cdbfff;border-radius:14px;padding:8px 11px;font-size:13px;font-weight:700;text-align:center}
+.qchest.done{border-style:solid;background:#2a1f55}
+.lv{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--surface);border-radius:20px;padding:12px 14px;box-shadow:0 4px 0 var(--ledge)}
+.lv.open{background:none;box-shadow:none;padding:4px 2px}
+.ring{width:54px;height:54px;flex:none;border-radius:50%;background:conic-gradient(var(--red) calc(var(--p)*1%),var(--raised) 0);display:grid;place-items:center}
+.ring b{width:40px;height:40px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font-family:var(--display);font-size:17px}
+.lv .tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.lv .tx b{font-family:var(--display);font-size:20px} .lv .tx small{color:var(--muted);font-size:13px}
+.lv>i{font-style:normal;color:var(--muted);font-size:18px}
+.track{overflow:visible} .track div{min-width:16px}
+.walker{position:absolute;right:-14px;top:-19px;width:36px;pointer-events:none;display:block}
+.walker .snegl{animation:none} .walker .snegl.yay{animation:hop .5s ease-out 1}
+.pbar{padding-top:24px}
+.plus{position:fixed;right:20px;top:calc(46px + env(safe-area-inset-top,0px));z-index:9;font-family:var(--display);font-weight:700;font-size:18px;color:var(--candle);pointer-events:none;animation:plus .85s both}
+.cel{position:fixed;inset:0;z-index:20;background:radial-gradient(circle at 50% 32%,#24306a,#0b0f1c 62%);display:flex;align-items:center;justify-content:center;padding:24px;animation:fade .25s both;overflow:auto}
+.cel>div{max-width:400px;width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.cel .k{color:var(--candle);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.medal{width:170px;height:170px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--mc2,#ff9aa6),var(--mc,#ff5a6e));border:8px solid var(--candle);box-shadow:0 0 0 10px rgba(255,210,63,.15),0 0 60px rgba(255,210,63,.45);display:grid;place-items:center;font-size:78px;font-family:var(--display);font-weight:700;color:#fff;animation:medal .9s cubic-bezier(.2,.9,.3,1.3) both}
+.cel h1{font-size:32px} .cel p{color:#c9d1e6} .cel .m{width:150px}
+.nxt{width:100%;background:var(--surface);border-radius:16px;padding:12px 14px;text-align:left;font-size:14px;display:flex;flex-direction:column;gap:6px}
+.nxt span{display:flex;justify-content:space-between;gap:8px} .nxt em{font-style:normal;font-weight:700;color:var(--candle)}
+#confetti{z-index:25}
+.seg{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:6px;background:var(--surface);border-radius:16px;padding:5px}
+.seg button{padding:9px 4px;border-radius:12px;font-family:var(--display);font-weight:600;color:var(--muted)}
+.seg button.on{background:var(--candle);color:var(--ink)}
+.closet{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;background:linear-gradient(160deg,#35277a,#1a2238 75%);border:2px solid #a78bfa;border-radius:22px;padding:14px}
+.closet .m{width:170px} .closet b{font-family:var(--display);font-size:20px} .closet span{color:#c9d1e6;font-size:14px}
+.pic{width:168px;height:168px;align-self:center;object-fit:cover;border-radius:22px;border:4px solid var(--line);animation:pop .4s both}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opt.popt{padding:0;overflow:hidden;aspect-ratio:1;border-width:4px;border-radius:20px;min-height:0}
+.popt img,.popt .sw{width:100%;height:100%;object-fit:cover;display:block}
+.popt.no{opacity:.55}
+.flipc{min-height:250px;justify-content:center;width:100%;animation:flipin .35s both}
+.flipc.back{border-color:var(--candle)}
+.lockb{background:var(--raised);border-radius:14px;padding:10px 14px;font-size:14px;color:#c9d1e6}
+@keyframes medal{0%{transform:scale(0) rotate(-200deg)}70%{transform:scale(1.12) rotate(8deg)}100%{transform:scale(1)}}
+@keyframes plus{0%{transform:translateY(10px) scale(.6);opacity:0}30%{transform:none;opacity:1}100%{transform:translateY(-26px);opacity:0}}
+@keyframes flipin{from{transform:rotateY(90deg)}}
+@keyframes snooze{50%{transform:translateY(2px)}}
+.snegl.sleep{animation:snooze 3.4s ease-in-out infinite}
+
 @keyframes bob{50%{transform:translateY(-4px)}}
 @keyframes hop{30%{transform:translateY(-16px) rotate(-4deg)}60%{transform:translateY(0)}}
 @keyframes droop{to{transform:translateY(3px) rotate(3deg)}}
@@ -290,20 +368,22 @@ details.rev summary{font-weight:700;cursor:pointer}
 <script>
 /* ---------- course content: p = [Danish, English, say-it hint, note]; d = chat turns [Lars says, English, index of the right reply] ---------- */
 const UNITS=[
- {t:'Første ord',en:'First words',c:'#45ab9f',cl:'#2a776e'},
- {t:'Ud i byen',en:'Out and about',c:'#d98670',cl:'#9b5443'},
- {t:'Familie & hygge',en:'Family and cozy times',c:'#9a8ad8',cl:'#6657a5'},
- {t:'På tur',en:'On the trip',c:'#d9a85c',cl:'#9b7436'},
- {t:'Fra virkeligheden',en:'Real life',c:'#6f9bd6',cl:'#44689c',x:true},
- {t:'Jeg og du',en:'Me and you',c:'#45ab9f',cl:'#2a776e'},
- {t:'Jeg vil, jeg kan',en:'Want, can, will',c:'#d98670',cl:'#9b5443'},
- {t:'Spørgsmål',en:'Questions and "not"',c:'#9a8ad8',cl:'#6657a5'},
- {t:'Tal, tid og penge',en:'Numbers, time and money',c:'#d9a85c',cl:'#9b7436'},
- {t:'På indkøb',en:'Shopping',c:'#45ab9f',cl:'#2a776e'},
- {t:'På restaurant',en:'Eating out',c:'#d98670',cl:'#9b5443'},
- {t:'Hvad synes du?',en:'Feelings and opinions',c:'#9a8ad8',cl:'#6657a5'},
- {t:'Hos familien',en:'With the family',c:'#d9a85c',cl:'#9b7436'}
+ {t:'Første ord',en:'First words',c:'#19c2a8',cl:'#0f8a77'},
+ {t:'Ud i byen',en:'Out and about',c:'#ff7a59',cl:'#c24e31'},
+ {t:'Familie & hygge',en:'Family and cozy times',c:'#a78bfa',cl:'#6f55c9'},
+ {t:'På tur',en:'On the trip',c:'#ffb23f',cl:'#c47f14'},
+ {t:'Fra virkeligheden',en:'Real life',c:'#4d8dff',cl:'#2b5fc7',x:true},
+ {t:'Jeg og du',en:'Me and you',c:'#ff6fae',cl:'#c2417c'},
+ {t:'Jeg vil, jeg kan',en:'Want, can, will',c:'#8fd96a',cl:'#5aa13a'},
+ {t:'Spørgsmål',en:'Questions and "not"',c:'#38c6f4',cl:'#1a8fb8'},
+ {t:'Tal, tid og penge',en:'Numbers, time and money',c:'#ff5a6e',cl:'#c2313f'},
+ {t:'På indkøb',en:'Shopping',c:'#3ddc97',cl:'#1f9e68'},
+ {t:'På restaurant',en:'Eating out',c:'#ff9345',cl:'#c4621c'},
+ {t:'Hvad synes du?',en:'Feelings and opinions',c:'#c77dff',cl:'#8a48c2'},
+ {t:'Hos familien',en:'With the family',c:'#ffd23f',cl:'#c79a12'}
 ];
+/* Lesson and word photos: key or phrase id -> [file, credit]. Filled in by the photo step. */
+const PHO={"lessons":{"0":["img/l/0.jpg","Photo: Jakub Hałun, CC BY-SA 4.0, via Wikimedia Commons"],"1":["img/l/1.jpg","Photo: Andre.o.mob, CC BY-SA 4.0, via Wikimedia Commons"],"4":["img/l/4.jpg","Photo: Casper Moller, CC BY 2.0, via Wikimedia Commons"],"6":["img/l/6.jpg","Photo: Kristoffer Trolle from Copenhagen, Denmark, CC BY 2.0, via Wikimedia Commons"],"7":["img/l/7.jpg","Photo: Maekju, CC BY-SA 4.0, via Wikimedia Commons"],"8":["img/l/8.jpg","Photo: cyclonebill from Copenhagen, Denmark, CC BY-SA 2.0, via Wikimedia Commons"],"9":["img/l/9.jpg","Photo: Nils Öberg, CC BY-SA 3.0, via Wikimedia Commons"],"10":["img/l/10.jpg","Photo: Olgierd Rudak, CC BY-SA 4.0, via Wikimedia Commons"],"11":["img/l/11.jpg","Photo: © 2004 by Tomasz Sienicki [user: tsca, mail: tomasz.sienicki, CC BY-SA 3.0, via Wikimedia Commons"],"u5a":["img/l/u5a.jpg","Photo: SFDan, CC BY-SA 3.0, via Wikimedia Commons"],"u5b":["img/l/u5b.jpg","Photo: MichaelMcPhee, CC BY 3.0, via Wikimedia Commons"],"u5c":["img/l/u5c.jpg","Photo: Jenny Andersson / News Oresund, CC BY 2.0, via Wikimedia Commons"],"u6a":["img/l/u6a.jpg","Photo: Dietmar Rabich, CC BY-SA 4.0, via Wikimedia Commons"],"u6b":["img/l/u6b.jpg","Photo: Андрей Романенко, CC BY-SA 4.0, via Wikimedia Commons"],"u7a":["img/l/u7a.jpg","Photo: Dietmar Rabich, CC BY-SA 4.0, via Wikimedia Commons"],"u7b":["img/l/u7b.jpg","Photo: W.carter, Public domain, via Wikimedia Commons"],"u7c":["img/l/u7c.jpg","Photo: Andy Li, CC0, via Wikimedia Commons"],"u8a":["img/l/u8a.jpg","Photo: Kritzolina, CC BY-SA 4.0, via Wikimedia Commons"],"u8b":["img/l/u8b.jpg","Photo: Anonimski, CC0, via Wikimedia Commons"],"u8c":["img/l/u8c.jpg","Photo: John Samuel, CC BY-SA 4.0, via Wikimedia Commons"],"u9b":["img/l/u9b.jpg","Photo: FranHogan, CC BY-SA 4.0, via Wikimedia Commons"],"u9c":["img/l/u9c.jpg","Photo: Jakub Hałun, CC BY-SA 4.0, via Wikimedia Commons"],"u10a":["img/l/u10a.jpg","Photo: kallerna, CC BY-SA 4.0, via Wikimedia Commons"],"u10b":["img/l/u10b.jpg","Photo: Gerda Arendt, CC BY-SA 4.0, via Wikimedia Commons"],"u10c":["img/l/u10c.jpg","Photo: Wilfredor, CC0, via Wikimedia Commons"],"u11a":["img/l/u11a.jpg","Photo: Dietmar Rabich, CC BY-SA 4.0, via Wikimedia Commons"],"u11b":["img/l/u11b.jpg","Photo: Lars Plougmann, CC BY-SA 2.0, via Wikimedia Commons"],"u11c":["img/l/u11c.jpg","Photo: Petro Stelte, CC BY-SA 4.0, via Wikimedia Commons"],"u12a":["img/l/u12a.jpg","Photo: Michael Gäbler, CC BY-SA 3.0, via Wikimedia Commons"],"u12b":["img/l/u12b.jpg","Photo: Danbold at English Wikipedia, Public domain, via Wikimedia Commons"],"u12c":["img/l/u12c.jpg","Photo: russellstreet, CC BY-SA 2.0, via Wikimedia Commons"]},"phrases":{"4-0":["img/p/4-0.jpg","Photo: Julius Schorzman, CC BY-SA 2.0, via Wikimedia Commons"],"4-1":["img/p/4-1.jpg","Photo: AntanO, CC BY-SA 4.0, via Wikimedia Commons"],"4-3":["img/p/4-3.jpg","Photo: Derek Jensen (Tysto), Public domain, via Wikimedia Commons"],"8-0":["img/p/8-0.jpg","Photo: Tomascastelazo, CC BY-SA 4.0, via Wikimedia Commons"],"8-1":["img/p/8-1.jpg","Photo: Yann Forget, CC BY-SA 4.0, via Wikimedia Commons"],"8-2":["img/p/8-2.jpg","Photo: Glane23, CC BY-SA 3.0, via Wikimedia Commons"],"8-4":["img/p/8-4.jpg","Photo: Daria YakovlevaMinor edits made by Subsidiary account, CC0, via Wikimedia Commons"],"8-5":["img/p/8-5.jpg","Photo: Thegreatmutata, CC0, via Wikimedia Commons"],"8-6":["img/p/8-6.jpg","Photo: Hekatlys, CC0, via Wikimedia Commons"],"9-1":["img/p/9-1.jpg","Photo: Diliff, CC BY-SA 3.0, via Wikimedia Commons"],"9-2":["img/p/9-2.jpg","Photo: Vyacheslav Argenberg, CC BY 4.0, via Wikimedia Commons"],"10-0":["img/p/10-0.jpg","Photo: W.carter, CC BY-SA 4.0, via Wikimedia Commons"],"10-1":["img/p/10-1.jpg","Photo: Emmanuelkwizera, CC BY-SA 4.0, via Wikimedia Commons"],"u5b-4":["img/p/u5b-4.jpg","Photo: Jakub Hałun, CC BY-SA 4.0, via Wikimedia Commons"],"u5c-2":["img/p/u5c-2.jpg","Photo: Acabashi, CC BY-SA 4.0, via Wikimedia Commons"],"u5c-3":["img/p/u5c-3.jpg","Photo: Unknown author, CC BY-SA 4.0, via Wikimedia Commons"],"u5c-4":["img/p/u5c-4.jpg","Photo: PumpkinSky, CC BY-SA 4.0, via Wikimedia Commons"],"u5c-5":["img/p/u5c-5.jpg","Photo: Alan Mok, CC BY 3.0, via Wikimedia Commons"],"u5c-6":["img/p/u5c-6.jpg","Photo: Vauxford, CC BY-SA 4.0, via Wikimedia Commons"],"u5c-7":["img/p/u5c-7.jpg","Photo: DeFacto, CC BY-SA 4.0, via Wikimedia Commons"],"u9b-0":["img/p/u9b-0.jpg","Photo: NIAID, CC BY 2.0, via Wikimedia Commons"],"u9b-1":["img/p/u9b-1.jpg","Photo: George Chernilevsky, Public domain, via Wikimedia Commons"],"u9b-2":["img/p/u9b-2.jpg","Photo: Marc-Lautenbacher, CC BY-SA 4.0, via Wikimedia Commons"],"u9b-3":["img/p/u9b-3.jpg","Photo: DenesFeri, CC BY-SA 4.0, via Wikimedia Commons"],"u9b-4":["img/p/u9b-4.jpg","Photo: Julikalucky, CC0, via Wikimedia Commons"],"u9b-5":["img/p/u9b-5.jpg","Photo: Krzysztof Golik, CC BY-SA 4.0, via Wikimedia Commons"],"u10b-0":["img/p/u10b-0.jpg","Photo: Gerda Arendt, CC BY-SA 4.0, via Wikimedia Commons"],"u10b-1":["img/p/u10b-1.jpg","Photo: Evan Swigart from Chicago, USA, CC BY 2.0, via Wikimedia Commons"],"u10b-2":["img/p/u10b-2.jpg","Photo: pelican from Tokyo, Japan, CC BY-SA 2.0, via Wikimedia Commons"],"u10b-3":["img/p/u10b-3.jpg","Photo: Silar, CC0, via Wikimedia Commons"]}};/*PHO*/
 const L=[
  {u:0,t:'Hej!',en:'Hello and goodbye',i:'👋',p:[
   ['Hej','Hi','hi'],
@@ -721,10 +801,11 @@ L.forEach(l=>{l.key=l.key||String(plain++);l.p=(l.p||[]).map((a,pi)=>PH[l.key+'-
 /* Lessons the family made from real moments arrive from the sync service and sit after the course lessons. */
 const CORE=L.length,PATH=L.map((l,i)=>i).sort((a,b)=>L[a].u-L[b].u||a-b);
 const NU=UNITS.length;let PACK=null,famList=[];
+const PKC=[{c:'#ff6fae',cl:'#c2417c'},{c:'#ffb23f',cl:'#c47f14'},{c:'#ff5a6e',cl:'#c2313f'},{c:'#c77dff',cl:'#8a48c2'}];
 try{PACK=JSON.parse(localStorage.getItem('hejciera.v1')||'{}').pack||null}catch(e){}
 function addPack(){
   if(!PACK||!PACK.lessons)return;
-  (PACK.units||[]).forEach(u=>UNITS.push(Object.assign({pk:true},u)));
+  (PACK.units||[]).forEach((u,i)=>UNITS.push(Object.assign({pk:true},u,PKC[i%PKC.length])));
   PACK.lessons.forEach(x=>{const l={u:NU+(x.u||0),pk:true,stamp:x.stamp||'',at:x.at||0,key:x.key,t:x.t,en:x.en,i:x.i,cards:x.cards||[],d:x.d||[]};
     l.p=(x.p||[]).map((a,pi)=>PH[x.key+'-'+pi]={id:x.key+'-'+pi,da:a[0],en:a[1],say:a[2]||'',note:a[3]||''});
     l.mix=(x.mix||[]).map((a,mi)=>PH[x.key+'-m'+mi]={id:x.key+'-m'+mi,da:a[0],en:a[1],say:'',note:'',mix:true});L.push(l)});
@@ -732,7 +813,7 @@ function addPack(){
     l.cards=x.cards||[];l.p=l.bp.concat((x.p||[]).map((a,i)=>PH[k+'-px'+i]={id:k+'-px'+i,da:a[0],en:a[1],say:a[2]||'',note:a[3]||''}));l.d=l.bd.concat(x.d||[])})}
 const imgUrl=x=>x&&x.indexOf('photo:')===0?SYNC+'/photo/'+CODE+'/'+x.slice(6)+'.jpg':x;
 function setPack(pk){PACK=pk||null;setLessons(famList)}
-function isOpen(i){const l=L[i];if(l.x||l.pk)return true;for(let j=PATH.indexOf(i)-1;j>=0;j--){const q=L[PATH[j]];if(l.story||!q.story)return !!S.done[q.key]}return true}
+function isOpen(i){const l=L[i];if(l.x||l.pk||(S.open&&S.open[l.key]))return true;for(let j=PATH.indexOf(i)-1;j>=0;j--){const q=L[PATH[j]];if(l.story||!q.story)return !!S.done[q.key]}return true}
 /* A lesson added in the last two weeks is marked new until it is opened or finished. */
 const isNew=l=>!!l.at&&Date.now()-l.at<14*864e5&&!S.done[l.key]&&!(S.seenK&&S.seenK[l.key]);
 function setLessons(list){
@@ -766,8 +847,43 @@ const BADGES=[
  {id:'rl1',i:'🍽️',t:'Fra virkeligheden',d:'Finish a real-life lesson',ok:s=>Object.keys(s.done).some(k=>k[0]==='x')},
  {id:'w150',i:'🎓',t:'Ordkunstner',d:'Learn 150 phrases',ok:s=>learned(s).length>=150},
  {id:'half',i:'🧭',t:'Halvvejs',d:'Finish unit 8',ok:s=>unitDone(s,8)},
- {id:'all',i:'🇩🇰',t:'Klar til Danmark',d:'Finish the whole course',ok:s=>L.slice(0,CORE).every(l=>s.done[l.key])}
+ {id:'all',i:'🇩🇰',t:'Klar til Danmark',d:'Finish the whole course',ok:s=>L.slice(0,CORE).every(l=>s.done[l.key])},
+ {id:'s14',i:'🌟',t:'To uger',d:'Practice 14 days in a row',ok:s=>s.streak>=14},
+ {id:'s30',i:'🏆',t:'En hel måned',d:'Practice 30 days in a row',ok:s=>s.streak>=30},
+ {id:'s100',i:'💯',t:'Hundrede dage',d:'Practice 100 days in a row',ok:s=>s.streak>=100},
+ {id:'perf5',i:'💎',t:'Perfektionist',d:'5 lessons with no mistakes',ok:s=>s.perfect>=5},
+ {id:'c20',i:'🚀',t:'Tyve i træk',d:'Get 20 right in a row',ok:s=>s.bestCombo>=20},
+ {id:'hat1',i:'🎩',t:'Stilikon',d:'Buy Lars something to wear',ok:s=>((s.lars||{}).own||[]).length>=1}
 ];
+/* How far along a badge is: [now, goal]. Badges without a number show no bar. */
+const PR={first:s=>[n(s),1],s3:s=>[s.streak,3],s7:s=>[s.streak,7],s14:s=>[s.streak,14],s30:s=>[s.streak,30],s100:s=>[s.streak,100],sp25:s=>[s.speaks,25],sp100:s=>[s.speaks,100],
+ c10:s=>[s.bestCombo,10],c20:s=>[s.bestCombo,20],w50:s=>[learned(s).length,50],w150:s=>[learned(s).length,150],bak3:s=>[s.bakery.length,3],rv1:s=>[(s.stat||{}).rv||0,1],rv10:s=>[(s.stat||{}).rv||0,10],
+ st3:s=>[(s.stat||{}).st||0,3],tk1:s=>[(s.stat||{}).tk||0,1],tk10:s=>[(s.stat||{}).tk||0,10],perf5:s=>[s.perfect,5],
+ u0:s=>unitPr(s,0),u1:s=>unitPr(s,1),u2:s=>unitPr(s,2),u3:s=>unitPr(s,3),half:s=>unitPr(s,8),all:s=>[L.slice(0,CORE).filter(l=>s.done[l.key]).length,CORE]};
+const unitPr=(s,u)=>{const ls=L.filter(l=>l.u===u);return [ls.filter(l=>s.done[l.key]).length,ls.length]};
+const prOf=b=>{if(!PR[b.id])return null;const a=PR[b.id](S);return [Math.min(a[0],a[1]),a[1]]};
+/* New badges are handed out in one place: each is worth 20 kroner and gets its own full-screen moment. */
+function grant(){const won=BADGES.filter(b=>!S.badges.includes(b.id)&&b.ok(S));won.forEach(b=>{S.badges.push(b.id);S.earned+=20});return won}
+const nextBadge=()=>BADGES.filter(b=>!S.badges.includes(b.id)&&prOf(b)).map(b=>({b,p:prOf(b)})).filter(x=>x.p[0]<x.p[1]).sort((x,y)=>y.p[0]/y.p[1]-x.p[0]/x.p[1])[0];
+/* Three levels of four units each. Unit 4 (real life) and the private units sit outside the levels. */
+const LEVELS=[{t:'Turist',en:'Tourist',u:[0,1,2,3]},{t:'Gæst',en:'Guest',u:[5,6,7,8]},{t:'Næsten dansk',en:'Almost Danish',u:[9,10,11,12]}];
+const lvOf=u=>LEVELS.findIndex(v=>v.u.includes(u));
+const lvLessons=k=>L.slice(0,CORE).filter(l=>LEVELS[k].u.includes(l.u));
+const lvDone=k=>lvLessons(k).every(l=>S.done[l.key]);
+const lvOpenFor=li=>{const k=li>=0&&li<CORE?lvOf(L[li].u):-1;return k>=0&&!lvDone(k)?k:-1};
+/* What Lars can wear. Bought with kroner in the shop; he wears it everywhere. */
+const HATS=[
+ {id:'flag',t:'Dannebrog',en:'A little flag',p:40},
+ {id:'party',t:'Festhat',en:'Party hat',p:60},
+ {id:'shades',t:'Solbriller',en:'Sunglasses',p:80},
+ {id:'nisse',t:'Nissehue',en:'Christmas elf hat',p:100},
+ {id:'viking',t:'Vikingehjelm',en:'Viking helmet',p:150},
+ {id:'crown',t:'Krone',en:'Crown',p:300}
+];
+/* Words with a picture: photos come from PHO, the colors are drawn. */
+const SW={'u9c-0':'#e5383b','u9c-1':'#2f6fe4','u9c-2':'#2fae5a','u9c-3':'#ffffff','u9c-4':'#111111'};
+const picOf=p=>p&&(PHO.phrases[p.id]?{img:PHO.phrases[p.id][0]}:SW[p.id]?{sw:SW[p.id]}:null);
+function picOpts(p){const a=picOf(p),o=sh(Object.values(PH).filter(q=>{const b=picOf(q);return b&&q.id!==p.id&&q.en!==p.en&&!!b.sw===!!a.sw})).slice(0,3);return sh([p,...o])}
 const BAKERY=[
  {id:'kanel',i:'🥐',t:'Kanelsnegl',p:30,d:'"Cinnamon snail". Lars\'s favorite.'},
  {id:'flode',i:'🍫',t:'Flødebolle',p:40,d:'Marshmallow cream under a chocolate shell.'},
@@ -780,10 +896,10 @@ const BAKERY=[
  {id:'lag',i:'🎂',t:'Lagkage',p:150,d:'Layer cake. No birthday without one.'}
 ];
 const QUESTS=[
- {id:'l',t:'Finish a lesson',g:1,v:d=>d.lessons},
- {id:'s',t:'Say 10 phrases out loud',g:10,v:d=>d.speaks},
- {id:'c',t:'Get 5 right in a row',g:5,v:d=>d.combo},
- {id:'r',t:"Do today's round",g:1,v:d=>d.review}
+ {id:'l',t:'Finish a lesson',s:'Finish a lesson',g:1,v:d=>d.lessons},
+ {id:'s',t:'Say 10 phrases out loud',s:'Say 10 out loud',g:10,v:d=>d.speaks},
+ {id:'c',t:'Get 5 right in a row',s:'5 right in a row',g:5,v:d=>d.combo},
+ {id:'r',t:"Do today's round",s:"Today's round",g:1,v:d=>d.review}
 ];
 const PRAISE=[['Flot!','Nice!'],['Super!','Super!'],['Godt klaret!','Well done!'],['Perfekt!','Perfect!'],['Sådan!','That\'s it!'],['Dygtig!','Clever!'],['Sejt!','Cool!']];
 const CHEER=[['Kom så!','Let\'s go!'],['Du kan godt!','You can do it!'],['Klar?','Ready?'],['Hej {name}!','Hi {name}!']];
@@ -813,7 +929,9 @@ function bumpStreak(){
   if(S.lastDay===y)S.streak++;
   else if(S.lastDay===y2&&S.streak>0&&fz().n>0){S.fz={n:fz().n-1,t:Date.now()};S.streak++;toast('🧊 Streak freeze used. Your streak is safe!')}
   else S.streak=1;
-  S.lastDay=t;if(S.streak%7===0&&fz().n<2){S.fz={n:fz().n+1,t:Date.now()};toast('🧊 You earned a streak freeze')}}
+  S.lastDay=t;if([3,7,14,30,50,100].includes(S.streak))PEND.push({k:'streak',n:S.streak});if(S.streak%7===0&&fz().n<2){S.fz={n:fz().n+1,t:Date.now()};toast('🧊 You earned a streak freeze')}}
+let PEND=[],CQ=[];
+const lars=()=>S.lars||{own:[],on:'',t:0};
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 const n=s=>Object.keys(s.done).length;
 const unitDone=(s,u)=>L.every(l=>l.u!==u||s.done[l.key]);
@@ -829,22 +947,47 @@ const app=document.getElementById('app');
 let tab='home',cur=null,sheet=null;
 
 /* ---------- Lars the turtle (the function keeps its old name) ---------- */
-function snegl(m){m=m||'hi';
+function hatSvg(h,front){
+  if(front)return h==='shades'?'<rect x="80" y="38" width="15" height="11" rx="4" fill="#1a1405"/><rect x="99" y="38" width="15" height="11" rx="4" fill="#1a1405"/><path d="M94 42 h6" stroke="#1a1405" stroke-width="3"/><path d="M83 41 h5 M102 41 h5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".6"/>':'';
+  return h==='viking'?'<path d="M82 31 Q70 25 73 10 Q80 21 89 25 Z" fill="#fff3d6"/><path d="M112 31 Q124 25 121 10 Q114 21 105 25 Z" fill="#fff3d6"/><path d="M80 34 Q97 4 114 34 Z" fill="#c9d2e3"/><rect x="78" y="30" width="38" height="7" rx="3.5" fill="#8b95ad"/><circle cx="97" cy="33.5" r="2.4" fill="#ffd23f"/>'
+   :h==='crown'?'<path d="M82 36 L80 15 L90 26 L97 9 L104 26 L114 15 L112 36 Z" fill="#ffd23f" stroke="#c79a12" stroke-width="2" stroke-linejoin="round"/><circle cx="97" cy="29" r="3" fill="#ff5a6e"/><circle cx="87" cy="30" r="2" fill="#4d8dff"/><circle cx="107" cy="30" r="2" fill="#4d8dff"/>'
+   :h==='party'?'<path d="M86 35 L97 1 L108 35 Z" fill="#ff6fae"/><path d="M90 25 L104 25 M93.500 15 L100.500 15" stroke="#ffd23f" stroke-width="3.2"/><circle cx="97" cy="-1" r="4.6" fill="#ffd23f"/>'
+   :h==='nisse'?'<path d="M80 36 Q88 4 110 9 Q123 12 120 27 L113 24 Q104 19 113 36 Z" fill="#e5383b"/><rect x="77" y="31" width="40" height="8" rx="4" fill="#fff"/><circle cx="120" cy="29" r="5.2" fill="#fff"/>'
+   :h==='flag'?'<path d="M30 30 V-2" stroke="#c9d2e3" stroke-width="2.6" stroke-linecap="round"/><rect x="31" y="-1" width="26" height="17" rx="2" fill="#e5383b"/><path d="M40 -1 v17 M31 7.500 h26" stroke="#fff" stroke-width="3.2"/>':''}
+/* m is the mood: hi, yay, oops or sleep. hat defaults to what the player has put on him. */
+function snegl(m,hat){m=m||'hi';if(hat===undefined)hat=lars().on;
   const eye=(x,y)=>m==='yay'?`<path d="M${x-4.5} ${y+2} q4.5 -7 9 0" stroke="#3b2a1a" stroke-width="2.6" fill="none" stroke-linecap="round"/>`
-    :`<g class="blink"><circle cx="${x}" cy="${y}" r="6" fill="#f1ece0"/><circle cx="${x+1}" cy="${y+(m==='oops'?2.5:0)}" r="2.8" fill="#3b2a1a"/></g>`;
-  const mouth=m==='yay'?'<path d="M90 59 q7 11 14 0 z" fill="#8a3b3b"/>':m==='oops'?'<ellipse cx="97" cy="63" rx="3" ry="3.6" fill="#8a3b3b"/>'
+    :m==='sleep'?`<path d="M${x-4.5} ${y} q4.5 5 9 0" stroke="#3b2a1a" stroke-width="2.6" fill="none" stroke-linecap="round"/>`
+    :`<g class="blink"><circle cx="${x}" cy="${y}" r="6" fill="#ffffff"/><circle cx="${x+1}" cy="${y+(m==='oops'?2.5:0)}" r="2.8" fill="#3b2a1a"/></g>`;
+  const mouth=m==='yay'?'<path d="M90 59 q7 11 14 0 z" fill="#c2413b"/>':m==='oops'?'<ellipse cx="97" cy="63" rx="3" ry="3.6" fill="#c2413b"/>'
+    :m==='sleep'?'<ellipse cx="97" cy="62" rx="2.4" ry="2" fill="#3b2a1a"/><text x="112" y="26" font-size="13" font-family="sans-serif" font-weight="700" fill="#9aa4bf">z</text><text x="119" y="15" font-size="9" font-family="sans-serif" font-weight="700" fill="#9aa4bf">z</text>'
     :'<path d="M91 60 q6 6 12 0" stroke="#3b2a1a" stroke-width="2.4" fill="none" stroke-linecap="round"/>';
-  return `<svg class="snegl ${m}" viewBox="0 0 124 96" aria-hidden="true">
-  <path d="M12 72 L1 80 L14 80 Z" fill="#9cbf7a"/>
-  <rect x="20" y="68" width="17" height="23" rx="8" fill="#9cbf7a"/><rect x="54" y="68" width="17" height="23" rx="8" fill="#9cbf7a"/>
-  <path d="M70 72 Q84 72 92 58" stroke="#9cbf7a" stroke-width="16" fill="none" stroke-linecap="round"/>
-  <path d="M7 76 Q7 26 44 26 Q81 26 81 76 Z" fill="#b57843"/>
-  <path d="M44 38 l13 8 v14 l-13 8 l-13 -8 v-14 z M31 46 L16 42 M57 46 L71 42 M31 60 L15 66 M57 60 L73 66 M44 38 V28" fill="none" stroke="#7b4a22" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-  <rect x="3" y="70" width="82" height="10" rx="5" fill="#7b4a22"/>
-  <path d="M17 44 q6 -11 19 -13" stroke="#f1ece0" stroke-width="3.4" fill="none" stroke-linecap="round" opacity=".8"/>
-  <circle cx="97" cy="50" r="19" fill="#9cbf7a"/>
-  ${eye(89,44)}${eye(105,44)}
-  <circle cx="86" cy="57" r="3.2" fill="#e08f84" opacity=".7"/><circle cx="108" cy="57" r="3.2" fill="#e08f84" opacity=".7"/>${mouth}</svg>`}
+  return `<svg class="snegl ${m}" viewBox="0 -8 126 104" aria-hidden="true">
+  <path d="M12 72 L1 80 L14 80 Z" fill="#8fd96a"/>
+  <rect x="20" y="68" width="17" height="23" rx="8" fill="#8fd96a"/><rect x="54" y="68" width="17" height="23" rx="8" fill="#8fd96a"/>
+  <path d="M70 72 Q84 72 92 58" stroke="#8fd96a" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <path d="M7 76 Q7 26 44 26 Q81 26 81 76 Z" fill="#f08a3c"/>
+  <path d="M44 38 l13 8 v14 l-13 8 l-13 -8 v-14 z M31 46 L16 42 M57 46 L71 42 M31 60 L15 66 M57 60 L73 66 M44 38 V28" fill="none" stroke="#a8521a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="3" y="70" width="82" height="10" rx="5" fill="#a8521a"/>
+  <path d="M17 44 q6 -11 19 -13" stroke="#fff3d6" stroke-width="3.4" fill="none" stroke-linecap="round" opacity=".85"/>
+  <circle cx="97" cy="50" r="19" fill="#8fd96a"/>${hatSvg(hat)}
+  ${eye(89,44)}${eye(105,44)}${hatSvg(hat,true)}
+  <circle cx="86" cy="57" r="3.2" fill="#ff8f9c" opacity=".8"/><circle cx="108" cy="57" r="3.2" fill="#ff8f9c" opacity=".8"/>${mouth}</svg>`}
+
+/* ---------- full-screen moments: a new badge, a streak milestone, a finished level, the quest chest ---------- */
+function celRun(won){CQ=CQ.concat(PEND,(won||[]).map(b=>({k:'badge',b})));PEND=[];if(CQ.length&&!document.getElementById('cel'))setTimeout(celShow,1400)}
+function celShow(){const old=document.getElementById('cel');if(old)old.remove();const c=CQ.shift();if(!c)return;let h='';
+  if(c.k==='badge'){const nx=nextBadge();
+    h=`<span class="k">New badge</span><div class="medal">${c.b.i}</div><h1 lang="da">${c.b.t}</h1><p>${c.b.d}. Done!</p>
+    <div style="display:flex;gap:10px;justify-content:center"><span class="chip" style="flex:none">🪙 +20<small>kroner</small></span><span class="chip" style="flex:none">🏅 ${S.badges.length}<small>of ${BADGES.length}</small></span></div>
+    ${nx?`<div class="nxt"><span><span>Next up: <b lang="da">${nx.b.t}</b></span><em>${nx.p[0]}/${nx.p[1]}</em></span><div class="bar"><i style="width:${nx.p[0]/nx.p[1]*100}%"></i></div><small style="color:var(--muted)">${nx.b.d}</small></div>`:''}`}
+  else if(c.k==='streak')h=`<span class="k">Streak</span><div class="medal" style="--mc:#ff8a3d;--mc2:#ffd23f">${c.n}</div><h1>${c.n} dage i træk!</h1><p>${c.n} days in a row. ${c.n>=30?'That is real dedication.':c.n>=7?'A whole habit now.':'You are on a roll.'}</p><div class="m">${snegl('yay')}</div>`;
+  else if(c.k==='level'){const lv=LEVELS[c.n],nx=LEVELS[c.n+1];
+    h=`<span class="k">Level ${c.n+1} complete</span><div class="m" style="width:190px">${snegl('yay','crown')}</div><h1 lang="da">${lv.t}: klaret!</h1><p>You finished every lesson in level ${c.n+1}. ${nx?`Next: level ${c.n+2}, ${nx.t} (${nx.en}).`:'That is the whole course. Du er klar til Danmark!'}</p>`}
+  else h=`<span class="k">Daily quests</span><div class="medal" style="--mc:#6f55c9;--mc2:#c77dff">🎁</div><h1>Alle fire!</h1><p>All four quests done today.</p><span class="chip" style="flex:none">🪙 +20<small>kroner</small></span>`;
+  const d=document.createElement('div');d.id='cel';d.className='cel';d.innerHTML=`<div>${h}<button class="btn" data-a="celnext">${CQ.length?'Næste →':'Sådan!'}</button></div>`;document.body.appendChild(d);sfx('win');confetti()}
+function plus(){const w=document.querySelector('.walker .snegl');if(w){w.classList.remove('yay');void w.offsetWidth;w.classList.add('yay')}
+  const d=document.createElement('div');d.className='plus';d.textContent='+1 ⭐';document.body.appendChild(d);setTimeout(()=>d.remove(),900)}
 
 /* ---------- sound and touch ---------- */
 let AC=null;
@@ -863,7 +1006,8 @@ function sfx(k){
 }
 function toast(msg){const d=document.createElement('div');d.className='toast';d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),2700)}
 function comboPop(nr){const d=document.createElement('div');d.className='combo';d.textContent=`🔥 ${nr} i træk!`;document.body.appendChild(d);setTimeout(()=>d.remove(),1150);sfx('combo')}
-function quests(){const d=today();QUESTS.forEach(q=>{if(!d.q.includes(q.id)&&q.v(d)>=q.g){d.q.push(q.id);S.earned+=10;toast('Quest done! +10 🪙');sfx('coin')}});save()}
+function quests(){const d=today();QUESTS.forEach(q=>{if(!d.q.includes(q.id)&&q.v(d)>=q.g){d.q.push(q.id);S.earned+=10;toast('Quest done! +10 🪙');sfx('coin')}});
+  if(QUESTS.every(q=>d.q.includes(q.id))&&!d.q.includes('chest')){d.q.push('chest');S.earned+=20;PEND.push({k:'chest'})}save()}
 
 /* ---------- voice out ---------- */
 let voice=null,voicesSeen=false;
@@ -897,58 +1041,84 @@ function render(){
   if(cur){renderStep();return}
   if(CODE&&PACK&&PACK.welcome&&!(S.seenW&&S.seenW.v)){app.innerHTML=welcomePack();return}
   if(!CODE&&!n(S)&&!S.solo){app.innerHTML=welcome();return}
-  const body={home,rewards,fam,book,me,make,rev,talk,voice:voiceScreen,avocab:advCards,aplay:advCards,around:advCards,apiece:advPiece,agender:advGender,apat:advPat,aw:advWords}[tab]();
+  const body={home,rewards,fam,book,me,flip:flipTab,make,rev,talk,voice:voiceScreen,avocab:advCards,aplay:advCards,around:advCards,apiece:advPiece,agender:advGender,apat:advPat,aw:advWords}[tab]();
   app.innerHTML=`<div class="page">${body}</div>
   <nav class="tabs"><div>${[['home','🏠','Learn'],['fam','👪','Family'],['rewards','🏅','Rewards'],['book','📖','Phrases'],['me','⚙️','Me']]
     .map(t=>`<button data-a="tab" data-v="${t[0]}" class="${tab===t[0]?'on':''}"><i>${t[1]}</i>${t[2]}</button>`).join('')}</div></nav>${sheet!==null?sheetHtml(sheet):''}`;
 }
 function daysToTrip(){if(!S.trip)return null;return Math.ceil((new Date(S.trip+'T00:00')-new Date())/864e5)}
 const XS=[0,-50,-72,-50,0,50,72,50];
+let openLv=null,shownLv=-1;
+function unitHtml(ui,nextUp,ch){const u=UNITS[ui];let k=0;
+  let h=`<section style="--c:${u.c};--cl:${u.cl}"><div class="banner"><small>${u.pk?'Kun til dig · from Scott ❤️':u.x?'Your own lessons':'Unit '+(ui>4?ui:ui+1)}</small><h2>${u.t}</h2><span>${u.en}</span></div>${u.x?`<button class="btn ghost" data-a="tab" data-v="make" style="margin-top:14px">＋ Turn a real moment into a lesson</button>`:''}<div class="path">`;
+  L.forEach((l,i)=>{if(l.u!==ui)return;
+    const dn=S.done[l.key],open=isOpen(i),nx=i===nextUp,x=XS[k++%8];
+    h+=`<div class="nw ${nx?'cur':''}" style="--x:${x}px">${nx?`<div class="startb">START</div><div class="buddy ${x>0?'l':'r'}"><div class="say">${ch[0]}<small>${ch[1]}</small></div>${snegl('hi')}</div>`:''}
+    <button class="node ${nx?'next':open?'':'locked'}" data-a="node" data-v="${i}" aria-label="${esc(l.en)}${open?'':' (locked)'}"><span>${esc(l.i)}</span></button>
+    ${dn?`<span class="nst">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}<span class="nl">${isNew(l)?'🆕 ':''}${esc(l.t)}</span></div>`});
+  return h+`</div></section>`}
 function home(){
   if(isAdv())return advHome();
-  const d=daysToTrip(),lit=S.lastDay===dayKey(),day=today();
+  const d=daysToTrip(),lit=S.lastDay===dayKey(),day=today(),hr=new Date().getHours();
   let h=`<header class="top"><span class="chip ${lit?'lit':'cold'}"><span class="fl">🔥</span>${S.streak}<small>${fz().n?'🧊 '+fz().n:'streak'}</small></span>
   <span class="chip">🪙 ${kr()}<small>kroner</small></span>
-  ${d!==null&&d>=0?`<span class="chip">🇩🇰 ${d}<small>days</small></span>`:`<button class="chip" data-a="tab" data-v="me">🇩🇰<small>set trip</small></button>`}</header>${ADV&&advOff?`<button class="rvb" data-a="advview"><i>🇩🇰</i><span><b>Mit eget dansk</b><small>Tilbage til den avancerede side</small></span></button>`:''}
-  <section class="quests"><h3>Today's quests <span>+10 🪙 each</span></h3>${QUESTS.map(q=>{const v=Math.min(q.v(day)||0,q.g),dn=v>=q.g;
-    return `<div class="q ${dn?'done':''}"><span>${dn?'✓ ':''}${q.t}</span><span>${v}/${q.g}</span><div class="bar"><i style="width:${v/q.g*100}%"></i></div></div>`}).join('')}</section>`;
-  const rs=getResume();
-  if(rs)h+=`<div class="note go"><b>Pick up where you left off</b><span>${rs.mode==='review'?"Today's round":esc(L[rs.li].t)} · step ${rs.i+1} of ${rs.steps.length}</span><div class="acts"><button class="btn sm" data-a="resume">Continue</button><button class="btn sm ghost" data-a="dropresume">Start fresh</button></div></div>`;
-  const nd=due().length;
+  ${d!==null&&d>=0?`<span class="chip">🇩🇰 ${d}<small>days</small></span>`:`<button class="chip" data-a="tab" data-v="me">🇩🇰<small>set trip</small></button>`}</header>${ADV&&advOff?`<button class="rvb" data-a="advview"><i>🇩🇰</i><span><b>Mit eget dansk</b><small>Tilbage til den avancerede side</small></span></button>`:''}`;
+  /* the next thing to do: a course lesson first, then anything else unfinished */
+  const nc=PATH.find(i=>i<CORE&&!S.done[L[i].key]&&!L[i].story),nextUp=nc!==undefined?nc:PATH.find(i=>!S.done[L[i].key]&&!L[i].story);
+  const rs=getResume(),nd=due().length,yk=dayKey(new Date(Date.now()-864e5));
+  const sub=lit?`Done for today. ${S.streak} ${S.streak===1?'day':'days'} in a row!`:S.streak>0&&S.lastDay===yk?`Day ${S.streak+1} is waiting. One lesson keeps your streak.`:n(S)?'One lesson starts a new streak.':'Your first lesson takes about 15 minutes.';
+  const go=rs?`<button class="btn" data-a="resume">Continue: ${rs.mode==='review'?"today's round":esc(L[rs.li].t)} · step ${rs.i+1} of ${rs.steps.length}</button><button class="link" data-a="dropresume">Start fresh instead</button>`
+    :nextUp!==undefined?`<button class="btn" data-a="node" data-v="${nextUp}">${n(S)?'Next':'Start'}: ${esc(L[nextUp].t)} →</button>`
+    :`<button class="btn" data-a="review">Play today's round →</button>`;
+  const mon=new Date();mon.setHours(12,0,0,0);mon.setDate(mon.getDate()-((mon.getDay()+6)%7));
+  const lp=String(S.lastDay||'').split('-').map(Number),last=lp.length===3&&lp.every(Number.isFinite)?new Date(lp[0],lp[1]-1,lp[2],12):null;
+  const wk=['M','T','W','T','F','S','S'].map((c,i)=>{const dt=new Date(mon);dt.setDate(mon.getDate()+i);const back=last?Math.round((last-dt)/864e5):-1,on=last&&back>=0&&back<S.streak;
+    return `<span class="${on?'on':dayKey(dt)===dayKey()?'now':''}">${c}</span>`}).join('');
+  h+=`<section class="today"><div class="hi"><button class="m" data-a="lars" aria-label="Lars">${snegl(lit?'yay':hr>=21||hr<5?'sleep':'hi')}</button><div><h2>${hr<10&&hr>=5?'Godmorgen':hr>=18?'Godaften':'Hej'}${CODE?', '+esc(NAME):''}!</h2><p id="larsay">${sub}</p></div></div><div class="wk">${wk}</div>${go}</section>`;
+  const allq=QUESTS.every(q=>day.q.includes(q.id));
+  h+=`<section class="qs">${QUESTS.map(q=>{const v=Math.min(q.v(day)||0,q.g),dn=v>=q.g;
+    return `<div class="qc ${dn?'done':''}"><span>${dn?'✓ ':''}${q.s}<em>${dn?'+10 🪙':v+'/'+q.g}</em></span><div class="bar"><i style="width:${v/q.g*100}%"></i></div></div>`}).join('')}
+  <div class="qchest ${allq?'done':''}">${allq?'🎁 Chest opened. All four quests done today!':'🎁 Finish all four today to open a chest'}</div></section>`;
   if(learned(S).length)h+=`<button class="rvb ${nd&&!day.review?'hot':''}" data-a="review"><i>🔁</i><span><b>Dagens runde</b><small>${nd?nd+(nd===1?' phrase is':' phrases are')+' ready to come back':'All caught up. Play a bonus round?'}</small></span><em>${day.review?'✓ done':'5 min'}</em></button>`;
   if(CODE)h+=`<button class="rvb" data-a="tab" data-v="talk"><i>💬</i><span><b>Snak med Lars</b><small>Answer out loud in your own words. Lars plays the waiter, the baker, the family.</small></span><em>new</em></button>`;
   L.map((l,i)=>i).filter(i=>isNew(L[i])).slice(0,2).forEach(i=>{h+=`<button class="rvb hot" data-a="node" data-v="${i}"><i>${esc(L[i].i)}</i><span><b>Ny lektion: ${esc(L[i].t)}</b><small>${esc(L[i].en)}. A new lesson is waiting for you.</small></span><em>new</em></button>`});
   if(!CODE)h+=`<button class="note" data-a="tab" data-v="me" style="text-align:left">Got a code from Scott? Enter it under Me to keep your progress on all your devices and join the family race.</button>`;
   const ch=rnd(PACK&&PACK.cheers?CHEER.concat(PACK.cheers):CHEER).map(nm);
-  const nextUp=PATH.find(i=>!S.done[L[i].key]&&!L[i].story);
-  const curU=nextUp===undefined?99:L[nextUp].u,ord=u=>u===4?curU+.6:u>=NU?curU+.5+(u-NU)/100:u;
-  UNITS.map((u,i)=>i).sort((a,b)=>ord(a)-ord(b)).forEach(ui=>{const u=UNITS[ui];let k=0;
-    h+=`<section style="--c:${u.c};--cl:${u.cl}"><div class="banner"><small>${u.pk?'Kun til dig · from Scott ❤️':u.x?'Your own lessons':'Unit '+(ui>4?ui:ui+1)}</small><h2>${u.t}</h2><span>${u.en}</span></div>${u.x?`<button class="btn ghost" data-a="tab" data-v="make" style="margin-top:14px">＋ Turn a real moment into a lesson</button>`:''}<div class="path">`;
-    L.forEach((l,i)=>{if(l.u!==ui)return;
-      const dn=S.done[l.key],open=isOpen(i),nx=i===nextUp,x=XS[k++%8];
-      h+=`<div class="nw ${nx?'cur':''}" style="--x:${x}px">${nx?`<div class="startb">START</div><div class="buddy ${x>0?'l':'r'}"><div class="say">${ch[0]}<small>${ch[1]}</small></div>${snegl('hi')}</div>`:''}
-      <button class="node ${nx?'next':open?'':'locked'}" ${open?`data-a="node" data-v="${i}"`:'disabled'} aria-label="${esc(l.en)}"><span>${esc(l.i)}</span></button>
-      ${dn?`<span class="nst">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}<span class="nl">${isNew(l)?'🆕 ':''}${esc(l.t)}</span></div>`});
-    h+=`</div></section>`});
+  const curLv=nc===undefined?-1:lvOf(L[nc].u);shownLv=openLv===null?curLv:openLv;
+  const extras=()=>{let x='';UNITS.forEach((u,ui)=>{if(ui>=NU)x+=unitHtml(ui,nextUp,ch)});return x+unitHtml(4,nextUp,ch)};
+  LEVELS.forEach((lv,k)=>{const ls=lvLessons(k),dn=ls.filter(l=>S.done[l.key]).length,op=shownLv===k;
+    h+=`<button class="lv ${op?'open':''}" data-a="lv" data-v="${k}" aria-expanded="${op}"><span class="ring" style="--p:${dn/ls.length*100}"><b>${k+1}</b></span><span class="tx"><b>Level ${k+1} · ${lv.t}</b><small>${lv.en} · ${dn===ls.length?'all done ✓':dn+' of '+ls.length+' lessons'}</small></span><i>${op?'▾':'▸'}</i></button>`;
+    if(op)lv.u.forEach(ui=>h+=unitHtml(ui,nextUp,ch));
+    if(k===(curLv<0?LEVELS.length-1:curLv))h+=extras()});
   return h+`<div class="note">More lessons are on the way. Scott adds them as you go.</div>`;
 }
 function sheetHtml(i){const l=L[i],u=UNITS[l.u],dn=S.done[l.key];
-  return `<div class="scrim" data-a="closesheet"></div><div class="sheet" style="--c:${u.c}"><div>${l.cards&&l.cards[0]?`<img class="shot" src="${esc(imgUrl(l.cards[0].img))}" alt="">`:`<div class="big">${esc(l.i)}</div>`}<h2>${esc(l.t)}</h2>
+  return `<div class="scrim" data-a="closesheet"></div><div class="sheet" style="--c:${u.c}"><div>${l.cards&&l.cards[0]?`<img class="shot" src="${esc(imgUrl(l.cards[0].img))}" alt="">`:PHO.lessons[l.key]?`<img class="shot" src="${esc(PHO.lessons[l.key][0])}" alt="">`:`<div class="big">${esc(l.i)}</div>`}<h2>${esc(l.t)}</h2>
   <p>${l.story?esc(l.en)+' · a short story with Lars · about 3 minutes':esc(l.en)+' · '+l.p.length+' phrases · about '+(l.x?8:l.p.length>8?20:15)+' minutes'}${l.x&&l.by?' · from '+esc(l.by):''}</p>${dn?`<span class="nst" style="font-size:22px">${'★'.repeat(dn.stars)+'☆'.repeat(3-dn.stars)}</span>`:''}
-  <button class="btn" data-a="start" data-v="${i}">${l.story?(dn?'Read it again':'Read the story'):dn?'Practice again':'Start lesson'}</button>
-  ${l.story?'':`<button class="link" data-a="start" data-v="${i}" data-q="1">🤫 Can't talk right now? Start without speaking</button>`}${l.x&&l.mine?`<button class="link" data-a="dellesson" data-v="${l.key}">Delete this lesson for everyone</button>`:''}</div></div>`}
+  ${isOpen(i)?`<button class="btn" data-a="start" data-v="${i}">${l.story?(dn?'Read it again':'Read the story'):dn?'Practice again':'Start lesson'}</button>
+  ${l.story?'':`<button class="link" data-a="start" data-v="${i}" data-q="1">🤫 Can't talk right now? Start without speaking</button>`}`
+  :`<div class="lockb">🔒 This one opens when you finish the lessons before it.</div><button class="btn ghost" data-a="unlock" data-v="${i}">🔓 Skip ahead and open it</button><button class="link" data-a="closesheet">Not now</button>`}${l.x&&l.mine?`<button class="link" data-a="dellesson" data-v="${l.key}">Delete this lesson for everyone</button>`:''}</div></div>`}
+let rtab='badges';
 function rewards(){
-  return `<div class="hello"><h1>Rewards</h1><p>${S.badges.length} of ${BADGES.length} badges · 🪙 ${kr()} kroner to spend</p></div>
-  ${passport()}
+  const pp=passport(),tabs=[['badges','Badges'],['shop','Shop']].concat(pp?[['pass','Rejsepas']]:[]);
+  if(!tabs.some(t=>t[0]===rtab))rtab='badges';
+  const h=`<div class="hello"><h1>Rewards</h1><p>${S.badges.length} of ${BADGES.length} badges · 🪙 ${kr()} kroner to spend</p></div>
+  <div class="seg" style="--n:${tabs.length}">${tabs.map(t=>`<button data-a="rtab" data-v="${t[0]}" class="${rtab===t[0]?'on':''}">${t[1]}</button>`).join('')}</div>`;
+  if(rtab==='pass')return h+pp;
+  if(rtab==='shop'){const lz=lars();return h+`
+  <section class="unit"><div class="closet"><div class="m">${snegl('yay')}</div><b>Lars's wardrobe</b><span>Buy him something. He wears it everywhere.</span></div><div class="grid">${HATS.map(x=>{const own=lz.own.includes(x.id),on=lz.on===x.id,can=kr()>=x.p;
+    return `<button class="tile ${own?(on?'own on':'own'):can?'buy':'off'}" data-a="hat" data-v="${x.id}" ${own||can?'':'disabled'}><span class="mm">${snegl('hi',x.id)}</span><b lang="da">${x.t}</b><small>${own?(on?'Wearing ✓':'Tap to wear'):x.en}</small>${own?'':`<small>🪙 ${x.p}</small>`}</button>`}).join('')}</div></section>
   <section class="unit"><div class="unit-h"><h2>Kiosken</h2><span>Things that help</span></div><div class="grid" style="grid-template-columns:1fr 1fr">
   <button class="tile ${kr()>=80&&fz().n<2?'buy':'off'}" data-a="shop" data-v="fz" ${kr()>=80&&fz().n<2?'':'disabled'}><i>🧊</i><b>Isterning</b><small>Saves your streak if you miss a day. You have ${fz().n} of 2.</small><small>🪙 80</small></button>
   <button class="tile ${kr()>=60&&!boost().n?'buy':'off'}" data-a="shop" data-v="boost" ${kr()>=60&&!boost().n?'':'disabled'}><i>☕</i><b>Dobbelt kaffe</b><small>${boost().n?'Ready: your next lesson pays double.':'Double kroner on your next lesson.'}</small><small>🪙 60</small></button></div></section>
   <section class="unit"><div class="unit-h"><h2>Bageriet</h2><span>The bakery</span></div><div class="grid">${BAKERY.map(b=>{
     const own=S.bakery.includes(b.id),can=kr()>=b.p;
-    return own?`<div class="tile own ${rewards.just===b.id?'new':''}"><i>${b.i}</i><b>${b.t}</b><small>${b.d}</small></div>`
-      :`<button class="tile ${can?'buy':'off'}" data-a="buy" data-v="${b.id}" ${can?'':'disabled'}><i>${b.i}</i><b>${b.t}</b><small>🪙 ${b.p}</small></button>`}).join('')}</div></section>
-  <section class="unit"><div class="unit-h"><h2>Badges</h2></div><div class="grid">${BADGES.map(b=>{
-    const own=S.badges.includes(b.id);return `<div class="tile ${own?'own':'off'}"><i>${b.i}</i><b>${b.t}</b><small>${b.d}</small></div>`}).join('')}</div></section>`;
+    return own?`<div class="tile own ${rewards.just===b.id?'new':''}"><i>${b.i}</i><b lang="da">${b.t}</b><small>${b.d}</small></div>`
+      :`<button class="tile ${can?'buy':'off'}" data-a="buy" data-v="${b.id}" ${can?'':'disabled'}><i>${b.i}</i><b lang="da">${b.t}</b><small>🪙 ${b.p}</small></button>`}).join('')}</div></section>`}
+  const nx=nextBadge();
+  return h+`${nx?`<div class="nxt"><span><span>Closest: <b lang="da">${nx.b.i} ${nx.b.t}</b></span><em>${nx.p[0]}/${nx.p[1]}</em></span><div class="bar"><i style="width:${nx.p[0]/nx.p[1]*100}%"></i></div><small style="color:var(--muted)">${nx.b.d}</small></div>`:''}
+  <div class="grid">${BADGES.map(b=>{const own=S.badges.includes(b.id),p=own?null:prOf(b);
+    return `<div class="tile ${own?'own':'off'}"><i>${b.i}</i><b lang="da">${b.t}</b><small>${b.d}</small>${p?`<div class="bar"><i style="width:${p[0]/p[1]*100}%"></i></div><small>${p[0]} of ${p[1]}</small>`:own?'<small style="color:var(--candle)">Earned ✓</small>':''}</div>`}).join('')}</div>`;
 }
 function phraseRow(p){const st=S.starred.includes(p.id);
   return `<div class="row"><button class="round" data-a="hear" data-v="${p.id}" aria-label="Listen">🔊</button><div class="tx"><b>${esc(p.da)}</b><span>${esc(p.en)}</span></div>
@@ -956,11 +1126,21 @@ function phraseRow(p){const st=S.starred.includes(p.id);
 function book(){
   const all=L.flatMap(l=>l.p),ask=all.filter(p=>S.starred.includes(p.id));
   let h=`<div class="hello"><h1>Phrases</h1><p>Everything you have learned. Tap ? to save one to ask Scott about.</p></div>`;
+  if(learned(S).length)h+=`<button class="rvb" data-a="tab" data-v="flip"><i>🃏</i><span><b>Flip cards</b><small>Tap a card to flip it. No score, just a look through what you know.</small></span></button>`;
   if(ask.length)h+=`<section class="unit"><div class="unit-h"><h2>Spørg Scott</h2><span>Ask Scott</span></div><div class="stack">${ask.map(phraseRow).join('')}</div></section>`;
   if(!L.some(l=>S.done[l.key]))h+=`<div class="note">Finish your first lesson and its phrases show up here.</div>`;
   L.forEach(l=>{if(S.done[l.key])h+=`<section class="unit"><div class="unit-h"><h2>${esc(l.t)}</h2><span>${esc(l.en)}</span></div><div class="stack">${l.p.map(phraseRow).join('')}</div></section>`});
   return h;
 }
+const fl={ids:[],i:0,back:false};
+function flipTab(){
+  if(!fl.ids.length||!PH[fl.ids[fl.i]]){fl.ids=sh(learned(S).map(p=>p.id));fl.i=0;fl.back=false}
+  const p=PH[fl.ids[fl.i]];if(!p)return `<div class="note">Finish your first lesson and its cards show up here.</div><button class="link" data-a="tab" data-v="book">Back</button>`;
+  const pc=picOf(p);
+  return `<div class="hello"><h1>Flip cards</h1><p>Card ${fl.i+1} of ${fl.ids.length}. Tap the card to flip it.</p></div>
+  <button class="card flipc ${fl.back?'back':''}" data-a="flipit">${pc&&pc.img?`<img class="pic" src="${esc(pc.img)}" alt="">`:''}${fl.back?`<span class="en" style="font-size:24px;font-weight:700">${esc(p.en)}</span><span class="heard">English · tap to flip back</span>`:`<span class="da">${esc(p.da)}</span><span class="hint">${esc(p.say)}</span><span class="heard">Tap to see the English</span>`}</button>
+  <div class="acts"><button class="btn sm ghost" data-a="flipgo" data-v="-1">← Back</button><button class="btn sm ghost" data-a="hear" data-v="${p.id}">🔊 Hear it</button><button class="btn sm" data-a="flipgo" data-v="1">Next →</button></div>
+  <button class="link" data-a="tab" data-v="book">Done</button>`}
 let family=null,linkMsg='',syncing=false;
 const fmtCode=c=>c.slice(0,4)+'-'+c.slice(4);
 function codeBox(){
@@ -974,7 +1154,7 @@ let fx={};
 const ago=t=>{const m=Math.round((Date.now()-t)/6e4);return m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' days ago'};
 function fam(){
   let h=`<div class="hello"><h1>Familien</h1><p>This week's race. One point for every right answer. Starts over each Monday.</p></div>`;
-  if(!CODE)return h+`<div class="note">Enter your code under Me to join the family race.</div>`;
+  if(!CODE)return h+`<div class="teach"><div class="m">${snegl('hi')}</div><div class="bub"><span class="da" style="font-size:22px">Hvem er med?</span><span class="en">Who is in? Enter your code under Me to join the family race.</span></div></div><button class="btn ghost" data-a="tab" data-v="me">Enter my code</button>`;
   if(!family)return h+`<div class="note">Finding everyone…</div>`;
   if(fx.prize||fx.coach)h+=`<div class="prize"><i>🏆</i><div><small>This week's prize</small><b>${fx.prize?esc(fx.prize):'Not set yet'}</b></div></div>`;
   if(fx.coach)h+=`<label for="prize">Set this week's prize<input id="prize" maxlength="120" value="${esc(fx.prize||'')}" placeholder="Winner picks Friday's movie"></label><button class="btn sm ghost" data-a="setprize" style="align-self:flex-start">Save prize</button>`;
@@ -1161,13 +1341,15 @@ async function talkSend(payload){
   if(tab==='talk'&&!cur)render();
 }
 function me(){
-  return `<div class="hello"><h1>${CODE?esc(NAME):'Me'}</h1><p>${learned(S).length} phrases learned · ${S.speaks} said out loud · best combo ${S.bestCombo}</p></div>
+  return `<div class="hello"><h1>${CODE?esc(NAME):'Me'}</h1><p>Your numbers so far</p></div>
+  <div class="stats"><div class="stat" style="--c:var(--candle);animation:none"><small>Phrases</small><b>${learned(S).length}</b></div><div class="stat" style="--c:var(--good);animation:none"><small>Said aloud</small><b>${S.speaks}</b></div><div class="stat" style="--c:var(--blue);animation:none"><small>Best combo</small><b>🔥 ${S.bestCombo}</b></div></div>
   <label for="trip">When do you leave for Denmark?<input id="trip" type="date" value="${S.trip}"></label>
   <label for="rt">Remind me to practice every day at<input id="rt" type="time" value="19:00"></label>
   <button class="btn ghost" data-a="ics">Add the reminder to my calendar</button>
   <button class="btn ghost" data-a="sound">Sound effects: ${S.sound?'on':'off'}</button>
   ${codeBox()}
-  <button class="btn ghost" data-a="reset">Sign out and erase this device</button>`;
+  <button class="btn ghost" data-a="reset">Sign out and erase this device</button>
+  <details class="rev"><summary>Photo credits</summary><div style="color:var(--muted);font-size:12px;margin-top:8px;line-height:1.5">${[...Object.values(PHO.lessons),...Object.values(PHO.phrases)].map(x=>esc(x[1])).filter((x,i,a)=>a.indexOf(x)===i).join('<br>')||'Photos from Wikimedia Commons.'}</div></details>`;
 }
 
 /* ---------- advanced mode: one player, switched on by the sync service (adv:true), all in Danish ---------- */
@@ -1501,7 +1683,9 @@ function build(li){
   const extra=!sm&&multi.length<3?sh(P).slice(0,4).map(p=>tf(p,li)):[];
   const speak=sh(P).slice(0,sm?3:4).map(p=>({k:'speak',p}));
   const blocks=[[chat,pick,tiles,fill,mix],[pick,chat,fill,tiles,mix],[tiles,pick,chat,mix,fill]][v];
-  const out=[...teach,...blocks.flat(),...extra,...speak];
+  const pics=sm?[]:sh(P.filter(p=>picOf(p))).slice(0,3).map(p=>({k:'pic',p,o:picOpts(p)})).filter(x=>x.o.length===4);
+  const out=[...teach,...pics,...blocks.flat(),...extra,...speak];
+  if(!(l.cards||[]).length&&PHO.lessons[l.key])out.unshift({k:'card',card:{img:PHO.lessons[l.key][0],t:l.t,c:l.en,credit:PHO.lessons[l.key][1]}});
   (l.cards||[]).forEach((c,i,a)=>out.splice(i?Math.round(i*out.length/a.length):0,0,{k:'card',card:c}));
   return out;
 }
@@ -1542,8 +1726,8 @@ function renderStep(){
     b=`<div class="pc"><img src="${esc(imgUrl(s.card.img))}" alt=""><div class="pct"><b>${esc(s.card.t)}</b><span>${esc(s.card.c||'')}</span></div><small>${esc(s.card.credit||'')}</small></div>`;
     foot=`<button class="btn" data-a="next" id="go">Continue</button>`;
   }else if(s.k==='learn'){
-    cur.state={tries:0};
-    b=`<div class="ask">${cur.quiet?'Listen and remember':'Listen, then say it back'}</div>
+    cur.state={tries:0};const pc=picOf(p);
+    b=`<div class="ask">${cur.quiet?'Listen and remember':'Listen, then say it back'}</div>${pc&&pc.img?`<img class="pic" src="${esc(pc.img)}" alt="">`:''}
     <div class="teach"><div class="m">${snegl('hi')}</div><button class="bub" data-a="say"><span class="da">${esc(p.da)} 🔊</span><span class="hint">${esc(p.say)}</span><span class="en">${esc(p.en)}</span></button></div>
     ${p.note?`<div class="tip"><b>Tip:</b> ${esc(p.note)}</div>`:''}
     <div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button><button class="btn sm ghost" data-a="other">🔁 Other voice</button>${(fx.voices||[]).includes(slug(p.da))?'<button class="btn sm ghost" data-a="scottsay">❤️ Scott</button>':''}<button class="btn sm ghost" data-a="star" data-v="${p.id}">${S.starred.includes(p.id)?'✓ Saved for Scott':'? Ask Scott'}</button></div>${cur.quiet?'':micBlock()}`;
@@ -1555,6 +1739,9 @@ function renderStep(){
   }else if(s.k==='hear'){
     b=`<div class="ask">What did Lars say?</div><button class="bigplay" data-a="say" aria-label="Play again">🔊</button><div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button></div>
     <div class="opts">${s.o.map(x=>`<button class="opt" data-a="ans" data-v="${x.id}">${esc(x.en)}</button>`).join('')}</div>`;
+  }else if(s.k==='pic'){
+    b=`<div class="ask">Which picture is it?</div><button class="card" data-a="say"><span class="da">${esc(p.da)} 🔊</span></button>
+    <div class="pgrid">${s.o.map(x=>{const c=picOf(x)||{};return `<button class="opt popt" data-a="ans" data-v="${x.id}" aria-label="${esc(x.en)}">${c.img?`<img src="${esc(c.img)}" alt="">`:`<span class="sw" style="background:${c.sw||'#333'}"></span>`}</button>`}).join('')}</div>`;
   }else if(s.k==='tf'){
     b=`<div class="ask">True or not? Ja or nej!</div><button class="card" data-a="say"><span class="da">${esc(p.da)} 🔊</span><span class="heard">means</span><span class="en" style="font-size:22px;font-weight:700">${esc(s.shown)}</span></button>
     <div class="yn"><button class="btn miss" data-a="tf" data-v="0">✗ Nej</button><button class="btn good" data-a="tf" data-v="1">✓ Ja</button></div>`;
@@ -1587,9 +1774,9 @@ function renderStep(){
     b=`<div class="ask">From memory: say it in Danish</div><div class="card"><div class="en" style="font-size:22px;font-weight:700">${esc(p.en)}</div><div class="da" id="peek" hidden>${esc(p.da)}</div><div class="acts"><button class="btn sm ghost" data-a="peek">👀 Peek</button></div></div>${micBlock()}`;
     foot+=skip;
   }
-  app.innerHTML=`<div class="player"><div class="pbar"><button class="x" data-a="quit" aria-label="Leave lesson">✕</button><div class="track"><div id="prog" style="width:${Math.max(4,cur.i/cur.steps.length*100)}%"></div></div><span class="cmb" id="cmb">${cur.combo>=2?'🔥 '+cur.combo:''}</span></div>
+  app.innerHTML=`<div class="player"><div class="pbar"><button class="x" data-a="quit" aria-label="Leave lesson">✕</button><div class="track"><div id="prog" style="width:${Math.max(4,cur.i/cur.steps.length*100)}%"><span class="walker">${snegl('hi')}</span></div></div><span class="cmb" id="cmb">${cur.combo>=2?'🔥 '+cur.combo:''}</span></div>
   <div class="step">${b}</div><div class="foot"><div id="fb"></div>${foot}</div></div>`;
-  if(s.k==='learn'||s.k==='hear'||s.k==='tf'||(s.k==='tiles'&&s.listen))say(p.da);
+  if(s.k==='learn'||s.k==='hear'||s.k==='tf'||s.k==='pic'||(s.k==='tiles'&&s.listen))say(p.da);
   if(s.k==='chat'||s.k==='read')say(s.line.da,false,s.k==='read'&&cur.i%2?'f':'m');
   saveResume();
   if(!cur.quiet&&(s.k==='learn'||s.k==='speak')){refFeats(p.da,'f').catch(()=>{});drawSpeak('idle',s.k==='learn'?'Your turn! Tap and say it':'')}
@@ -1608,31 +1795,33 @@ function grade(ok,s,quiet){
   const go=document.getElementById('go');go.disabled=false;go.dataset.a='next';go.textContent='Continue';go.className='btn '+(ok?'good':'miss');
   const pg=document.getElementById('prog');if(pg&&ok)pg.style.width=(cur.i+1)/cur.steps.length*100+'%';
   if(!quiet&&s.p)setTimeout(()=>say(s.p.da,false,s.k==='chat'?'f':undefined),ok?350:500);
+  if(ok)plus();
   quests();
 }
 function next(){
   hush();stopRec();
   cur.i++;if(cur.i>=cur.steps.length)return finish();window.scrollTo(0,0);renderStep();
+  if(cur.mode==='lesson'&&!cur.half&&cur.steps.length>=12&&cur.i===Math.floor(cur.steps.length/2)){cur.half=1;const d=document.createElement('div');d.className='combo';d.textContent='Halvvejs! 🎉';document.body.appendChild(d);setTimeout(()=>d.remove(),1150);sfx('combo')}
 }
 function scottNote(){const m=S.pack&&S.pack.msgs;if(!m||!m.length)return '';const x=m[(n(S)+stat().rv)%m.length];scottNote.cur=x;
   return `<button class="love" data-a="hearmsg"><i>💌</i><span><small>Fra Scott</small><b>${esc(x.da)}</b><em>${esc(x.en)}</em></span></button>`}
 function finishOther(){
   const m=cur.mode,right=cur.right,total=cur.graded,acc=total?right/total:1;let title='',sub='',gain=0;
   if(m==='review'){gain=10+Math.round(acc*5);today().review=1;S.stat=Object.assign(stat(),{rv:stat().rv+1,t:Date.now()});bumpStreak();title='Dagens runde er klaret!';sub=`Today's round is done. ${right} of ${total} right.`}
-  else if(m==='story'){const l=L[cur.li],first=!S.done[l.key],stars=acc>=.99?3:acc>=.5?2:1;gain=first?20:5;S.done[l.key]={stars:Math.max(stars,(S.done[l.key]||{}).stars||0)};
+  else if(m==='story'){const l=L[cur.li],first=!S.done[l.key],stars=acc>=.99?3:acc>=.5?2:1;gain=first?20:5;const lvb=lvOpenFor(cur.li);S.done[l.key]={stars:Math.max(stars,(S.done[l.key]||{}).stars||0)};if(lvb>=0&&lvDone(lvb))PEND.push({k:'level',n:lvb});
     if(first)S.stat=Object.assign(stat(),{st:stat().st+1,t:Date.now()});bumpStreak();today().lessons=(today().lessons||0)+1;title='Godt læst!';sub=`Well read. ${right} of ${total} questions right.`}
   else{const d=cur.duel,ms=Date.now()-d.t0,post=(path,body)=>fetch(SYNC+path,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify(body)}).then(r=>r.json()).then(j=>{if(j.duels){fx.duels=j.duels;if(tab==='fam'&&!cur&&!document.querySelector('.fin'))render()}}).catch(()=>{});gain=5;
     if(d.reply){const a=d.reply.a,win=right>a.score||(right===a.score&&ms<a.ms);if(win)S.stat=Object.assign(stat(),{dw:stat().dw+1,t:Date.now()});
       title=win?'Du vandt!':'Så tæt på!';sub=`${win?'You won':esc(d.to)+' won'}: you ${right}, ${esc(d.to)} ${a.score}.`;post('/duel/'+CODE+'/'+d.reply.id,{score:right,ms})}
     else{title='Udfordring sendt!';sub=`Challenge sent. ${esc(d.to)} has to beat ${right} of ${total} in ${Math.round(ms/1000)} seconds.`;post('/duel/'+CODE,{to:d.to,ids:d.ids,score:right,ms})}}
   S.earned+=gain;S.xp+=right;week().xp+=right;
-  const won=BADGES.filter(b=>!S.badges.includes(b.id)&&b.ok(S));won.forEach(b=>S.badges.push(b.id));
+  const won=grant();
   save();clearResume();cur=null;tab=m==='duel'?'fam':'home';
   app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div><h1>${title}</h1><p>${sub}</p>${m==='duel'?'':scottNote()}
   <div class="won" style="display:flex;gap:10px;justify-content:center"><span class="chip" style="flex:none">🪙 +${gain}<small>kroner</small></span><span class="chip" style="flex:none">🔥 ${S.streak}<small>streak</small></span></div>
   ${won.length?`<div class="grid" style="width:100%">${won.map(b=>`<div class="tile own new"><i>${b.i}</i><b>${b.t}</b><small>New badge!</small></div>`).join('')}</div>`:''}
   <button class="btn" data-a="tab" data-v="${tab}">Continue</button></div></div>`;
-  sfx('win');confetti();quests();sync();
+  sfx('win');confetti();quests();sync();celRun(won);
 }
 function finish(){
   if(cur.mode!=='lesson')return finishOther();
@@ -1641,22 +1830,22 @@ function finish(){
   const gain=(15+stars*5+(first?10:0))*(dbl?2:1);
   S.earned+=gain;S.xp+=cur.right;week().xp+=cur.right;if(acc===1)S.perfect++;
   bumpStreak();clearResume();L[li].p.forEach(p=>{if(!S.srs[p.id])S.srs[p.id]={b:1,d:dayNo()+1,miss:0,t:Date.now()}});
-  S.done[key]={stars:Math.max(stars,S.done[key]?S.done[key].stars:0)};
+  const lvb=lvOpenFor(li);S.done[key]={stars:Math.max(stars,S.done[key]?S.done[key].stars:0)};if(lvb>=0&&lvDone(lvb))PEND.push({k:'level',n:lvb});
   today().lessons++;
-  const won=BADGES.filter(b=>!S.badges.includes(b.id)&&b.ok(S));won.forEach(b=>S.badges.push(b.id));
+  const won=grant();
   save();cur=null;tab='home';
   app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div>
   <div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':''}" style="animation-delay:${.25+i*.28}s">★</span>`).join('')}</div>
   <h1>${stars===3?'Fantastisk!':stars===2?'Godt klaret!':'Færdig!'}</h1><p>${esc(L[li].t)} is done${S.streak>1?` · 🔥 ${S.streak} days in a row`:''}</p>
   <div class="stats"><div class="stat" style="--c:var(--candle);animation-delay:1s"><small>Kroner</small><b>🪙 <span data-n="${gain}">0</span></b></div>
   <div class="stat" style="--c:var(--good);animation-delay:1.15s"><small>Right</small><b><span data-n="${Math.round(acc*100)}">0</span>%</b></div>
-  <div class="stat" style="--c:#5d8fd0;animation-delay:1.3s"><small>Best combo</small><b>🔥 <span data-n="${best}">0</span></b></div></div>
+  <div class="stat" style="--c:var(--blue);animation-delay:1.3s"><small>Best combo</small><b>🔥 <span data-n="${best}">0</span></b></div></div>
   ${scottNote()}
   <button class="chest" data-a="chest"><i>🎁</i><span>Tap to open your bonus</span></button>
   ${won.length?`<div class="grid" style="width:100%">${won.map(b=>`<div class="tile own new"><i>${b.i}</i><b>${b.t}</b><small>New badge!</small></div>`).join('')}</div>`:''}
   <button class="btn" data-a="tab" data-v="home">Continue</button></div></div>`;
   document.querySelectorAll('[data-n]').forEach(el=>{const to=+el.dataset.n;let f=0;const iv=setInterval(()=>{f++;el.textContent=Math.round(to*Math.min(1,f/20));if(f>=20)clearInterval(iv)},45)});
-  sfx('win');confetti();quests();sync();
+  sfx('win');confetti();quests();sync();celRun(won);
 }
 
 /* ---------- speaking ---------- */
@@ -1828,7 +2017,7 @@ const A={
     if(kept.length){S.tkw=S.tkw||{};S.srs=S.srs||{};kept.forEach(k=>{const id='tk-'+slug(k.da).slice(0,60);S.tkw[id]={da:k.da,en:k.en,t:Date.now()};S.srs[id]={b:1,d:dayNo()+1,miss:0,t:Date.now()}});addTalkWords();
       fetch(SYNC+'/talk/'+CODE+'/keep',{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify({lines:kept.map(k=>k.da)})}).catch(()=>{})}
     const recap=tk.recap||`${tk.clean||0} of your ${turns} ${turns===1?'answer':'answers'} needed no fixing.`;
-    const won=BADGES.filter(b=>!S.badges.includes(b.id)&&b.ok(S));won.forEach(b=>S.badges.push(b.id));save();sync();
+    const won=grant();save();sync();
     const title=tk.scene.t;tk.scene=null;tab='home';
     app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div><h1>Godt snakket!</h1><p>Good talking. You held a real conversation: ${esc(title)}, ${turns} ${turns===1?'answer':'answers'} in your own words.</p>
     <div class="tip" style="text-align:left;width:100%"><b>Lars says:</b> ${esc(recap)}</div>
@@ -1837,7 +2026,7 @@ const A={
     <div class="won" style="display:flex;gap:10px;justify-content:center"><span class="chip" style="flex:none">🪙 +${gain}<small>kroner</small></span><span class="chip" style="flex:none">🔥 ${S.streak}<small>streak</small></span></div>
     ${won.length?`<div class="grid" style="width:100%">${won.map(b=>`<div class="tile own new"><i>${b.i}</i><b>${b.t}</b><small>New badge!</small></div>`).join('')}</div>`:''}
     <button class="btn" data-a="tab" data-v="home">Continue</button></div></div>`;
-    sfx('win');confetti();quests();sync()},
+    sfx('win');confetti();quests();sync();celRun(won)},
   vplay(el){hush();const a=player=new Audio(SYNC+'/voice/'+CODE+'/'+el.dataset.v+'?'+Date.now());const pr=a.play();if(pr&&pr.catch)pr.catch(()=>{})},
   vrec(el){
     if(vrec){try{vrec.rec.state!=='inactive'&&vrec.rec.stop()}catch(e){}return}
@@ -1944,11 +2133,26 @@ const A={
   chest(el){if(el.classList.contains('open'))return;const b=5+Math.floor(Math.random()*4)*5;S.earned+=b;save();el.classList.add('open');
     el.innerHTML=`<i>🪙</i><span>Bonus! +${b} kroner</span>`;sfx('coin');confetti()},
   buy(el){const b=BAKERY.find(x=>x.id===el.dataset.v);if(kr()<b.p||S.bakery.includes(b.id))return;S.bakery.push(b.id);rewards.just=b.id;
-    BADGES.forEach(x=>{if(!S.badges.includes(x.id)&&x.ok(S))S.badges.push(x.id)});save();render();sfx('coin');confetti();sync()},
+    const won=grant();save();render();sfx('coin');confetti();sync();celRun(won)},
   sound(){S.sound=!S.sound;save();render();sfx('ok')},
   reset(el){if(el.dataset.sure){try{localStorage.removeItem('hejciera.adv');localStorage.removeItem('hejciera.advoff')}catch(e){}ADV=false;S=def();CODE='';try{localStorage.removeItem(CODEKEY)}catch(e){}PACK=null;setLessons([]);clearResume();save();render()}else{el.dataset.sure=1;el.textContent='Tap again to erase this device'}}
 };
 Object.assign(A,ADVA);
+Object.assign(A,{
+  celnext(){const o=document.getElementById('cel');if(o)o.remove();celShow()},
+  lv(el){const k=+el.dataset.v;openLv=shownLv===k?-1:k;sfx('tap');render()},
+  rtab(el){rtab=el.dataset.v;rewards.just=null;sfx('tap');render()},
+  lars(){const w=document.querySelector('.today .snegl'),p=document.getElementById('larsay'),c=rnd(CHEER.concat([['Hyg dig!','Have fun!'],['Jeg er klar!','I am ready!'],['Godt at se dig!','Good to see you!'],['Skal vi?','Shall we?']])).map(nm);
+    if(p)p.innerHTML=`<b>${esc(c[0])}</b> ${esc(c[1])}`;if(w){w.classList.remove('yay','sleep');void w.offsetWidth;w.classList.add('yay')}sfx('ok')},
+  hat(el){const x=HATS.find(q=>q.id===el.dataset.v),lz=lars();if(!x)return;
+    if(lz.own.includes(x.id)){S.lars={own:lz.own,on:lz.on===x.id?'':x.id,t:Date.now()};save();render();sfx('tap');sync();return}
+    if(kr()<x.p)return;
+    S.lars={own:lz.own.concat(x.id),on:x.id,t:Date.now()};S.shop={spent:((S.shop&&S.shop.spent)||0)+x.p,t:Date.now()};
+    const won=grant();save();render();sfx('coin');confetti();sync();celRun(won)},
+  unlock(el){const l=L[+el.dataset.v];if(!l)return;S.open=S.open||{};S.open[l.key]={t:Date.now()};save();sfx('ok');render();sync()},
+  flipit(){fl.back=!fl.back;sfx('tap');render()},
+  flipgo(el){const nn=fl.ids.length;if(!nn)return;fl.i=(fl.i+(+el.dataset.v)+nn)%nn;fl.back=false;render();const p=PH[fl.ids[fl.i]];if(p)say(p.da)}
+});
 function drawTiles(s){const st=cur.state;
   document.getElementById('ansrow').innerHTML=st.picked.map(i=>`<button class="word" data-a="unword" data-v="${i}">${esc(s.bank[i])}</button>`).join('');
   document.getElementById('go').disabled=!st.picked.length}
@@ -1960,7 +2164,7 @@ document.addEventListener('change',e=>{if(e.target.id==='trip'){S.trip=e.target.
 function confetti(){
   if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
   const c=document.getElementById('confetti'),x=c.getContext('2d');c.hidden=false;c.width=innerWidth;c.height=innerHeight;
-  const col=['#e0a95a','#d98670','#9a8ad8','#45ab9f','#6fbf85'],P=Array.from({length:80},()=>({x:c.width/2+(Math.random()-.5)*80,y:c.height*.35,vx:(Math.random()-.5)*11,vy:-6-Math.random()*9,w:5+Math.random()*6,r:Math.random()*6,c:rnd(col)}));
+  const col=['#ffd23f','#ff5a6e','#a78bfa','#19c2a8','#5fe39a','#4d8dff','#ff8a3d'],P=Array.from({length:80},()=>({x:c.width/2+(Math.random()-.5)*80,y:c.height*.35,vx:(Math.random()-.5)*11,vy:-6-Math.random()*9,w:5+Math.random()*6,r:Math.random()*6,c:rnd(col)}));
   let f=0;(function tick(){x.clearRect(0,0,c.width,c.height);P.forEach(p=>{p.vy+=.32;p.x+=p.vx;p.y+=p.vy;p.vx*=.985;p.r+=.15;x.save();x.translate(p.x,p.y);x.rotate(p.r);x.fillStyle=p.c;x.globalAlpha=Math.max(0,1-f/130);x.fillRect(-p.w/2,-p.w/2,p.w,p.w*.6);x.restore()});
     if(++f<130)requestAnimationFrame(tick);else c.hidden=true})();
 }

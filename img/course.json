@@ -1,0 +1,311 @@
+{
+ "lessons": {
+  "0": {
+   "img": "img/l/0.jpg",
+   "credit": "Photo: Jakub Hałun, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Nyhavn,_Copenhagen,_20220618_1726_7351.jpg"
+  },
+  "1": {
+   "img": "img/l/1.jpg",
+   "credit": "Photo: Andre.o.mob, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Typical_French_bakery_pastries.jpg"
+  },
+  "4": {
+   "img": "img/l/4.jpg",
+   "credit": "Photo: Casper Moller, CC BY 2.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Café_Sommersko_(2008).jpeg"
+  },
+  "6": {
+   "img": "img/l/6.jpg",
+   "credit": "Photo: Kristoffer Trolle from Copenhagen, Denmark, CC BY 2.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Danish_summerhouse_area,_Sjællands_Odde_-_Flickr_-_Kristoffer_Trolle.jpg"
+  },
+  "7": {
+   "img": "img/l/7.jpg",
+   "credit": "Photo: Maekju, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Candles_on_table.jpg"
+  },
+  "8": {
+   "img": "img/l/8.jpg",
+   "credit": "Photo: cyclonebill from Copenhagen, Denmark, CC BY-SA 2.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Smørrebrød_med_tatar_og_hønsesalat_(5485563164).jpg"
+  },
+  "9": {
+   "img": "img/l/9.jpg",
+   "credit": "Photo: Nils Öberg, CC BY-SA 3.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Copenhagen_H_street_side.JPG"
+  },
+  "10": {
+   "img": "img/l/10.jpg",
+   "credit": "Photo: Olgierd Rudak, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Stenbjerg_Landingsplads_boats_beach_Denmark_(2026-08-17).jpg"
+  },
+  "11": {
+   "img": "img/l/11.jpg",
+   "credit": "Photo: © 2004 by Tomasz Sienicki [user: tsca, mail: tomasz.sienicki, CC BY-SA 3.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Sandy_cliff_beach_at_North_Sea,_Denmark_2004_ubt.jpeg"
+  },
+  "u5a": {
+   "img": "img/l/u5a.jpg",
+   "credit": "Photo: SFDan, CC BY-SA 3.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:HT_village_house_4.jpg"
+  },
+  "u5b": {
+   "img": "img/l/u5b.jpg",
+   "credit": "Photo: MichaelMcPhee, CC BY 3.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Callie_the_golden_retriever_puppy.jpg"
+  },
+  "u5c": {
+   "img": "img/l/u5c.jpg",
+   "credit": "Photo: Jenny Andersson / News Oresund, CC BY 2.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Bicycles_Copenhagen_20130710_N8B0165_(9524574556).jpg"
+  },
+  "u6a": {
+   "img": "img/l/u6a.jpg",
+   "credit": "Photo: Dietmar Rabich, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Kopenhagen_(DK),_Nyhavn_--_2017_--_1534.jpg"
+  },
+  "u6b": {
+   "img": "img/l/u6b.jpg",
+   "credit": "Photo: Андрей Романенко, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Outdoor_tables_of_the_Bless_restaurant,_Hausvogteiplatz_10,_Berlin.jpg"
+  },
+  "u7a": {
+   "img": "img/l/u7a.jpg",
+   "credit": "Photo: Dietmar Rabich, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Kopenhagen_(DK),_Runder_Turm_--_2017_--_1633.jpg"
+  },
+  "u7b": {
+   "img": "img/l/u7b.jpg",
+   "credit": "Photo: W.carter, Public domain, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Les_Parapluies_de_Viborg.jpg"
+  },
+  "u7c": {
+   "img": "img/l/u7c.jpg",
+   "credit": "Photo: Andy Li, CC0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:A_slice_of_coffee_and_walnut_cake_-_Audit_Room_Café,_Petworth_House.jpg"
+  },
+  "u8a": {
+   "img": "img/l/u8a.jpg",
+   "credit": "Photo: Kritzolina, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Stall_at_New_Market,_Kolkata_04.jpg"
+  },
+  "u8b": {
+   "img": "img/l/u8b.jpg",
+   "credit": "Photo: Anonimski, CC0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Two_20kr_gold_coins.png"
+  },
+  "u8c": {
+   "img": "img/l/u8c.jpg",
+   "credit": "Photo: John Samuel, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Windows_of_City_Hall_In_Copenhagen.jpg"
+  },
+  "u9b": {
+   "img": "img/l/u9b.jpg",
+   "credit": "Photo: FranHogan, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Fruits_and_Vegetables_in_Boquete,_Panama.jpg"
+  },
+  "u9c": {
+   "img": "img/l/u9c.jpg",
+   "credit": "Photo: Jakub Hałun, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Nyhavn,_Copenhagen,_20220616_1932_6619.jpg"
+  },
+  "u10a": {
+   "img": "img/l/u10a.jpg",
+   "credit": "Photo: kallerna, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Restaurant_Näsinneula.jpg"
+  },
+  "u10b": {
+   "img": "img/l/u10b.jpg",
+   "credit": "Photo: Gerda Arendt, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Fish_dish,_Idstein.jpg"
+  },
+  "u10c": {
+   "img": "img/l/u10c.jpg",
+   "credit": "Photo: Wilfredor, CC0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Restaurant_in_Place_D'Youville,_Quebec_City.jpg"
+  },
+  "u11a": {
+   "img": "img/l/u11a.jpg",
+   "credit": "Photo: Dietmar Rabich, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Kopenhagen_(DK),_Peblinge-See,_Søpavillonen_--_2017_--_1453.jpg"
+  },
+  "u11b": {
+   "img": "img/l/u11b.jpg",
+   "credit": "Photo: Lars Plougmann, CC BY-SA 2.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Outside_Louisiana_Museum_of_Modern_Art.jpg"
+  },
+  "u11c": {
+   "img": "img/l/u11c.jpg",
+   "credit": "Photo: Petro Stelte, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Flower-bouquet-wild-flowers-Sitia-Crete-Greece.jpg"
+  },
+  "u12a": {
+   "img": "img/l/u12a.jpg",
+   "credit": "Photo: Michael Gäbler, CC BY-SA 3.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Thatched_cottage_in_the_sand_dunes_by_Denmark.jpg"
+  },
+  "u12b": {
+   "img": "img/l/u12b.jpg",
+   "credit": "Photo: Danbold at English Wikipedia, Public domain, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Set_dinner_table.jpg"
+  },
+  "u12c": {
+   "img": "img/l/u12c.jpg",
+   "credit": "Photo: russellstreet, CC BY-SA 2.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Sunset,_Manukau_Harbour_-_24237501123.jpg"
+  }
+ },
+ "phrases": {
+  "4-0": {
+   "img": "img/p/4-0.jpg",
+   "credit": "Photo: Julius Schorzman, CC BY-SA 2.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:A_small_cup_of_coffee.JPG"
+  },
+  "4-1": {
+   "img": "img/p/4-1.jpg",
+   "credit": "Photo: AntanO, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Cup_of_black_tea.JPG"
+  },
+  "4-3": {
+   "img": "img/p/4-3.jpg",
+   "credit": "Photo: Derek Jensen (Tysto), Public domain, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Glass-of-water.jpg"
+  },
+  "8-0": {
+   "img": "img/p/8-0.jpg",
+   "credit": "Photo: Tomascastelazo, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Home_made_sour_dough_bread.jpg"
+  },
+  "8-1": {
+   "img": "img/p/8-1.jpg",
+   "credit": "Photo: Yann Forget, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Belper_Mürggel_B,_WikiCheese_Lausanne.jpg"
+  },
+  "8-2": {
+   "img": "img/p/8-2.jpg",
+   "credit": "Photo: Glane23, CC BY-SA 3.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Dark_rye_bread.JPG"
+  },
+  "8-4": {
+   "img": "img/p/8-4.jpg",
+   "credit": "Photo: Daria YakovlevaMinor edits made by Subsidiary account, CC0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Piece_of_chocolate_cake_on_a_white_plate_decorated_with_chocolate_sauce.jpg"
+  },
+  "8-5": {
+   "img": "img/p/8-5.jpg",
+   "credit": "Photo: Thegreatmutata, CC0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Ice_cream_cone_with_spoon.jpg"
+  },
+  "8-6": {
+   "img": "img/p/8-6.jpg",
+   "credit": "Photo: Hekatlys, CC0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Hot_dog_with_two_sausages,_2025-11-29.jpg"
+  },
+  "9-1": {
+   "img": "img/p/9-1.jpg",
+   "credit": "Photo: Diliff, CC BY-SA 3.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Kings_Cross_Railway_Station_Platforms_5_to_8,_London,_UK_-_Diliff.jpg"
+  },
+  "9-2": {
+   "img": "img/p/9-2.jpg",
+   "credit": "Photo: Vyacheslav Argenberg, CC BY 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Havelock_Island,_Mangrove_tree_on_the_beach,_Andaman_Islands.jpg"
+  },
+  "10-0": {
+   "img": "img/p/10-0.jpg",
+   "credit": "Photo: W.carter, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Oscarsstenen_monument_with_sun_and_lens_flare.jpg"
+  },
+  "10-1": {
+   "img": "img/p/10-1.jpg",
+   "credit": "Photo: Emmanuelkwizera, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:A_man_walks_through_heavy_rain_under_an_umbrella_in_Kigali,_Rwanda._Emmanuel_Kwizera.jpg"
+  },
+  "u5b-4": {
+   "img": "img/p/u5b-4.jpg",
+   "credit": "Photo: Jakub Hałun, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:20110425_German_Shepherd_Dog_8505.jpg"
+  },
+  "u5c-2": {
+   "img": "img/p/u5c-2.jpg",
+   "credit": "Photo: Acabashi, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Blackview_A60_Smartphone_Android_mobile_phone_and_folio_case.jpg"
+  },
+  "u5c-3": {
+   "img": "img/p/u5c-3.jpg",
+   "credit": "Photo: Unknown author, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Handbags_(ST660_5_03)_-_Kostuum_Accessoire_-_MoMu_Antwerp.jpg"
+  },
+  "u5c-4": {
+   "img": "img/p/u5c-4.jpg",
+   "credit": "Photo: PumpkinSky, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Adam_Thoroughgood_House_-_South_LR.jpg"
+  },
+  "u5c-5": {
+   "img": "img/p/u5c-5.jpg",
+   "credit": "Photo: Alan Mok, CC BY 3.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Keys_(44377186).jpeg"
+  },
+  "u5c-6": {
+   "img": "img/p/u5c-6.jpg",
+   "credit": "Photo: Vauxford, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:2020_Volkswagen_Golf_Style_1.5_Front.jpg"
+  },
+  "u5c-7": {
+   "img": "img/p/u5c-7.jpg",
+   "credit": "Photo: DeFacto, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Raleigh_lady's_loop_frame_bicycle_1930s.jpg"
+  },
+  "u9b-0": {
+   "img": "img/p/u9b-0.jpg",
+   "credit": "Photo: NIAID, CC BY 2.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Glass_of_Milk_(33657535532).jpg"
+  },
+  "u9b-1": {
+   "img": "img/p/u9b-1.jpg",
+   "credit": "Photo: George Chernilevsky, Public domain, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Apples_in_basket_2018_G2.jpg"
+  },
+  "u9b-2": {
+   "img": "img/p/u9b-2.jpg",
+   "credit": "Photo: Marc-Lautenbacher, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Organic-strawberries_Canada.jpg"
+  },
+  "u9b-3": {
+   "img": "img/p/u9b-3.jpg",
+   "credit": "Photo: DenesFeri, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Solanales_-_Solanum_tuberosum_-_3.jpg"
+  },
+  "u9b-4": {
+   "img": "img/p/u9b-4.jpg",
+   "credit": "Photo: Julikalucky, CC0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Butter_and_Knive.jpg"
+  },
+  "u9b-5": {
+   "img": "img/p/u9b-5.jpg",
+   "credit": "Photo: Krzysztof Golik, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Egg_cartons_with_chicken_eggs_03.jpg"
+  },
+  "u10b-0": {
+   "img": "img/p/u10b-0.jpg",
+   "credit": "Photo: Gerda Arendt, CC BY-SA 4.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Fish_dish,_Idstein.jpg"
+  },
+  "u10b-1": {
+   "img": "img/p/u10b-1.jpg",
+   "credit": "Photo: Evan Swigart from Chicago, USA, CC BY 2.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Max's_Roasted_Chicken_-_Evan_Swigart.jpg"
+  },
+  "u10b-2": {
+   "img": "img/p/u10b-2.jpg",
+   "credit": "Photo: pelican from Tokyo, Japan, CC BY-SA 2.0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:Beef_steak_(11888070325).jpg"
+  },
+  "u10b-3": {
+   "img": "img/p/u10b-3.jpg",
+   "credit": "Photo: Silar, CC0, via Wikimedia Commons",
+   "source": "https://commons.wikimedia.org/wiki/File:02024_1711_Vegetables_of_Silesia.jpg"
+  }
+ }
+}

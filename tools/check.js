@@ -24,6 +24,14 @@ L.forEach(l => {
     for (const w of ['f', 'm']) { const f = path.join(root, 'audio', w, slug(a[0]) + '.mp3'); if (!fs.existsSync(f) || fs.statSync(f).size < 1500) { missing++; problems.push('no clip ' + w + ': ' + a[0]); } }
   }));
 });
+// Every lesson or word photo the page names must exist and carry a credit.
+try {
+  const PHO = new Function(src.slice(src.indexOf('const PHO='), src.indexOf('/*PHO*/')) + ';return PHO')();
+  for (const [kind, map] of Object.entries(PHO)) for (const [id, v] of Object.entries(map)) {
+    if (!fs.existsSync(path.join(root, v[0]))) problems.push('no photo file for ' + kind + ' ' + id + ': ' + v[0]);
+    if (!v[1]) problems.push('no credit for photo ' + id);
+  }
+} catch (e) { problems.push('photo list does not parse: ' + e.message); }
 // Nothing private may be in the public files.
 for (const f of ['index.html', 'sw.js']) if (/admin-key|x-admin-key/i.test(fs.readFileSync(path.join(root, f), 'utf8'))) problems.push(f + ' mentions the admin key');
 console.log(`${L.filter(l => l.p).length} lessons, ${L.filter(l => l.story).length} stories, ${lines} voiced lines, ${missing} missing clips`);
