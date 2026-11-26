@@ -314,8 +314,8 @@ details.rev summary{font-weight:700;cursor:pointer}
 .walker .snegl{animation:none} .walker .snegl.yay{animation:hop .5s ease-out 1}
 .pbar{padding-top:24px}
 .plus{position:fixed;right:20px;top:calc(46px + env(safe-area-inset-top,0px));z-index:9;font-family:var(--display);font-weight:700;font-size:18px;color:var(--candle);pointer-events:none;animation:plus .85s both}
-.cel{position:fixed;inset:0;z-index:20;background:radial-gradient(circle at 50% 32%,#24306a,#0b0f1c 62%);display:flex;align-items:center;justify-content:center;padding:24px;animation:fade .25s both;overflow:auto}
-.cel>div{max-width:400px;width:100%;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.cel{position:fixed;inset:0;z-index:20;background:radial-gradient(circle at 50% 32%,#24306a,#0b0f1c 62%);display:flex;padding:24px;animation:fade .25s both;overflow:auto}
+.cel>div{max-width:400px;width:100%;margin:auto;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
 .cel .k{color:var(--candle);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
 .medal{width:170px;height:170px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--mc2,#ff9aa6),var(--mc,#ff5a6e));border:8px solid var(--candle);box-shadow:0 0 0 10px rgba(255,210,63,.15),0 0 60px rgba(255,210,63,.45);display:grid;place-items:center;font-size:78px;font-family:var(--display);font-weight:700;color:#fff;animation:medal .9s cubic-bezier(.2,.9,.3,1.3) both}
 .cel h1{font-size:32px} .cel p{color:#c9d1e6} .cel .m{width:150px}
@@ -335,6 +335,28 @@ details.rev summary{font-weight:700;cursor:pointer}
 .flipc{min-height:250px;justify-content:center;width:100%;animation:flipin .35s both}
 .flipc.back{border-color:var(--candle)}
 .lockb{background:var(--raised);border-radius:14px;padding:10px 14px;font-size:14px;color:#c9d1e6}
+.julc{display:flex;gap:12px;align-items:center;width:100%;text-align:left;background:linear-gradient(135deg,#7a1f2b,#1f5a3d);border:2px solid #c2313f;border-radius:20px;padding:12px 14px;box-shadow:0 4px 0 var(--ledge)}
+button.julc:active{transform:translateY(4px);box-shadow:none}
+.julc.hot{border-color:var(--candle);box-shadow:0 0 18px rgba(255,210,63,.4)}
+.julc i{font-style:normal;font-size:30px}
+.julc span{flex:1;display:flex;flex-direction:column;min-width:0}
+.julc b{font-family:var(--display);font-size:18px} .julc small{color:#f3ddcf;font-size:13px}
+.julc em{font-style:normal;font-weight:700;color:var(--candle);font-size:13px;flex:none}
+.jgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.jd{aspect-ratio:1;border-radius:16px;position:relative;display:grid;place-items:center;font-family:var(--display);box-shadow:0 5px 0 var(--ledge);background:#c2313f;border:2px solid rgba(255,255,255,.18)}
+.jd:nth-child(3n+2){background:#1f8a55} .jd:nth-child(5n){background:#b8871a}
+.jd b{font-size:26px;color:#fff3d6}
+.jd.no{filter:saturate(.5) brightness(.68)}
+.jd.can{border-color:var(--candle);box-shadow:0 5px 0 var(--ledge),0 0 16px rgba(255,210,63,.6);animation:wig 1.4s ease-in-out infinite}
+.jd.op{background:var(--surface);border:2px dashed var(--candle);box-shadow:none}
+.jd.op b{position:absolute;left:7px;top:4px;font-size:13px;color:var(--muted)}
+.jd i{font-style:normal;font-size:32px}
+.treec{background:linear-gradient(160deg,#17472f,#1a2238 78%);border:2px solid #2fae5a;border-radius:22px;padding:10px 14px 14px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.treec svg{width:216px;height:auto;display:block}
+.treec b{font-family:var(--display);font-size:20px} .treec span{color:#c9d1e6;font-size:14px}
+.cel.jul{background:radial-gradient(circle at 50% 28%,#6a1a26,#0b0f1c 64%)}
+.cel.jul .medal{width:130px;height:130px;font-size:62px}
+.cel.jul .card{padding:14px}
 @keyframes medal{0%{transform:scale(0) rotate(-200deg)}70%{transform:scale(1.12) rotate(8deg)}100%{transform:scale(1)}}
 @keyframes plus{0%{transform:translateY(10px) scale(.6);opacity:0}30%{transform:none;opacity:1}100%{transform:translateY(-26px);opacity:0}}
 @keyframes flipin{from{transform:rotateY(90deg)}}
@@ -853,12 +875,16 @@ const BADGES=[
  {id:'s100',i:'💯',t:'Hundrede dage',d:'Practice 100 days in a row',ok:s=>s.streak>=100},
  {id:'perf5',i:'💎',t:'Perfektionist',d:'5 lessons with no mistakes',ok:s=>s.perfect>=5},
  {id:'c20',i:'🚀',t:'Tyve i træk',d:'Get 20 right in a row',ok:s=>s.bestCombo>=20},
- {id:'hat1',i:'🎩',t:'Stilikon',d:'Buy Lars something to wear',ok:s=>((s.lars||{}).own||[]).length>=1}
+ {id:'hat1',i:'🎩',t:'Stilikon',d:'Buy Lars something to wear',ok:s=>((s.lars||{}).own||[]).length>=1},
+ {id:'tree6',i:'🎀',t:'Pyntet træ',d:'Put 6 kinds of ornament on the tree',ok:s=>((s.tree||{}).own||[]).length>=6},
+ {id:'sw10',i:'🧩',t:'Sætningsbygger',d:'Finish 10 Byg selv rounds',ok:s=>((s.stat||{}).sw||0)>=10},
+ {id:'jul1',i:'🎄',t:'Første låge',d:'Open your first julekalender door',ok:s=>julCount(s)>=1},
+ {id:'jul24',i:'🌟',t:'Glædelig jul',d:'Open all 24 julekalender doors',ok:s=>julCount(s)>=24}
 ];
 /* How far along a badge is: [now, goal]. Badges without a number show no bar. */
 const PR={first:s=>[n(s),1],s3:s=>[s.streak,3],s7:s=>[s.streak,7],s14:s=>[s.streak,14],s30:s=>[s.streak,30],s100:s=>[s.streak,100],sp25:s=>[s.speaks,25],sp100:s=>[s.speaks,100],
  c10:s=>[s.bestCombo,10],c20:s=>[s.bestCombo,20],w50:s=>[learned(s).length,50],w150:s=>[learned(s).length,150],bak3:s=>[s.bakery.length,3],rv1:s=>[(s.stat||{}).rv||0,1],rv10:s=>[(s.stat||{}).rv||0,10],
- st3:s=>[(s.stat||{}).st||0,3],tk1:s=>[(s.stat||{}).tk||0,1],tk10:s=>[(s.stat||{}).tk||0,10],perf5:s=>[s.perfect,5],
+ st3:s=>[(s.stat||{}).st||0,3],tk1:s=>[(s.stat||{}).tk||0,1],tk10:s=>[(s.stat||{}).tk||0,10],perf5:s=>[s.perfect,5],jul24:s=>[julCount(s),24],sw10:s=>[(s.stat||{}).sw||0,10],tree6:s=>[((s.tree||{}).own||[]).length,6],
  u0:s=>unitPr(s,0),u1:s=>unitPr(s,1),u2:s=>unitPr(s,2),u3:s=>unitPr(s,3),half:s=>unitPr(s,8),all:s=>[L.slice(0,CORE).filter(l=>s.done[l.key]).length,CORE]};
 const unitPr=(s,u)=>{const ls=L.filter(l=>l.u===u);return [ls.filter(l=>s.done[l.key]).length,ls.length]};
 const prOf=b=>{if(!PR[b.id])return null;const a=PR[b.id](S);return [Math.min(a[0],a[1]),a[1]]};
@@ -878,8 +904,77 @@ const HATS=[
  {id:'shades',t:'Solbriller',en:'Sunglasses',p:80},
  {id:'nisse',t:'Nissehue',en:'Christmas elf hat',p:100},
  {id:'viking',t:'Vikingehjelm',en:'Viking helmet',p:150},
- {id:'crown',t:'Krone',en:'Crown',p:300}
+ {id:'crown',t:'Krone',en:'Crown',p:300},
+ {id:'scarf',t:'Halstørklæde',en:'Scarf',jul:6},
+ {id:'lucia',t:'Luciakrone',en:'Lucia crown',jul:13},
+ {id:'star',t:'Julestjerne',en:'Christmas star',jul:24}
 ];
+/* The julekalender: door n opens on December n. [Danish, English, picture, a line about it, kroner, outfit for Lars]. A private pack may carry a note per door in pack.jul. */
+const JUL=[
+ ['Første december','The first of December','🗓️','In Denmark the countdown to Christmas starts today, with calendars, candles and a lot of sweets.',10,'nisse'],
+ ['En julekalender','An Advent calendar','📺','Every December Danish TV runs a julekalender show in 24 episodes. Whole families watch it together.',10],
+ ['Et kalenderlys','A calendar candle','🕯️','A candle marked 1 to 24. You burn one number down each day, usually at breakfast.',10,'','lys'],
+ ['En nisse','A Christmas elf','🧝','The nisse lives in the attic or the barn. Leave him rice pudding or he plays tricks on you.',10],
+ ['Risengrød','Rice pudding','🥣','Warm rice porridge with cinnamon sugar and a lump of butter in the middle. The favorite food of every nisse.',10],
+ ['Julehjerter','Christmas hearts','❤️','Woven paper hearts for the tree. Hans Christian Andersen made the oldest one known.',25,'scarf','hjerter'],
+ ['Gløgg','Mulled wine','🍷','Hot spiced red wine with raisins and almonds, served all through December.',10],
+ ['Æbleskiver','Pancake puffs','🥞','Round pancake balls dipped in jam and powdered sugar. The name means "apple slices", but there is no apple in them.',10],
+ ['Pebernødder','Pepper nuts','🍪','Tiny crunchy spice cookies. Kids play guessing games with them.',10],
+ ['Et juletræ','A Christmas tree','🎄','On Christmas Eve the family joins hands and dances around the tree while singing carols.',10],
+ ['Julepynt','Christmas decorations','✨','Danish trees often carry strings of little Danish flags along with hearts and stars.',10,'','flag'],
+ ['En julegave','A Christmas present','🎁','Presents are opened on the evening of the 24th, after dinner and after the dance around the tree.',25,'','gaver'],
+ ['Luciadag','Saint Lucia\'s Day','👑','On December 13 children in white walk in a candlelit procession and sing the Lucia song.',10,'lucia'],
+ ['Julefrokost','Christmas lunch','🍻','A long, loud lunch with friends or coworkers: herring, rye bread, snaps and many toasts.',10],
+ ['Sne','Snow','❄️','Everyone hopes for it, but a white Christmas is rare in Denmark.',10],
+ ['En stjerne','A star','⭐','A Danish tree has a star on top, not an angel.',10,'','top'],
+ ['Marcipan','Marzipan','🐷','Danes eat a lot of it at Christmas. A marzipan pig is the classic prize at the Christmas table.',10],
+ ['Julemanden','Santa Claus','🎅','Danish children know that Santa lives in Greenland.',25],
+ ['Flæskesteg','Roast pork','🍖','The classic Christmas Eve roast. The crackling on top has to be crisp.',10],
+ ['Brune kartofler','Caramelized potatoes','🥔','Small potatoes browned in butter and sugar. They only show up at Christmas.',10],
+ ['Rødkål','Red cabbage','🥬','Sweet and sour red cabbage, served warm next to the roast.',10],
+ ['Risalamande','Rice pudding dessert','🍒','Cold rice pudding with cream and cherry sauce. One whole almond is hidden in it, and whoever finds it wins a present.',10],
+ ['Lillejuleaften','Little Christmas Eve','🌙','December 23. Many families decorate the tree tonight.',10],
+ ['Glædelig jul','Merry Christmas','🌟','Tonight is the big night in Denmark: dinner, the dance around the tree, then presents.',100,'star']
+];
+/* Ornaments for the tree: bought with kroner, or found behind a julekalender door (jul: the door). */
+const ORN=[
+ {id:'kugler',i:'🔴',t:'Julekugler',en:'Baubles',p:30},
+ {id:'kraemmerhus',i:'🍬',t:'Kræmmerhuse',en:'Paper cones for sweets',p:40},
+ {id:'halm',i:'✴️',t:'Halmstjerner',en:'Straw stars',p:40},
+ {id:'trommer',i:'🥁',t:'Juletrommer',en:'Little drums',p:50},
+ {id:'nisser',i:'🧝',t:'Nisser',en:'Little elves',p:60},
+ {id:'lyskaede',i:'💡',t:'Lyskæde',en:'String of lights',p:80},
+ {id:'lys',i:'🕯️',t:'Levende lys',en:'Real candles',jul:3},
+ {id:'hjerter',i:'❤️',t:'Julehjerter',en:'Woven hearts',jul:6},
+ {id:'flag',i:'🇩🇰',t:'Flagguirlande',en:'Flag garland',jul:11},
+ {id:'gaver',i:'🎁',t:'Gaver',en:'Presents',jul:12},
+ {id:'top',i:'⭐',t:'Topstjerne',en:'Tree-top star',jul:16}
+];
+const tree=()=>S.tree||{own:[],t:0};
+const treeOn=()=>{const d=nowD(),m=d.getMonth(),dd=d.getDate();return m===11||(m===10&&dd>=15)||(m===0&&dd<=6)||tree().own.length>0};
+function treeSvg(own){const has=id=>own.includes(id);let o='';
+  if(has('lyskaede')){o+='<path d="M70 78 Q100 96 132 82 M54 128 Q100 152 148 132 M40 182 Q100 208 162 186" stroke="#ffd23f" stroke-width="1" fill="none" opacity=".45"/>';
+    [[72,79],[86,86],[100,89],[116,87],[130,83],[58,130],[76,139],[100,143],[124,140],[146,133],[46,185],[70,195],[100,199],[130,196],[158,188]].forEach(p=>o+=`<circle cx="${p[0]}" cy="${p[1]}" r="2.600" fill="#fff3a8"/>`)}
+  if(has('flag')){o+='<path d="M78 60 Q100 72 122 60 M62 106 Q100 124 140 106 M48 158 Q100 180 154 158" stroke="#ffffff" stroke-width="1.200" fill="none"/>';
+    [[86,65],[97,67],[108,65],[74,112],[90,117],[106,117],[122,112],[62,165],[80,172],[97,175],[114,172],[134,165]].forEach(p=>o+=`<rect x="${p[0]}" y="${p[1]}" width="7.500" height="5.500" fill="#e5383b"/><path d="M${p[0]+2.5} ${p[1]} v5.500 M${p[0]} ${p[1]+2.75} h7.500" stroke="#fff" stroke-width="1.100"/>`)}
+  if(has('kugler'))[[110,84,'#ff5a6e'],[84,124,'#4d8dff'],[130,148,'#ffd23f'],[98,166,'#c77dff'],[62,190,'#ff8a3d'],[146,192,'#38c6f4']].forEach(p=>o+=`<circle cx="${p[0]}" cy="${p[1]}" r="5.200" fill="${p[2]}"/><circle cx="${p[0]-1.6}" cy="${p[1]-1.8}" r="1.500" fill="#fff" opacity=".7"/>`);
+  if(has('hjerter'))[[90,98],[122,130],[72,152],[134,178]].forEach(p=>o+=`<path d="M${p[0]} ${p[1]+3} c-6 -5 -7 -10 -3.500 -11.500 c2 -.800 3.500 1 3.500 2.500 c0 -1.500 1.500 -3.300 3.500 -2.500 c3.500 1.500 2.500 6.500 -3.500 11.500 z" fill="#e5383b" stroke="#fff" stroke-width=".900"/>`);
+  if(has('kraemmerhus'))[[100,106],[144,170],[56,170]].forEach(p=>o+=`<path d="M${p[0]-5} ${p[1]} h10 l-5 12 z" fill="#ffd23f" stroke="#c79a12" stroke-width="1"/>`);
+  if(has('halm'))[[116,102],[70,134],[112,190],[88,76]].forEach(p=>o+=`<path d="M${p[0]-5} ${p[1]} h10 M${p[0]} ${p[1]-5} v10 M${p[0]-3.5} ${p[1]-3.5} l7 7 M${p[0]-3.5} ${p[1]+3.5} l7 -7" stroke="#ffe9a8" stroke-width="1.500" stroke-linecap="round"/>`);
+  if(has('trommer'))[[100,136],[124,198]].forEach(p=>o+=`<rect x="${p[0]-5}" y="${p[1]-4}" width="10" height="8" rx="1" fill="#e5383b"/><path d="M${p[0]-5} ${p[1]-4} h10 M${p[0]-5} ${p[1]+4} h10" stroke="#ffd23f" stroke-width="1.800"/>`);
+  if(has('nisser'))[[128,122],[80,198]].forEach(p=>o+=`<path d="M${p[0]} ${p[1]-10} l5 9 h-10 z" fill="#e5383b"/><circle cx="${p[0]}" cy="${p[1]+2}" r="3.800" fill="#ffd9b8"/><circle cx="${p[0]}" cy="${p[1]-10}" r="1.700" fill="#fff"/>`);
+  if(has('lys'))[[62,93],[138,93],[44,148],[156,148],[28,203],[172,203]].forEach(p=>o+=`<rect x="${p[0]-1.6}" y="${p[1]-11}" width="3.200" height="10" rx="1" fill="#fff"/><ellipse cx="${p[0]}" cy="${p[1]-14}" rx="2" ry="3.200" fill="#ffd23f"/>`);
+  if(has('top'))o+='<path d="M100 6 l4.200 9.500 l10.300 1 l-7.700 6.800 l2.300 10 l-9.100 -5.300 l-9.100 5.300 l2.300 -10 l-7.700 -6.800 l10.300 -1 z" fill="#ffd23f" stroke="#c79a12" stroke-width="1.600" stroke-linejoin="round"/>';
+  if(has('gaver'))o+='<rect x="40" y="214" width="26" height="18" rx="2" fill="#e5383b"/><path d="M53 214 v18 M40 222 h26" stroke="#ffd23f" stroke-width="2.400"/><rect x="128" y="218" width="30" height="14" rx="2" fill="#4d8dff"/><path d="M143 218 v14" stroke="#fff" stroke-width="2.400"/><rect x="68" y="221" width="16" height="11" rx="2" fill="#ffd23f"/><path d="M76 221 v11" stroke="#e5383b" stroke-width="2"/>';
+  return `<svg viewBox="0 0 200 238" aria-hidden="true"><rect x="92" y="204" width="16" height="22" fill="#7a4a22"/><path d="M100 104 L26 205 H174 Z" fill="#1f8a55"/><path d="M100 64 L42 150 H158 Z" fill="#26a064"/><path d="M100 28 L60 95 H140 Z" fill="#2fae5a"/>${o}</svg>`}
+const JORD=[7,18,3,22,11,1,15,24,9,20,5,13,2,17,23,8,14,6,19,10,21,4,16,12];
+/* hejciera.now (a date like 2026-12-05) overrides today for testing the calendar on this device. */
+const nowD=()=>{try{const o=localStorage.getItem('hejciera.now');if(o)return new Date(o+'T12:00')}catch(e){}return new Date()};
+const julY=()=>nowD().getFullYear();
+const julToday=()=>{const d=nowD();return d.getMonth()===11?d.getDate():d.getMonth()===10?0:-1};
+const julOpen=n=>!!(S.jul&&S.jul[julY()+'-'+n]);
+const julCount=st=>Object.keys((st||S).jul||{}).filter(k=>k.indexOf(julY()+'-')===0).length;
+const julReady=()=>{const t=julToday(),o=[];for(let n=1;n<=Math.min(t,24);n++)if(!julOpen(n))o.push(n);return o};
 /* Words with a picture: photos come from PHO, the colors are drawn. */
 const SW={'u9c-0':'#e5383b','u9c-1':'#2f6fe4','u9c-2':'#2fae5a','u9c-3':'#ffffff','u9c-4':'#111111'};
 const picOf=p=>p&&(PHO.phrases[p.id]?{img:PHO.phrases[p.id][0]}:SW[p.id]?{sw:SW[p.id]}:null);
@@ -948,11 +1043,14 @@ let tab='home',cur=null,sheet=null;
 
 /* ---------- Lars the turtle (the function keeps its old name) ---------- */
 function hatSvg(h,front){
+  if(front&&h==='scarf')return '<path d="M81 62 Q97 73 113 62 L113 69 Q97 80 81 69 Z" fill="#e5383b"/><path d="M87 70 l-4 15 h8 l3 -13 z" fill="#c2313f"/><path d="M86 66 Q97 73 108 66" stroke="#fff" stroke-width="1.600" fill="none" opacity=".7"/>';
   if(front)return h==='shades'?'<rect x="80" y="38" width="15" height="11" rx="4" fill="#1a1405"/><rect x="99" y="38" width="15" height="11" rx="4" fill="#1a1405"/><path d="M94 42 h6" stroke="#1a1405" stroke-width="3"/><path d="M83 41 h5 M102 41 h5" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".6"/>':'';
   return h==='viking'?'<path d="M82 31 Q70 25 73 10 Q80 21 89 25 Z" fill="#fff3d6"/><path d="M112 31 Q124 25 121 10 Q114 21 105 25 Z" fill="#fff3d6"/><path d="M80 34 Q97 4 114 34 Z" fill="#c9d2e3"/><rect x="78" y="30" width="38" height="7" rx="3.5" fill="#8b95ad"/><circle cx="97" cy="33.5" r="2.4" fill="#ffd23f"/>'
    :h==='crown'?'<path d="M82 36 L80 15 L90 26 L97 9 L104 26 L114 15 L112 36 Z" fill="#ffd23f" stroke="#c79a12" stroke-width="2" stroke-linejoin="round"/><circle cx="97" cy="29" r="3" fill="#ff5a6e"/><circle cx="87" cy="30" r="2" fill="#4d8dff"/><circle cx="107" cy="30" r="2" fill="#4d8dff"/>'
    :h==='party'?'<path d="M86 35 L97 1 L108 35 Z" fill="#ff6fae"/><path d="M90 25 L104 25 M93.500 15 L100.500 15" stroke="#ffd23f" stroke-width="3.2"/><circle cx="97" cy="-1" r="4.6" fill="#ffd23f"/>'
    :h==='nisse'?'<path d="M80 36 Q88 4 110 9 Q123 12 120 27 L113 24 Q104 19 113 36 Z" fill="#e5383b"/><rect x="77" y="31" width="40" height="8" rx="4" fill="#fff"/><circle cx="120" cy="29" r="5.2" fill="#fff"/>'
+   :h==='lucia'?'<rect x="82.300" y="19" width="3.600" height="15" rx="1.600" fill="#fff"/><rect x="90.300" y="15" width="3.600" height="15" rx="1.600" fill="#fff"/><rect x="100.100" y="15" width="3.600" height="15" rx="1.600" fill="#fff"/><rect x="108.100" y="19" width="3.600" height="15" rx="1.600" fill="#fff"/><ellipse cx="84.100" cy="15.500" rx="2.200" ry="3.400" fill="#ffd23f"/><ellipse cx="92.100" cy="11.500" rx="2.200" ry="3.400" fill="#ffd23f"/><ellipse cx="101.900" cy="11.500" rx="2.200" ry="3.400" fill="#ffd23f"/><ellipse cx="109.900" cy="15.500" rx="2.200" ry="3.400" fill="#ffd23f"/><path d="M79 39 Q97 23 115 39" stroke="#2fae5a" stroke-width="6.500" fill="none" stroke-linecap="round"/><circle cx="88" cy="33" r="1.800" fill="#e5383b"/><circle cx="106" cy="33" r="1.800" fill="#e5383b"/>'
+   :h==='star'?'<path d="M97 2 l3.800 8.600 l9.300 .900 l-7 6.200 l2.100 9.100 l-8.200 -4.800 l-8.200 4.800 l2.100 -9.100 l-7 -6.200 l9.300 -.900 z" fill="#ffd23f" stroke="#c79a12" stroke-width="1.600" stroke-linejoin="round"/>'
    :h==='flag'?'<path d="M30 30 V-2" stroke="#c9d2e3" stroke-width="2.6" stroke-linecap="round"/><rect x="31" y="-1" width="26" height="17" rx="2" fill="#e5383b"/><path d="M40 -1 v17 M31 7.500 h26" stroke="#fff" stroke-width="3.2"/>':''}
 /* m is the mood: hi, yay, oops or sleep. hat defaults to what the player has put on him. */
 function snegl(m,hat){m=m||'hi';if(hat===undefined)hat=lars().on;
@@ -1021,15 +1119,31 @@ function robot(text,slow){
 const slug=t=>t.toLowerCase().replace(/æ/g,'ae').replace(/ø/g,'oe').replace(/å/g,'aa').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 /* Danish that appears on buttons, titles, badges and in the shop. Shown with English under Phrases > App words; each can go on the practice list. */
 const APPW=[
- {t:'Rundt i appen',en:'Around the app',w:[['Dagens runde',"Today's round"],['Snak med Lars','Chat with Lars'],['Ny lektion','New lesson'],['Kun til dig','Only for you'],['Min liste','My list'],['Rejsepas','Travel passport'],['Kiosken','The kiosk'],['Bageriet','The bakery'],['Isterning','Ice cube'],['Dobbelt kaffe','Double coffee'],
+ {t:'Rundt i appen',en:'Around the app',w:[['Dagens runde',"Today's round"],['Snak med Lars','Chat with Lars'],['Ny lektion','New lesson'],['Kun til dig','Only for you'],['Min liste','My list'],['Byg selv','Build it yourself'],['Godt bygget','Well built'],['Julekalender','Advent calendar'],['Rejsepas','Travel passport'],['Kiosken','The kiosk'],['Bageriet','The bakery'],['Isterning','Ice cube'],['Dobbelt kaffe','Double coffee'],
   ['Næste','Next'],['Sådan','There you go'],['Næsten','Almost'],['Halvvejs','Halfway'],['Fantastisk','Fantastic'],['Godt klaret','Well done'],['Flot','Nice'],['Dygtig','Clever'],['Sejt','Cool'],['Kom så','Come on'],['Du kan godt','You can do it'],['Klar','Ready'],['Alle fire','All four'],['Tre dage i træk','Three days in a row'],['Godt øvet','Well practiced']]},
  {t:'Niveauer og emner',en:'Levels and units',w:[['Turist','Tourist'],['Gæst','Guest'],['Næsten dansk','Almost Danish'],['Første ord','First words'],['Ud i byen','Out on the town'],['Familie og hygge','Family and coziness'],['På tur','On a trip'],['Fra virkeligheden','From real life'],['Jeg og du','Me and you'],['Spørgsmål','Questions'],['Tal, tid og penge','Numbers, time and money'],['På indkøb','Out shopping'],['På restaurant','At a restaurant'],['Hvad synes du?','What do you think?'],['Hos familien','At the family\'s home']]},
  {t:'Lektioner',en:'Lesson names',w:[['Om mig','About me'],['Tal','Numbers'],['På café','At the café'],['Familien','The family'],['Hygge','Coziness'],['Mad','Food'],['Find vej','Find the way'],['Vejret','The weather'],['Sommerferie','Summer vacation'],['Min og din','Mine and yours'],['Småord','Little words'],['De store tal','The big numbers'],['Klokken','The clock'],['I butikken','In the shop'],['I supermarkedet','At the supermarket'],['Farver','Colors'],['Mad og drikke','Food and drink'],['Regningen','The check'],['Søde ord','Kind words'],['Ved bordet','At the table']]},
- {t:'Lars\' garderobe',en:'Lars\'s wardrobe',w:[['Dannebrog','The Danish flag'],['Festhat','Party hat'],['Solbriller','Sunglasses'],['Nissehue','Christmas elf hat'],['Vikingehjelm','Viking helmet'],['Krone','Crown']]},
+ {t:'Lars\' garderobe',en:'Lars\'s wardrobe',w:[['Dannebrog','The Danish flag'],['Festhat','Party hat'],['Solbriller','Sunglasses'],['Nissehue','Christmas elf hat'],['Vikingehjelm','Viking helmet'],['Krone','Crown'],['Halstørklæde','Scarf'],['Luciakrone','Lucia crown'],['Julestjerne','Christmas star']]},
  {t:'Bageriet',en:'The bakery',w:[['Kanelsnegl','Cinnamon roll'],['Flødebolle','Chocolate cream puff'],['Romkugle','Rum ball'],['Wienerbrød','Danish pastry'],['Hindbærsnitte','Raspberry slice'],['Drømmekage','Dream cake'],['Æbleskiver','Pancake puffs'],['Kransekage','Marzipan ring cake'],['Lagkage','Layer cake']]},
- {t:'Mærker',en:'Badges',w:[['Første skridt','First step'],['Hej-mester','Hello master'],['Café-klar','Café ready'],['Hygge-ekspert','Coziness expert'],['Rejseklar','Ready to travel'],['Tre på stribe','Three in a row'],['En hel uge','A whole week'],['Snakkesalig','Talkative'],['Vikingestemme','Viking voice'],['Fejlfri','Flawless'],['Ti i træk','Ten in a row'],['Halvtreds','Fifty'],['Kagekender','Cake connoisseur'],['Første runde','First round'],['Elefanthukommelse','Elephant memory'],['Bogorm','Bookworm'],['Duelvinder','Duel winner'],['Samtalepartner','Conversation partner'],['Sludrechatol','Chatterbox'],['Ordkunstner','Word artist'],['Klar til Danmark','Ready for Denmark'],['To uger','Two weeks'],['En hel måned','A whole month'],['Hundrede dage','A hundred days'],['Perfektionist','Perfectionist'],['Tyve i træk','Twenty in a row'],['Stilikon','Style icon']]}
+ {t:'Juletræet',en:'The Christmas tree',w:[['Juletræet','The Christmas tree'],['Julekugler','Baubles'],['Kræmmerhuse','Paper cones'],['Halmstjerner','Straw stars'],['Juletrommer','Little drums'],['Nisser','Elves'],['Lyskæde','String of lights'],['Levende lys','Real candles'],['Flagguirlande','Flag garland'],['Gaver','Presents'],['Topstjerne','Tree-top star'],['Pyntet træ','Decorated tree']]},
+ {t:'Mærker',en:'Badges',w:[['Første skridt','First step'],['Hej-mester','Hello master'],['Café-klar','Café ready'],['Hygge-ekspert','Coziness expert'],['Rejseklar','Ready to travel'],['Tre på stribe','Three in a row'],['En hel uge','A whole week'],['Snakkesalig','Talkative'],['Vikingestemme','Viking voice'],['Fejlfri','Flawless'],['Ti i træk','Ten in a row'],['Halvtreds','Fifty'],['Kagekender','Cake connoisseur'],['Første runde','First round'],['Elefanthukommelse','Elephant memory'],['Bogorm','Bookworm'],['Duelvinder','Duel winner'],['Samtalepartner','Conversation partner'],['Sludrechatol','Chatterbox'],['Ordkunstner','Word artist'],['Klar til Danmark','Ready for Denmark'],['To uger','Two weeks'],['En hel måned','A whole month'],['Hundrede dage','A hundred days'],['Perfektionist','Perfectionist'],['Tyve i træk','Twenty in a row'],['Stilikon','Style icon'],['Første låge','First door'],['Sætningsbygger','Sentence builder']]}
 ];
+JUL.forEach((a,i)=>{PH['jul-'+(i+1)]={id:'jul-'+(i+1),da:a[0],en:a[1],say:'',note:''}});
 APPW.forEach(g=>{g.ids=g.w.map(a=>{const id='ui-'+slug(a[0]);PH[id]={id,da:a[0],en:a[1],say:'',note:'',ui:true};return id})});
+/* Swap drills ("Byg selv"): one sentence frame, several pieces that fit it. She picks the piece that matches the English, then says the
+   whole new sentence. A frame opens once the lesson it builds on (req) is finished. Pieces are [Danish piece, English for the whole sentence]. */
+const SWAP=[
+ {req:'4',f:'Jeg vil gerne have ___',w:[['en kaffe','I would like a coffee'],['en te','I would like a tea'],['en øl','I would like a beer'],['et glas vand','I would like a glass of water'],['en is','I would like an ice cream'],['en pølse','I would like a hot dog']]},
+ {req:'7',f:'Jeg er ___',w:[['sulten','I am hungry'],['tørstig','I am thirsty'],['træt','I am tired'],['glad','I am happy']]},
+ {req:'8',f:'Jeg kan godt lide ___',w:[['kage','I like cake'],['is','I like ice cream'],['ost','I like cheese'],['rugbrød','I like rye bread'],['smørrebrød','I like open-faced sandwiches'],['Danmark','I like Denmark']]},
+ {req:'9',f:'Hvor er ___?',w:[['toilettet','Where is the restroom?'],['stationen','Where is the station?'],['stranden','Where is the beach?'],['min kæreste','Where is my boyfriend?'],['min familie','Where is my family?']]},
+ {req:'10',f:'Det er ___',w:[['varmt','It is warm'],['koldt','It is cold'],['hyggeligt','It is cozy'],['tæt på','It is close by'],['langt','It is far']]},
+ {req:'u5b',f:'Jeg har ___',w:[['en bror','I have a brother'],['en søster','I have a sister'],['to børn','I have two children'],['en hund','I have a dog'],['tid','I have time']]},
+ {req:'u6b',f:'Jeg kan ikke lide ___',w:[['fisk','I don\'t like fish'],['ost','I don\'t like cheese'],['øl','I don\'t like beer'],['kaffe','I don\'t like coffee']]},
+ {req:'u6c',f:'Vi skal ___',w:[['spise nu','We are going to eat now'],['hjem nu','We are going home now'],['til stranden','We are going to the beach'],['cykle','We are going to bike']]}
+];
+SWAP.forEach((fr,fi)=>{fr.ps=fr.w.map((a,k)=>PH['sw-'+fi+'-'+k]={id:'sw-'+fi+'-'+k,da:fr.f.replace('___',a[0]),en:a[1],say:'',note:'',piece:a[0]})});
+const swapOpen=()=>SWAP.filter(fr=>S.done[fr.req]);
 /* The practice list: anything she marks with the arm. id -> {a: when added, n: times right in practice, t: last change} or {x:1,t} once taken off. */
 const inPr=id=>!!(S.pr&&S.pr[id]&&!S.pr[id].x);
 const prIds=()=>Object.entries(S.pr||{}).filter(([id,x])=>x&&!x.x&&PH[id]).sort((a,b)=>(b[1].a||0)-(a[1].a||0)).map(x=>x[0]);
@@ -1056,7 +1170,7 @@ function render(){
   if(cur){renderStep();return}
   if(CODE&&PACK&&PACK.welcome&&!(S.seenW&&S.seenW.v)){app.innerHTML=welcomePack();return}
   if(!CODE&&!n(S)&&!S.solo){app.innerHTML=welcome();return}
-  const body={home,rewards,fam,book,me,flip:flipTab,make,rev,talk,voice:voiceScreen,avocab:advCards,aplay:advCards,around:advCards,apiece:advPiece,agender:advGender,apat:advPat,aw:advWords}[tab]();
+  const body={home,rewards,fam,book,me,jul:julTab,flip:flipTab,make,rev,talk,voice:voiceScreen,avocab:advCards,aplay:advCards,around:advCards,apiece:advPiece,agender:advGender,apat:advPat,aw:advWords}[tab]();
   app.innerHTML=`<div class="page">${body}</div>
   <nav class="tabs"><div>${[['home','🏠','Learn'],['fam','👪','Family'],['rewards','🏅','Rewards'],['book','📖','Phrases'],['me','⚙️','Me']]
     .map(t=>`<button data-a="tab" data-v="${t[0]}" class="${tab===t[0]?'on':''}"><i>${t[1]}</i>${t[2]}</button>`).join('')}</div></nav>${sheet!==null?sheetHtml(sheet):''}`;
@@ -1094,7 +1208,11 @@ function home(){
   h+=`<section class="qs">${QUESTS.map(q=>{const v=Math.min(q.v(day)||0,q.g),dn=v>=q.g;
     return `<div class="qc ${dn?'done':''}"><span>${dn?'✓ ':''}${q.s}<em>${dn?'+10 🪙':v+'/'+q.g}</em></span><div class="bar"><i style="width:${v/q.g*100}%"></i></div></div>`}).join('')}
   <div class="qchest ${allq?'done':''}">${allq?'🎁 Chest opened. All four quests done today!':'🎁 Finish all four today to open a chest'}</div></section>`;
+  const jt=julToday();
+  if(jt===0){const dd=31-nowD().getDate();h+=`<div class="julc"><i>🎄</i><span><b>Julekalender</b><small>24 doors, one a day, each with a Danish Christmas word and a treat. The first opens ${dd===1?'tomorrow':'in '+dd+' days'}, on December 1.</small></span></div>`}
+  else if(jt>0){const rd=julReady(),oc=julCount();h+=`<button class="julc ${rd.length?'hot':''}" data-a="tab" data-v="jul"><i>🎄</i><span><b>Julekalender</b><small>${rd.length?(rd.length===1?'Door '+rd[0]+' is ready to open':rd.length+' doors are ready to open'):jt>=24?'All 24 doors are open. Glædelig jul!':'Door '+(jt+1)+' opens tomorrow'}</small></span><em>${oc}/24</em></button>`}
   if(learned(S).length)h+=`<button class="rvb ${nd&&!day.review?'hot':''}" data-a="review"><i>🔁</i><span><b>Dagens runde</b><small>${nd?nd+(nd===1?' phrase is':' phrases are')+' ready to come back':'All caught up. Play a bonus round?'}</small></span><em>${day.review?'✓ done':'5 min'}</em></button>`;
+  if(swapOpen().length)h+=`<button class="rvb" data-a="swap"><i>🧩</i><span><b>Byg selv</b><small>Swap one piece and say a brand-new sentence. ${swapOpen().length} of ${SWAP.length} patterns unlocked.</small></span><em>4 min</em></button>`;
   if(CODE)h+=`<button class="rvb" data-a="tab" data-v="talk"><i>💬</i><span><b>Snak med Lars</b><small>Answer out loud in your own words. Lars plays the waiter, the baker, the family.</small></span><em>new</em></button>`;
   L.map((l,i)=>i).filter(i=>isNew(L[i])).slice(0,2).forEach(i=>{h+=`<button class="rvb hot" data-a="node" data-v="${i}"><i>${esc(L[i].i)}</i><span><b>Ny lektion: ${esc(L[i].t)}</b><small>${esc(L[i].en)}. A new lesson is waiting for you.</small></span><em>new</em></button>`});
   if(!CODE)h+=`<button class="note" data-a="tab" data-v="me" style="text-align:left">Got a code from Scott? Enter it under Me to keep your progress on all your devices and join the family race.</button>`;
@@ -1121,8 +1239,10 @@ function rewards(){
   <div class="seg" style="--n:${tabs.length}">${tabs.map(t=>`<button data-a="rtab" data-v="${t[0]}" class="${rtab===t[0]?'on':''}">${t[1]}</button>`).join('')}</div>`;
   if(rtab==='pass')return h+pp;
   if(rtab==='shop'){const lz=lars();return h+`
-  <section class="unit"><div class="closet"><div class="m">${snegl('yay')}</div><b>Lars's wardrobe</b><span>Buy him something. He wears it everywhere.</span></div><div class="grid">${HATS.map(x=>{const own=lz.own.includes(x.id),on=lz.on===x.id,can=kr()>=x.p;
-    return `<button class="tile ${own?(on?'own on':'own'):can?'buy':'off'}" data-a="hat" data-v="${x.id}" ${own||can?'':'disabled'}><span class="mm">${snegl('hi',x.id)}</span><b lang="da">${x.t}</b><small>${own?(on?'Wearing ✓':'Tap to wear'):x.en}</small>${own?'':`<small>🪙 ${x.p}</small>`}</button>`}).join('')}</div></section>
+  <section class="unit"><div class="closet"><div class="m">${snegl('yay')}</div><b>Lars's wardrobe</b><span>Buy him something. He wears it everywhere.</span></div><div class="grid">${HATS.map(x=>{const own=lz.own.includes(x.id),on=lz.on===x.id,can=!x.jul&&kr()>=x.p;
+    return `<button class="tile ${own?(on?'own on':'own'):can?'buy':'off'}" data-a="hat" data-v="${x.id}" ${own||can?'':'disabled'}><span class="mm">${snegl('hi',x.id)}</span><b lang="da">${x.t}</b><small>${own?(on?'Wearing ✓':'Tap to wear'):x.en}</small>${own?'':`<small>${x.jul?'🎄 Julekalender':'🪙 '+x.p}</small>`}</button>`}).join('')}</div></section>
+  ${treeOn()?`<section class="unit"><div class="treec">${treeSvg(tree().own)}<b>Juletræet</b><span>${tree().own.length} of ${ORN.length} kinds of Danish ornament on your tree. Some are for sale, some hide behind julekalender doors.</span></div><div class="grid">${ORN.map(x=>{const own=tree().own.includes(x.id),can=!x.jul&&kr()>=x.p;
+    return `<button class="tile ${own?'own':can?'buy':'off'}" data-a="orn" data-v="${x.id}" ${!own&&can?'':'disabled'}><i>${x.i}</i><b lang="da">${x.t}</b><small>${own?'On the tree ✓':x.en}</small>${own?'':`<small>${x.jul?'🎄 Door '+x.jul:'🪙 '+x.p}</small>`}</button>`}).join('')}</div></section>`:''}
   <section class="unit"><div class="unit-h"><h2>Kiosken</h2><span>Things that help</span></div><div class="grid" style="grid-template-columns:1fr 1fr">
   <button class="tile ${kr()>=80&&fz().n<2?'buy':'off'}" data-a="shop" data-v="fz" ${kr()>=80&&fz().n<2?'':'disabled'}><i>🧊</i><b>Isterning</b><small>Saves your streak if you miss a day. You have ${fz().n} of 2.</small><small>🪙 80</small></button>
   <button class="tile ${kr()>=60&&!boost().n?'buy':'off'}" data-a="shop" data-v="boost" ${kr()>=60&&!boost().n?'':'disabled'}><i>☕</i><b>Dobbelt kaffe</b><small>${boost().n?'Ready: your next lesson pays double.':'Double kroner on your next lesson.'}</small><small>🪙 60</small></button></div></section>
@@ -1158,6 +1278,21 @@ function book(){
   L.forEach(l=>{if(S.done[l.key])h+=`<section class="unit"><div class="unit-h"><h2>${esc(l.t)}</h2><span>${esc(l.en)}</span></div><div class="stack">${l.p.map(phraseRow).join('')}</div></section>`});
   return h;
 }
+function julTab(){const jt=julToday();
+  let h=`<div class="hello"><h1>Julekalender</h1><p>One door a day until Christmas Eve. Behind each: a Danish Christmas word and a little treat. ${julCount()} of 24 opened.</p></div><div class="jgrid">`;
+  JORD.forEach(n=>{const op=julOpen(n),can=jt>=n&&!op;
+    h+=`<button class="jd ${op?'op':can?'can':'no'}" data-a="${op?'julsee':can?'julopen':'julno'}" data-v="${n}" aria-label="Door ${n}${op?', opened':can?', ready to open':', not yet'}"><b>${n}</b>${op?`<i>${JUL[n-1][2]}</i>`:''}</button>`});
+  return h+`</div><div class="treec">${treeSvg(tree().own)}<b>Juletræet</b><span>Your tree so far. Decorate it in Rewards, under Shop.</span></div><button class="link" data-a="tab" data-v="home">Back</button>`}
+function julShow(n,o){o=o||{};const a=JUL[n-1],note=PACK&&PACK.jul&&PACK.jul[n],hat=o.hat&&HATS.find(x=>x.id===o.hat),orn=o.orn&&ORN.find(x=>x.id===o.orn),old=document.getElementById('cel');if(old)old.remove();
+  const d=document.createElement('div');d.id='cel';d.className='cel jul';
+  d.innerHTML=`<div><span class="k">${n}. december</span><div class="medal" style="--mc:#c2313f;--mc2:#ff8f9c">${a[2]}</div>
+  <button class="card" data-a="hear" data-v="jul-${n}" style="width:100%"><span class="da">${esc(a[0])} 🔊</span><span class="en">${esc(a[1])}</span></button>
+  <p>${esc(a[3])}</p>
+  ${o.fresh?`<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><span class="chip" style="flex:none">🪙 +${o.kr}<small>kroner</small></span>${hat?`<span class="chip" style="flex:none">🎁 ${esc(hat.t)}<small>for Lars</small></span>`:''}${orn?`<span class="chip" style="flex:none">${orn.i} ${esc(orn.t)}<small>for the tree</small></span>`:''}</div>${hat?`<div class="m">${snegl('yay',hat.id)}</div>`:''}`:''}
+  ${note&&note.da?`<button class="love" data-a="julnote" data-v="${n}" style="animation:none"><i>💌</i><span><small>Fra Scott</small><b>${esc(note.da)}</b><em>${esc(note.en||'')}</em></span></button>`:''}
+  <button class="btn sm ghost" data-a="prac" data-v="jul-${n}">${inPr('jul-'+n)?'✓ On my list':'💪 Practice more'}</button>
+  <button class="btn" data-a="celnext">${CQ.length?'Næste →':'Sådan!'}</button></div>`;
+  document.body.appendChild(d);if(o.fresh){sfx('win');confetti()}setTimeout(()=>{if(document.getElementById('cel')===d)say(a[0])},600)}
 const fl={ids:[],i:0,back:false};
 function flipTab(){
   if(!fl.ids.length||!PH[fl.ids[fl.i]]){fl.ids=sh(learned(S).map(p=>p.id));fl.i=0;fl.back=false}
@@ -1735,6 +1870,11 @@ function startPractice(quiet){
   ps.forEach(p=>{const ks=kinds(p).filter(k=>ok(mk(p,k)));a.push(mk(p,ks[0]));b.push(mk(p,ks[1]))});
   if(ps.length>=3)a.push({k:'match',ps:sh(ps).slice(0,4)});
   begin(fresh({mode:'practice',li:-3,quiet:!!quiet,steps:[...sh(a),...sh(b)]}))}
+function startSwap(){
+  const fs=sh(swapOpen()).slice(0,2);if(!fs.length)return;const steps=[];
+  fs.forEach(fr=>sh(fr.ps).slice(0,3).forEach(p=>{const others=sh(fr.ps.filter(q=>q!==p)).slice(0,2).map(q=>q.piece);
+    steps.push({k:'fill',ask:'Which piece makes it say this?',p,gap:fr.f,ans:p.piece,opts:sh([p.piece,...others])},{k:'speak',p})}));
+  begin(fresh({mode:'swap',li:-3,steps}))}
 function startStory(li){const l=L[li];
   begin(fresh({mode:'story',li,steps:[...l.story.map(a=>({k:'read',line:{da:a[0],en:a[1]}})),...l.q.map(q=>({k:'quiz',q:q[0],opts:sh(q[1].slice()),ans:q[1][q[2]]}))]}))}
 function startDuel(to,d){
@@ -1795,7 +1935,7 @@ function renderStep(){
     <div class="answer" id="ansrow"></div><div class="bank" id="bank">${s.bank.map((w,i)=>`<button class="word" data-a="word" data-v="${i}" style="animation-delay:${i*.04}s">${esc(w)}</button>`).join('')}</div>`;
     foot=`<button class="btn" data-a="check" id="go" disabled>Check</button>`;
   }else if(s.k==='fill'){
-    b=`<div class="ask">Which word is missing?</div><div class="card"><div class="da" style="font-size:24px">${esc(s.gap)}</div><div class="en">${esc(p.en)}</div></div>
+    b=`<div class="ask">${s.ask||'Which word is missing?'}</div><div class="card"><div class="da" style="font-size:24px">${esc(s.gap)}</div><div class="en">${esc(p.en)}</div></div>
     <div class="opts">${s.opts.map(x=>`<button class="opt" data-a="fillans" data-v="${esc(x)}">${esc(x)}</button>`).join('')}</div>`;
   }else if(s.k==='read'){
     const prev=cur.steps.slice(Math.max(0,cur.i-3),cur.i).filter(x=>x.k==='read');
@@ -1847,6 +1987,7 @@ function finishOther(){
   if(m==='review'){gain=10+Math.round(acc*5);today().review=1;S.stat=Object.assign(stat(),{rv:stat().rv+1,t:Date.now()});bumpStreak();title='Dagens runde er klaret!';sub=`Today's round is done. ${right} of ${total} right.`}
   else if(m==='story'){const l=L[cur.li],first=!S.done[l.key],stars=acc>=.99?3:acc>=.5?2:1;gain=first?20:5;const lvb=lvOpenFor(cur.li);S.done[l.key]={stars:Math.max(stars,(S.done[l.key]||{}).stars||0)};if(lvb>=0&&lvDone(lvb))PEND.push({k:'level',n:lvb});
     if(first)S.stat=Object.assign(stat(),{st:stat().st+1,t:Date.now()});bumpStreak();today().lessons=(today().lessons||0)+1;title='Godt læst!';sub=`Well read. ${right} of ${total} questions right.`}
+  else if(m==='swap'){gain=10+Math.round(acc*5);bumpStreak();S.stat=Object.assign(stat(),{sw:(stat().sw||0)+1,t:Date.now()});title='Godt bygget!';sub=`Well built. ${right} of ${total} right. You just said sentences nobody taught you whole.`}
   else if(m==='practice'){gain=8+Math.round(acc*4);bumpStreak();title='Godt øvet!';sub=`Good practice. ${right} of ${total} right. Next time the mix will be different.`}
   else{const d=cur.duel,ms=Date.now()-d.t0,post=(path,body)=>fetch(SYNC+path,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify(body)}).then(r=>r.json()).then(j=>{if(j.duels){fx.duels=j.duels;if(tab==='fam'&&!cur&&!document.querySelector('.fin'))render()}}).catch(()=>{});gain=5;
     if(d.reply){const a=d.reply.a,win=right>a.score||(right===a.score&&ms<a.ms);if(win)S.stat=Object.assign(stat(),{dw:stat().dw+1,t:Date.now()});
@@ -1889,7 +2030,7 @@ function finish(){
 /* ---------- speaking ---------- */
 let recog=null,media=null,myAudio=null;
 function stopRec(){try{recog&&recog.abort()}catch(e){}recog=null;try{media&&media.rec.state!=='inactive'&&media.rec.stop();media&&media.stream.getTracks().forEach(t=>t.stop())}catch(e){}media=null}
-function drawSpeak(mode,msg){
+function drawSpeak(mode,msg,soft){
   const el=document.getElementById('spk');if(!el)return;
   const mic=live=>`<button class="mic ${live?'live':''}" data-a="mic" aria-label="${live?'Stop':'Speak'}">${live?'■':'🎤'}</button>`;
   if(mode==='idle')el.innerHTML=mic(false)+`<div class="heard">${msg||'Tap the mic and say it'}</div>`;
@@ -1897,7 +2038,7 @@ function drawSpeak(mode,msg){
   else if(mode==='again')el.innerHTML=mic(false)+`<div class="heard">${msg}</div>`;
   else if(mode==='review')el.innerHTML=`<div class="heard">Listen to yourself, then to the Danish. Close enough?</div><div class="acts"><button class="btn sm ghost" data-a="mine">▶ Me</button><button class="btn sm ghost" data-a="say">🔊 Danish</button></div>
     <div class="acts"><button class="btn sm ghost" data-a="mic">Try again</button><button class="btn sm good" data-a="selfok">Sounds good</button></div>`;
-  else if(mode==='compare')el.innerHTML=mic(false)+`<div class="heard">${msg}</div><div class="acts"><button class="btn sm ghost" data-a="mine">▶ Me</button><button class="btn sm ghost" data-a="say">🔊 Danish</button></div>`;
+  else if(mode==='compare')el.innerHTML=mic(false)+`<div class="heard">${msg}${soft?' Short words are the hardest for me to hear. If you matched the teacher, count it.':''}</div><div class="acts"><button class="btn sm ghost" data-a="mine">▶ Me</button><button class="btn sm ghost" data-a="say">🔊 Danish</button></div>${soft?'<div class="acts"><button class="btn sm good" data-a="selfok">✓ I said it right</button></div>':''}`;
   else if(mode==='done')el.innerHTML=`<div class="heard">${msg||''}</div>`;
 }
 function spoke(msg){S.speaks++;today().speaks++;save();drawSpeak('done',msg);grade(true,cur.steps[cur.i],true);const pk=document.getElementById('peek');if(pk)pk.hidden=false}
@@ -1972,6 +2113,8 @@ const numWords=t=>String(t||'').replace(/\d+/g,m=>NUMW[m]||m).replace(/\+/g,' pl
 function spLog(p,v,pass,svc){if(!p||!p.id)return;S.sp=S.sp||{};const e=S.sp[p.id]||{n:0,f:0,s:0,lo:100};v=Math.round(v)||0;e.n++;if(!pass)e.f++;e.s+=v;e.lo=Math.min(e.lo,v);e.last=v;e.svc=svc?1:0;e.t=Date.now();S.sp[p.id]=e;save()}
 async function judge(blob,s,st){
   drawSpeak('done','Checking…');const here=()=>cur&&cur.steps[cur.i]===s;
+  /* The grader is unreliable on one- and two-word phrases, so after two tries the player may overrule it there. */
+  const fail=m=>{drawSpeak('compare',m,st.tries>=2&&words(s.p.da).length<=2);if(st.tries>=2)allowOn()};
   try{
     const buf=await decode(await blob.arrayBuffer()),mine=feats(buf);if(!here())return;st.tries++;
     if(!mine){drawSpeak('again','I could not hear you. Hold the phone a little closer and try again.');if(st.tries>=2)allowOn();return}
@@ -1995,7 +2138,7 @@ async function judge(blob,s,st){
                 :`${pct} out of 100. Work on "${weak.join('" and "')||esc(s.p.da)}". Listen to both, then try again.`);
               /* One or two words: the service's score is unreliable there (it fails the teacher's own "fem" and "ni"), and what it
                  heard leans toward the expected word. So when it heard the right Danish, the sound match below decides. */
-              if(all.length<=2&&heardOk)second=msg;else{drawSpeak('compare',msg);if(st.tries>=2)allowOn()}}
+              if(all.length<=2&&heardOk)second=msg;else fail(msg)}
             if(!second)return}}
       }catch(e){}
       if(!here())return;
@@ -2005,9 +2148,9 @@ async function judge(blob,s,st){
     const pct=len>2.6?0:matchPct(Math.min(...refs.map(r=>dtw(mine,r))));
     if(!second)spLog(s.p,pct,pct>=PASS,0);
     if(pct>=PASS&&second)spoke(`I heard "${esc(s.p.da)}". Nicely said!`);
-    else if(second){drawSpeak('compare',second);if(st.tries>=2)allowOn()}
+    else if(second)fail(second);
     else if(pct>=PASS)spoke(`${pct}% match. ${pct>=75?'Spot on!':'Close enough to be understood!'}`);
-    else{drawSpeak('compare',`${pct}% match. Listen to both, then try again.`);if(st.tries>=2)allowOn()}
+    else fail(`${pct}% match. Listen to both, then try again.`);
   }catch(e){if(here())drawSpeak('review')}
 }
 function allowOn(){const go=document.getElementById('go');if(go){go.disabled=false;go.textContent='Continue anyway'}}
@@ -2184,14 +2327,26 @@ Object.assign(A,{
     if(p)p.innerHTML=`<b>${esc(c[0])}</b> ${esc(c[1])}`;if(w){w.classList.remove('yay','sleep');void w.offsetWidth;w.classList.add('yay')}sfx('ok')},
   hat(el){const x=HATS.find(q=>q.id===el.dataset.v),lz=lars();if(!x)return;
     if(lz.own.includes(x.id)){S.lars={own:lz.own,on:lz.on===x.id?'':x.id,t:Date.now()};save();render();sfx('tap');sync();return}
-    if(kr()<x.p)return;
+    if(x.jul||kr()<x.p)return;
     S.lars={own:lz.own.concat(x.id),on:x.id,t:Date.now()};S.shop={spent:((S.shop&&S.shop.spent)||0)+x.p,t:Date.now()};
     const won=grant();save();render();sfx('coin');confetti();sync();celRun(won)},
   unlock(el){const l=L[+el.dataset.v];if(!l)return;S.open=S.open||{};S.open[l.key]={t:Date.now()};save();sfx('ok');render();sync()},
+  orn(el){const x=ORN.find(q=>q.id===el.dataset.v),tr=tree();if(!x||x.jul||tr.own.includes(x.id)||kr()<x.p)return;
+    S.tree={own:tr.own.concat(x.id),t:Date.now()};S.shop={spent:((S.shop&&S.shop.spent)||0)+x.p,t:Date.now()};
+    const won=grant();save();render();sfx('coin');confetti();sync();celRun(won)},
+  julno(el){toast('Door '+el.dataset.v+' opens on December '+el.dataset.v);sfx('tap')},
+  julsee(el){julShow(+el.dataset.v)},
+  julnote(el){const x=PACK&&PACK.jul&&PACK.jul[+el.dataset.v];if(x)scottSay(x.da)},
+  julopen(el){const n=+el.dataset.v,a=JUL[n-1];if(!a||julToday()<n||julOpen(n))return;
+    S.jul=S.jul||{};S.jul[julY()+'-'+n]={t:Date.now()};let k=a[4],hat=a[5]||'';const lz=lars();
+    if(hat){if(lz.own.includes(hat)){hat='';k+=50}else S.lars={own:lz.own.concat(hat),on:hat,t:Date.now()}}
+    let orn=a[6]||'';if(orn){if(tree().own.includes(orn))orn='';else S.tree={own:tree().own.concat(orn),t:Date.now()}}
+    S.earned+=k;const won=grant();CQ=CQ.concat(won.map(b=>({k:'badge',b})));save();render();julShow(n,{fresh:true,kr:k,hat,orn});sync()},
+  swap(){startSwap()},
   btab(el){btab=el.dataset.v;sfx('tap');window.scrollTo(0,0);render()},
   practice(el){startPractice(!!el.dataset.q)},
   prac(el){const id=el.dataset.v;if(!PH[id])return;prToggle(id);sfx(inPr(id)?'ok':'tap');
-    if(cur){el.textContent=inPr(id)?'✓ On my list':'💪 Practice more'}else render();
+    if(cur||el.closest('.cel')){el.textContent=inPr(id)?'✓ On my list':'💪 Practice more'}else render();
     if(inPr(id)&&!cur)toast('On your list');sync()},
   flipit(){fl.back=!fl.back;sfx('tap');render()},
   flipgo(el){const nn=fl.ids.length;if(!nn)return;fl.i=(fl.i+(+el.dataset.v)+nn)%nn;fl.back=false;render();const p=PH[fl.ids[fl.i]];if(p)say(p.da)}
