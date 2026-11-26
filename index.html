@@ -351,6 +351,17 @@ button.julc:active{transform:translateY(4px);box-shadow:none}
 .jd.op{background:var(--surface);border:2px dashed var(--candle);box-shadow:none}
 .jd.op b{position:absolute;left:7px;top:4px;font-size:13px;color:var(--muted)}
 .jd i{font-style:normal;font-size:32px}
+.m.duo{position:relative}
+.mi{position:absolute;display:block;pointer-events:none}
+.today .mi{right:-40px;bottom:-6px;width:60px}
+.today .hi.two{gap:48px}
+.fin .mi{right:-52px;bottom:0;width:78px}
+.mi .mille,.tile .mm .mille{animation:none}
+.mille{width:100%;height:auto;display:block;animation:bob 2.9s ease-in-out infinite}
+.mille.yay{animation:hop .55s ease-out 3}
+.closet.mil{background:linear-gradient(160deg,#7a3a1f,#1a2238 75%);border-color:#ff9345}
+.closet.mil .m{width:150px}
+.closet.away .m{opacity:.35;filter:grayscale(1)}
 .treec{background:linear-gradient(160deg,#17472f,#1a2238 78%);border:2px solid #2fae5a;border-radius:22px;padding:10px 14px 14px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
 .treec svg{width:216px;height:auto;display:block}
 .treec b{font-family:var(--display);font-size:20px} .treec span{color:#c9d1e6;font-size:14px}
@@ -877,6 +888,7 @@ const BADGES=[
  {id:'c20',i:'🚀',t:'Tyve i træk',d:'Get 20 right in a row',ok:s=>s.bestCombo>=20},
  {id:'hat1',i:'🎩',t:'Stilikon',d:'Buy Lars something to wear',ok:s=>((s.lars||{}).own||[]).length>=1},
  {id:'tree6',i:'🎀',t:'Pyntet træ',d:'Put 6 kinds of ornament on the tree',ok:s=>((s.tree||{}).own||[]).length>=6},
+ {id:'mille',i:'🦔',t:'Bedste venner',d:'Mille moves in with Lars',ok:s=>!!(s.done['s5']||(s.mille&&s.mille.have))},
  {id:'sw10',i:'🧩',t:'Sætningsbygger',d:'Finish 10 Byg selv rounds',ok:s=>((s.stat||{}).sw||0)>=10},
  {id:'jul1',i:'🎄',t:'Første låge',d:'Open your first julekalender door',ok:s=>julCount(s)>=1},
  {id:'jul24',i:'🌟',t:'Glædelig jul',d:'Open all 24 julekalender doors',ok:s=>julCount(s)>=24}
@@ -975,6 +987,18 @@ const julToday=()=>{const d=nowD();return d.getMonth()===11?d.getDate():d.getMon
 const julOpen=n=>!!(S.jul&&S.jul[julY()+'-'+n]);
 const julCount=st=>Object.keys((st||S).jul||{}).filter(k=>k.indexOf(julY()+'-')===0).length;
 const julReady=()=>{const t=julToday(),o=[];for(let n=1;n<=Math.min(t,24);n++)if(!julOpen(n))o.push(n);return o};
+/* Mille the hedgehog, Lars's friend from the stories. She moves in when the story "Lars har en ven" is read, or for 150 kroner. Her own things to wear: */
+const MHATS=[
+ {id:'bow',t:'Sløjfe',en:'Bow',p:40},
+ {id:'specs',t:'Briller',en:'Glasses',p:50},
+ {id:'sunhat',t:'Solhat',en:'Sun hat',p:60},
+ {id:'helmet',t:'Cykelhjelm',en:'Bike helmet',p:70},
+ {id:'rain',t:'Regnhat',en:'Rain hat',p:80},
+ {id:'flowers',t:'Blomsterkrans',en:'Flower crown',p:120}
+];
+const MILLE_KR=150;
+const mil=()=>S.mille||{have:false,own:[],on:'',t:0};
+const milleHave=()=>!!(S.done['s5']||mil().have);
 /* Words with a picture: photos come from PHO, the colors are drawn. */
 const SW={'u9c-0':'#e5383b','u9c-1':'#2f6fe4','u9c-2':'#2fae5a','u9c-3':'#ffffff','u9c-4':'#111111'};
 const picOf=p=>p&&(PHO.phrases[p.id]?{img:PHO.phrases[p.id][0]}:SW[p.id]?{sw:SW[p.id]}:null);
@@ -1052,6 +1076,28 @@ function hatSvg(h,front){
    :h==='lucia'?'<rect x="82.300" y="19" width="3.600" height="15" rx="1.600" fill="#fff"/><rect x="90.300" y="15" width="3.600" height="15" rx="1.600" fill="#fff"/><rect x="100.100" y="15" width="3.600" height="15" rx="1.600" fill="#fff"/><rect x="108.100" y="19" width="3.600" height="15" rx="1.600" fill="#fff"/><ellipse cx="84.100" cy="15.500" rx="2.200" ry="3.400" fill="#ffd23f"/><ellipse cx="92.100" cy="11.500" rx="2.200" ry="3.400" fill="#ffd23f"/><ellipse cx="101.900" cy="11.500" rx="2.200" ry="3.400" fill="#ffd23f"/><ellipse cx="109.900" cy="15.500" rx="2.200" ry="3.400" fill="#ffd23f"/><path d="M79 39 Q97 23 115 39" stroke="#2fae5a" stroke-width="6.500" fill="none" stroke-linecap="round"/><circle cx="88" cy="33" r="1.800" fill="#e5383b"/><circle cx="106" cy="33" r="1.800" fill="#e5383b"/>'
    :h==='star'?'<path d="M97 2 l3.800 8.600 l9.300 .900 l-7 6.200 l2.100 9.100 l-8.200 -4.800 l-8.200 4.800 l2.100 -9.100 l-7 -6.200 l9.300 -.900 z" fill="#ffd23f" stroke="#c79a12" stroke-width="1.600" stroke-linejoin="round"/>'
    :h==='flag'?'<path d="M30 30 V-2" stroke="#c9d2e3" stroke-width="2.6" stroke-linecap="round"/><rect x="31" y="-1" width="26" height="17" rx="2" fill="#e5383b"/><path d="M40 -1 v17 M31 7.500 h26" stroke="#fff" stroke-width="3.2"/>':''}
+function milleHat(h,front){
+  if(front)return h==='specs'?'<circle cx="37" cy="61" r="7.500" fill="rgba(255,255,255,.18)" stroke="#1a1405" stroke-width="2.200"/><path d="M29.500 60 L16 62 M44.500 60 L56 56" stroke="#1a1405" stroke-width="2.200" stroke-linecap="round"/>':'';
+  return h==='bow'?'<path d="M50 40 L37 31 V49 Z M50 40 L63 31 V49 Z" fill="#ff6fae"/><circle cx="50" cy="40" r="4.200" fill="#c2417c"/>'
+   :h==='sunhat'?'<ellipse cx="38" cy="47" rx="29" ry="6.500" fill="#f3d98b"/><path d="M21 46 Q22 26 40 26 Q57 26 57 46 Z" fill="#f8e7a8"/><path d="M21.500 42 Q39 37 56.500 42 V46 Q39 41 21.500 46 Z" fill="#ff5a6e"/>'
+   :h==='helmet'?'<path d="M17 51 Q20 25 42 25 Q62 26 63 50 Q40 41 17 51 Z" fill="#e5383b"/><path d="M27 40 Q40 31 55 38 M33 31 Q42 28 52 31" stroke="#fff" stroke-width="2.400" fill="none" stroke-linecap="round" opacity=".85"/><path d="M30 49 L34 72" stroke="#1a1405" stroke-width="1.800"/>'
+   :h==='rain'?'<path d="M22 47 Q24 25 41 25 Q58 26 59 46 Z" fill="#ffd23f"/><path d="M12 53 Q38 38 62 45 L74 56 Q44 46 12 53 Z" fill="#f0b90b"/>'
+   :h==='flowers'?'<path d="M20 49 Q39 31 60 45" stroke="#2fae5a" stroke-width="3.500" fill="none" stroke-linecap="round"/><circle cx="23" cy="46" r="4.600" fill="#ff6fae"/><circle cx="32" cy="40" r="4.600" fill="#ffd23f"/><circle cx="42" cy="37.500" r="4.600" fill="#ffffff"/><circle cx="52" cy="39.500" r="4.600" fill="#a78bfa"/><circle cx="59" cy="45" r="4.600" fill="#ff8a3d"/><circle cx="32" cy="40" r="1.700" fill="#c47f14"/><circle cx="42" cy="37.500" r="1.700" fill="#ffd23f"/><circle cx="52" cy="39.500" r="1.700" fill="#fff"/>':''}
+/* Mille faces left, toward Lars. m is the mood: hi or yay. */
+function mille(m,hat){m=m==='yay'?'yay':'hi';if(hat===undefined)hat=mil().on;
+  const eye=m==='yay'?'<path d="M32.500 63 q4.500 -7 9 0" stroke="#3b2a1a" stroke-width="2.600" fill="none" stroke-linecap="round"/>':'<g class="blink"><circle cx="37" cy="61" r="4.600" fill="#fff"/><circle cx="36" cy="61" r="2.600" fill="#3b2a1a"/></g>';
+  const mouth=m==='yay'?'<path d="M20 73 q6 9 12 0 z" fill="#c2413b"/>':'<path d="M20 74 q6 5 12 0" stroke="#3b2a1a" stroke-width="2.200" fill="none" stroke-linecap="round"/>';
+  return `<svg class="mille ${m}" viewBox="0 -8 126 104" aria-hidden="true">
+  <path d="M42 62 L46 36 L57 50 L62 24 L73 42 L80 18 L88 40 L98 22 L102 44 L115 32 L112 54 L124 54 L116 72 Z" fill="#6f4429"/>
+  <path d="M40 88 Q34 44 72 38 Q116 34 120 88 Z" fill="#8a5a3c"/>
+  <path d="M60 56 l5 -9 l5 9 M78 50 l5 -9 l5 9 M96 54 l5 -9 l5 9 M70 70 l5 -9 l5 9 M90 70 l5 -9 l5 9 M106 72 l4 -8 l4 8" stroke="#6f4429" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="52" y="80" width="15" height="12" rx="6" fill="#f6dcbb"/><rect x="92" y="80" width="15" height="12" rx="6" fill="#f6dcbb"/>
+  <circle cx="54" cy="48" r="7" fill="#8a5a3c"/><circle cx="54" cy="48" r="3.600" fill="#ff8f9c"/>
+  <path d="M46 88 Q22 88 12 72 Q7 65 13 62 Q30 42 54 52 Q66 62 62 88 Z" fill="#f6dcbb"/>${milleHat(hat)}
+  <circle cx="11" cy="65" r="4.600" fill="#3b2a1a"/>${eye}${milleHat(hat,true)}
+  <circle cx="44" cy="72" r="3.400" fill="#ff8f9c" opacity=".8"/>${mouth}</svg>`}
+/* Lars, with Mille beside him once she has moved in. */
+const duo=m=>`<div class="m duo">${snegl(m)}${milleHave()?`<span class="mi">${mille(m)}</span>`:''}</div>`;
 /* m is the mood: hi, yay, oops or sleep. hat defaults to what the player has put on him. */
 function snegl(m,hat){m=m||'hi';if(hat===undefined)hat=lars().on;
   const eye=(x,y)=>m==='yay'?`<path d="M${x-4.5} ${y+2} q4.5 -7 9 0" stroke="#3b2a1a" stroke-width="2.6" fill="none" stroke-linecap="round"/>`
@@ -1082,6 +1128,7 @@ function celShow(){const old=document.getElementById('cel');if(old)old.remove();
   else if(c.k==='streak')h=`<span class="k">Streak</span><div class="medal" style="--mc:#ff8a3d;--mc2:#ffd23f">${c.n}</div><h1>${c.n} dage i træk!</h1><p>${c.n} days in a row. ${c.n>=30?'That is real dedication.':c.n>=7?'A whole habit now.':'You are on a roll.'}</p><div class="m">${snegl('yay')}</div>`;
   else if(c.k==='level'){const lv=LEVELS[c.n],nx=LEVELS[c.n+1];
     h=`<span class="k">Level ${c.n+1} complete</span><div class="m" style="width:190px">${snegl('yay','crown')}</div><h1 lang="da">${lv.t}: klaret!</h1><p>You finished every lesson in level ${c.n+1}. ${nx?`Next: level ${c.n+2}, ${nx.t} (${nx.en}).`:'That is the whole course. Du er klar til Danmark!'}</p>`}
+  else if(c.k==='mille')h=`<span class="k">A new friend</span><div class="m" style="width:170px">${mille('yay')}</div><h1>Mød Mille!</h1><p>Meet Mille, the hedgehog. She is Lars's best friend and she has moved in. You will see her next to him from now on, and she has her own wardrobe in the shop.</p><div class="m" style="width:120px">${snegl('yay')}</div>`;
   else h=`<span class="k">Daily quests</span><div class="medal" style="--mc:#6f55c9;--mc2:#c77dff">🎁</div><h1>Alle fire!</h1><p>All four quests done today.</p><span class="chip" style="flex:none">🪙 +20<small>kroner</small></span>`;
   const d=document.createElement('div');d.id='cel';d.className='cel';d.innerHTML=`<div>${h}<button class="btn" data-a="celnext">${CQ.length?'Næste →':'Sådan!'}</button></div>`;document.body.appendChild(d);sfx('win');confetti()}
 function plus(){const w=document.querySelector('.walker .snegl');if(w){w.classList.remove('yay');void w.offsetWidth;w.classList.add('yay')}
@@ -1125,6 +1172,7 @@ const APPW=[
  {t:'Lektioner',en:'Lesson names',w:[['Om mig','About me'],['Tal','Numbers'],['På café','At the café'],['Familien','The family'],['Hygge','Coziness'],['Mad','Food'],['Find vej','Find the way'],['Vejret','The weather'],['Sommerferie','Summer vacation'],['Min og din','Mine and yours'],['Småord','Little words'],['De store tal','The big numbers'],['Klokken','The clock'],['I butikken','In the shop'],['I supermarkedet','At the supermarket'],['Farver','Colors'],['Mad og drikke','Food and drink'],['Regningen','The check'],['Søde ord','Kind words'],['Ved bordet','At the table']]},
  {t:'Lars\' garderobe',en:'Lars\'s wardrobe',w:[['Dannebrog','The Danish flag'],['Festhat','Party hat'],['Solbriller','Sunglasses'],['Nissehue','Christmas elf hat'],['Vikingehjelm','Viking helmet'],['Krone','Crown'],['Halstørklæde','Scarf'],['Luciakrone','Lucia crown'],['Julestjerne','Christmas star']]},
  {t:'Bageriet',en:'The bakery',w:[['Kanelsnegl','Cinnamon roll'],['Flødebolle','Chocolate cream puff'],['Romkugle','Rum ball'],['Wienerbrød','Danish pastry'],['Hindbærsnitte','Raspberry slice'],['Drømmekage','Dream cake'],['Æbleskiver','Pancake puffs'],['Kransekage','Marzipan ring cake'],['Lagkage','Layer cake']]},
+ {t:'Milles garderobe',en:'Mille\'s wardrobe',w:[['Sløjfe','Bow'],['Briller','Glasses'],['Solhat','Sun hat'],['Cykelhjelm','Bike helmet'],['Regnhat','Rain hat'],['Blomsterkrans','Flower crown'],['Bedste venner','Best friends'],['Et pindsvin','A hedgehog']]},
  {t:'Juletræet',en:'The Christmas tree',w:[['Juletræet','The Christmas tree'],['Julekugler','Baubles'],['Kræmmerhuse','Paper cones'],['Halmstjerner','Straw stars'],['Juletrommer','Little drums'],['Nisser','Elves'],['Lyskæde','String of lights'],['Levende lys','Real candles'],['Flagguirlande','Flag garland'],['Gaver','Presents'],['Topstjerne','Tree-top star'],['Pyntet træ','Decorated tree']]},
  {t:'Mærker',en:'Badges',w:[['Første skridt','First step'],['Hej-mester','Hello master'],['Café-klar','Café ready'],['Hygge-ekspert','Coziness expert'],['Rejseklar','Ready to travel'],['Tre på stribe','Three in a row'],['En hel uge','A whole week'],['Snakkesalig','Talkative'],['Vikingestemme','Viking voice'],['Fejlfri','Flawless'],['Ti i træk','Ten in a row'],['Halvtreds','Fifty'],['Kagekender','Cake connoisseur'],['Første runde','First round'],['Elefanthukommelse','Elephant memory'],['Bogorm','Bookworm'],['Duelvinder','Duel winner'],['Samtalepartner','Conversation partner'],['Sludrechatol','Chatterbox'],['Ordkunstner','Word artist'],['Klar til Danmark','Ready for Denmark'],['To uger','Two weeks'],['En hel måned','A whole month'],['Hundrede dage','A hundred days'],['Perfektionist','Perfectionist'],['Tyve i træk','Twenty in a row'],['Stilikon','Style icon'],['Første låge','First door'],['Sætningsbygger','Sentence builder']]}
 ];
@@ -1203,7 +1251,7 @@ function home(){
   const lp=String(S.lastDay||'').split('-').map(Number),last=lp.length===3&&lp.every(Number.isFinite)?new Date(lp[0],lp[1]-1,lp[2],12):null;
   const wk=['M','T','W','T','F','S','S'].map((c,i)=>{const dt=new Date(mon);dt.setDate(mon.getDate()+i);const back=last?Math.round((last-dt)/864e5):-1,on=last&&back>=0&&back<S.streak;
     return `<span class="${on?'on':dayKey(dt)===dayKey()?'now':''}">${c}</span>`}).join('');
-  h+=`<section class="today"><div class="hi"><button class="m" data-a="lars" aria-label="Lars">${snegl(lit?'yay':hr>=21||hr<5?'sleep':'hi')}</button><div><h2>${hr<10&&hr>=5?'Godmorgen':hr>=18?'Godaften':'Hej'}${CODE?', '+esc(NAME):''}!</h2><p id="larsay">${sub}</p></div></div><div class="wk">${wk}</div>${go}</section>`;
+  h+=`<section class="today"><div class="hi ${milleHave()?'two':''}"><button class="m duo" data-a="lars" aria-label="Lars${milleHave()?' and Mille':''}">${snegl(lit?'yay':hr>=21||hr<5?'sleep':'hi')}${milleHave()?`<span class="mi">${mille(lit?'yay':'hi')}</span>`:''}</button><div><h2>${hr<10&&hr>=5?'Godmorgen':hr>=18?'Godaften':'Hej'}${CODE?', '+esc(NAME):''}!</h2><p id="larsay">${sub}</p></div></div><div class="wk">${wk}</div>${go}</section>`;
   const allq=QUESTS.every(q=>day.q.includes(q.id));
   h+=`<section class="qs">${QUESTS.map(q=>{const v=Math.min(q.v(day)||0,q.g),dn=v>=q.g;
     return `<div class="qc ${dn?'done':''}"><span>${dn?'✓ ':''}${q.s}<em>${dn?'+10 🪙':v+'/'+q.g}</em></span><div class="bar"><i style="width:${v/q.g*100}%"></i></div></div>`}).join('')}
@@ -1241,6 +1289,9 @@ function rewards(){
   if(rtab==='shop'){const lz=lars();return h+`
   <section class="unit"><div class="closet"><div class="m">${snegl('yay')}</div><b>Lars's wardrobe</b><span>Buy him something. He wears it everywhere.</span></div><div class="grid">${HATS.map(x=>{const own=lz.own.includes(x.id),on=lz.on===x.id,can=!x.jul&&kr()>=x.p;
     return `<button class="tile ${own?(on?'own on':'own'):can?'buy':'off'}" data-a="hat" data-v="${x.id}" ${own||can?'':'disabled'}><span class="mm">${snegl('hi',x.id)}</span><b lang="da">${x.t}</b><small>${own?(on?'Wearing ✓':'Tap to wear'):x.en}</small>${own?'':`<small>${x.jul?'🎄 Julekalender':'🪙 '+x.p}</small>`}</button>`}).join('')}</div></section>
+  ${milleHave()?`<section class="unit"><div class="closet mil"><div class="m">${mille('yay')}</div><b>Milles garderobe</b><span>Mille the hedgehog, Lars's best friend. Her things are hers alone.</span></div><div class="grid">${MHATS.map(x=>{const mz=mil(),own=mz.own.includes(x.id),on=mz.on===x.id,can=kr()>=x.p;
+    return `<button class="tile ${own?(on?'own on':'own'):can?'buy':'off'}" data-a="mhat" data-v="${x.id}" ${own||can?'':'disabled'}><span class="mm">${mille('hi',x.id)}</span><b lang="da">${x.t}</b><small>${own?(on?'Wearing ✓':'Tap to wear'):x.en}</small>${own?'':`<small>🪙 ${x.p}</small>`}</button>`}).join('')}</div></section>`
+  :`<section class="unit"><div class="closet mil away"><div class="m">${mille('hi','')}</div><b>Lars har en ven</b><span>Lars has a friend: Mille the hedgehog. She moves in when you read the story "Lars har en ven", or you can invite her right now.</span></div><button class="btn ${kr()>=MILLE_KR?'':'ghost'}" data-a="minvite" ${kr()>=MILLE_KR?'':'disabled'}>Invite Mille · 🪙 ${MILLE_KR}</button></section>`}
   ${treeOn()?`<section class="unit"><div class="treec">${treeSvg(tree().own)}<b>Juletræet</b><span>${tree().own.length} of ${ORN.length} kinds of Danish ornament on your tree. Some are for sale, some hide behind julekalender doors.</span></div><div class="grid">${ORN.map(x=>{const own=tree().own.includes(x.id),can=!x.jul&&kr()>=x.p;
     return `<button class="tile ${own?'own':can?'buy':'off'}" data-a="orn" data-v="${x.id}" ${!own&&can?'':'disabled'}><i>${x.i}</i><b lang="da">${x.t}</b><small>${own?'On the tree ✓':x.en}</small>${own?'':`<small>${x.jul?'🎄 Door '+x.jul:'🪙 '+x.p}</small>`}</button>`}).join('')}</div></section>`:''}
   <section class="unit"><div class="unit-h"><h2>Kiosken</h2><span>Things that help</span></div><div class="grid" style="grid-template-columns:1fr 1fr">
@@ -1580,9 +1631,9 @@ function advCards(){
   if(c.phase==='busy')return advBusy(c.tab==='avocab'?'Lars finder ord…':'Lars finder udtryk…');
   if(c.phase==='err')return advErrBox(c.err,'aretry');
   if(c.phase==='done'){const sv=c.saved||[];
-    if(c.tab==='around')return `<div class="fin"><div class="m">${snegl('yay')}</div><h1>Runden er klaret</h1><p>${sv.length} sidder fast · ${c.items.length-sv.length} kommer igen snart</p>
+    if(c.tab==='around')return `<div class="fin">${duo('yay')}<h1>Runden er klaret</h1><p>${sv.length} sidder fast · ${c.items.length-sv.length} kommer igen snart</p>
       <button class="btn" data-a="tab" data-v="home">Hjem</button><button class="btn ghost" data-a="tab" data-v="aw">Se alle mine ord</button></div>`;
-    return `<div class="fin"><div class="m">${snegl('yay')}</div><h1>${sv.length} ${sv.length===1?'nyt ord':'nye ord'} gemt</h1>
+    return `<div class="fin">${duo('yay')}<h1>${sv.length} ${sv.length===1?'nyt ord':'nye ord'} gemt</h1>
       ${sv.length?`<div class="stack" style="width:100%;text-align:left">${sv.map(w=>`<div class="row"><div class="tx"><b>${gp(w.g)}${esc(w.da)}</b><span>${esc(w.en)}</span></div></div>`).join('')}</div>`:'<p>Du kendte dem alle. Flot!</p>'}
       <button class="btn" data-a="amore">Et sæt mere</button><button class="btn ghost" data-a="tab" data-v="home">Hjem</button></div>`}
   const it=c.items[c.i],n=c.items.length;if(!it)return '';
@@ -1698,7 +1749,7 @@ function advGender(){
     return `<div class="hello"><h1>en eller et</h1><p>Femten navneord. Tryk en eller et.${miss?' '+miss+' navneord fra tidligere runder venter.':''}</p></div>
     <div class="teach"><div class="m">${snegl('hi')}</div><div class="bub"><span class="en">Er du i tvivl, så gæt på en. Det er rigtigt tre ud af fire gange.</span></div></div>
     <button class="btn" data-a="agstart">Start runden</button><button class="btn ghost" data-a="tab" data-v="apat">Mønstrene</button><button class="link" data-a="tab" data-v="home">Hjem</button>`}
-  if(g.phase==='done')return `<div class="fin"><div class="m">${snegl('yay')}</div><h1>${g.right} af ${g.items.length}</h1><p>${g.miss.length?'De her kommer igen næste gang:':'Fejlfrit!'}</p>
+  if(g.phase==='done')return `<div class="fin">${duo('yay')}<h1>${g.right} af ${g.items.length}</h1><p>${g.miss.length?'De her kommer igen næste gang:':'Fejlfrit!'}</p>
     ${g.miss.length?`<div class="stack" style="width:100%;text-align:left">${g.miss.map(m=>`<div class="row"><div class="tx"><b>${m[1]?'et':'en'} ${esc(m[0])}</b><span>${esc(m[2])}</span></div></div>`).join('')}</div>`:''}
     <button class="btn" data-a="agstart">En runde til</button><button class="btn ghost" data-a="tab" data-v="apat">Mønstrene</button><button class="btn ghost" data-a="tab" data-v="home">Hjem</button></div>`;
   const it=g.items[g.i],n=g.items.length,a=g.ans,cls=v=>a==null?'ghost':v===it[1]?'good':v===a?'miss':'ghost';
@@ -1768,7 +1819,7 @@ async function advTalkSend(payload){
 function advTalkDone(){
   hush();const turns=tk.turns,recap=tk.recap||'',sv=tk.asaved||[],us=tk.aused||[],title=tk.scene.t;
   S.stat=Object.assign(stat(),{tk:stat().tk+1,t:Date.now()});bumpStreak();save();tk.scene=null;tab='home';
-  app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div><h1>Godt snakket!</h1><p>${esc(title)} · ${turns} svar</p>
+  app.innerHTML=`<div class="page"><div class="fin">${duo('yay')}<h1>Godt snakket!</h1><p>${esc(title)} · ${turns} svar</p>
   ${recap?`<div class="tip" style="text-align:left;width:100%"><b>Lars:</b> ${esc(recap)}</div>`:''}
   ${sv.length?`<div class="tip" style="text-align:left;width:100%"><b>Nye ord, gemt i Mine ord</b>${sv.map(w=>`<div style="margin-top:6px">${gp(w.g)}${esc(w.da)}${w.en?` <span style="color:var(--muted)">· ${esc(w.en)}</span>`:''}</div>`).join('')}</div>`:''}
   ${us.length?`<div class="tip" style="text-align:left;width:100%"><b>Dine ord, som Lars brugte</b><div style="margin-top:6px">${us.map(esc).join(' · ')}</div></div>`:''}
@@ -1985,7 +2036,7 @@ function scottNote(){const m=S.pack&&S.pack.msgs;if(!m||!m.length)return '';cons
 function finishOther(){
   const m=cur.mode,right=cur.right,total=cur.graded,acc=total?right/total:1;let title='',sub='',gain=0;
   if(m==='review'){gain=10+Math.round(acc*5);today().review=1;S.stat=Object.assign(stat(),{rv:stat().rv+1,t:Date.now()});bumpStreak();title='Dagens runde er klaret!';sub=`Today's round is done. ${right} of ${total} right.`}
-  else if(m==='story'){const l=L[cur.li],first=!S.done[l.key],stars=acc>=.99?3:acc>=.5?2:1;gain=first?20:5;const lvb=lvOpenFor(cur.li);S.done[l.key]={stars:Math.max(stars,(S.done[l.key]||{}).stars||0)};if(lvb>=0&&lvDone(lvb))PEND.push({k:'level',n:lvb});
+  else if(m==='story'){const l=L[cur.li],first=!S.done[l.key],stars=acc>=.99?3:acc>=.5?2:1;gain=first?20:5;if(l.key==='s5'&&!milleHave())PEND.push({k:'mille'});const lvb=lvOpenFor(cur.li);S.done[l.key]={stars:Math.max(stars,(S.done[l.key]||{}).stars||0)};if(lvb>=0&&lvDone(lvb))PEND.push({k:'level',n:lvb});
     if(first)S.stat=Object.assign(stat(),{st:stat().st+1,t:Date.now()});bumpStreak();today().lessons=(today().lessons||0)+1;title='Godt læst!';sub=`Well read. ${right} of ${total} questions right.`}
   else if(m==='swap'){gain=10+Math.round(acc*5);bumpStreak();S.stat=Object.assign(stat(),{sw:(stat().sw||0)+1,t:Date.now()});title='Godt bygget!';sub=`Well built. ${right} of ${total} right. You just said sentences nobody taught you whole.`}
   else if(m==='practice'){gain=8+Math.round(acc*4);bumpStreak();title='Godt øvet!';sub=`Good practice. ${right} of ${total} right. Next time the mix will be different.`}
@@ -1996,7 +2047,7 @@ function finishOther(){
   S.earned+=gain;S.xp+=right;week().xp+=right;
   const won=grant();
   save();clearResume();cur=null;tab=m==='duel'?'fam':m==='practice'?'book':'home';
-  app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div><h1>${title}</h1><p>${sub}</p>${m==='duel'?'':scottNote()}
+  app.innerHTML=`<div class="page"><div class="fin">${duo('yay')}<h1>${title}</h1><p>${sub}</p>${m==='duel'?'':scottNote()}
   <div class="won" style="display:flex;gap:10px;justify-content:center"><span class="chip" style="flex:none">🪙 +${gain}<small>kroner</small></span><span class="chip" style="flex:none">🔥 ${S.streak}<small>streak</small></span></div>
   ${won.length?`<div class="grid" style="width:100%">${won.map(b=>`<div class="tile own new"><i>${b.i}</i><b>${b.t}</b><small>New badge!</small></div>`).join('')}</div>`:''}
   <button class="btn" data-a="tab" data-v="${tab}">Continue</button></div></div>`;
@@ -2013,7 +2064,7 @@ function finish(){
   today().lessons++;
   const won=grant();
   save();cur=null;tab='home';
-  app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div>
+  app.innerHTML=`<div class="page"><div class="fin">${duo('yay')}
   <div class="stars">${[0,1,2].map(i=>`<span class="${i<stars?'on':''}" style="animation-delay:${.25+i*.28}s">★</span>`).join('')}</div>
   <h1>${stars===3?'Fantastisk!':stars===2?'Godt klaret!':'Færdig!'}</h1><p>${esc(L[li].t)} is done${S.streak>1?` · 🔥 ${S.streak} days in a row`:''}</p>
   <div class="stats"><div class="stat" style="--c:var(--candle);animation-delay:1s"><small>Kroner</small><b>🪙 <span data-n="${gain}">0</span></b></div>
@@ -2200,7 +2251,7 @@ const A={
     const recap=tk.recap||`${tk.clean||0} of your ${turns} ${turns===1?'answer':'answers'} needed no fixing.`;
     const won=grant();save();sync();
     const title=tk.scene.t;tk.scene=null;tab='home';
-    app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div><h1>Godt snakket!</h1><p>Good talking. You held a real conversation: ${esc(title)}, ${turns} ${turns===1?'answer':'answers'} in your own words.</p>
+    app.innerHTML=`<div class="page"><div class="fin">${duo('yay')}<h1>Godt snakket!</h1><p>Good talking. You held a real conversation: ${esc(title)}, ${turns} ${turns===1?'answer':'answers'} in your own words.</p>
     <div class="tip" style="text-align:left;width:100%"><b>Lars says:</b> ${esc(recap)}</div>
     ${kept.length?`<div class="tip" style="text-align:left;width:100%"><b>Worth practicing</b>${kept.map(k=>`<div style="margin-top:8px">${esc(k.da)}<br><span style="color:var(--muted)">${esc(k.en)}</span></div>`).join('')}<div style="margin-top:10px;color:var(--muted)">Saved to your daily round. They come back tomorrow.</div></div>`:''}
     ${scottNote()}
@@ -2333,6 +2384,13 @@ Object.assign(A,{
   unlock(el){const l=L[+el.dataset.v];if(!l)return;S.open=S.open||{};S.open[l.key]={t:Date.now()};save();sfx('ok');render();sync()},
   orn(el){const x=ORN.find(q=>q.id===el.dataset.v),tr=tree();if(!x||x.jul||tr.own.includes(x.id)||kr()<x.p)return;
     S.tree={own:tr.own.concat(x.id),t:Date.now()};S.shop={spent:((S.shop&&S.shop.spent)||0)+x.p,t:Date.now()};
+    const won=grant();save();render();sfx('coin');confetti();sync();celRun(won)},
+  minvite(){if(milleHave()||kr()<MILLE_KR)return;const mz=mil();S.mille={have:true,own:mz.own,on:mz.on,t:Date.now()};S.shop={spent:((S.shop&&S.shop.spent)||0)+MILLE_KR,t:Date.now()};
+    PEND.push({k:'mille'});const won=grant();save();render();sfx('coin');sync();celRun(won)},
+  mhat(el){const x=MHATS.find(q=>q.id===el.dataset.v),mz=mil();if(!x||!milleHave())return;
+    if(mz.own.includes(x.id)){S.mille={have:mz.have,own:mz.own,on:mz.on===x.id?'':x.id,t:Date.now()};save();render();sfx('tap');sync();return}
+    if(kr()<x.p)return;
+    S.mille={have:mz.have,own:mz.own.concat(x.id),on:x.id,t:Date.now()};S.shop={spent:((S.shop&&S.shop.spent)||0)+x.p,t:Date.now()};
     const won=grant();save();render();sfx('coin');confetti();sync();celRun(won)},
   julno(el){toast('Door '+el.dataset.v+' opens on December '+el.dataset.v);sfx('tap')},
   julsee(el){julShow(+el.dataset.v)},
