@@ -1019,6 +1019,21 @@ function robot(text,slow){
 }
 /* Recorded voices: audio/f (woman) and audio/m (man), one clip per Danish line. The phone's own voice is only the fallback. */
 const slug=t=>t.toLowerCase().replace(/æ/g,'ae').replace(/ø/g,'oe').replace(/å/g,'aa').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+/* Danish that appears on buttons, titles, badges and in the shop. Shown with English under Phrases > App words; each can go on the practice list. */
+const APPW=[
+ {t:'Rundt i appen',en:'Around the app',w:[['Dagens runde',"Today's round"],['Snak med Lars','Chat with Lars'],['Ny lektion','New lesson'],['Kun til dig','Only for you'],['Min liste','My list'],['Rejsepas','Travel passport'],['Kiosken','The kiosk'],['Bageriet','The bakery'],['Isterning','Ice cube'],['Dobbelt kaffe','Double coffee'],
+  ['Næste','Next'],['Sådan','There you go'],['Næsten','Almost'],['Halvvejs','Halfway'],['Fantastisk','Fantastic'],['Godt klaret','Well done'],['Flot','Nice'],['Dygtig','Clever'],['Sejt','Cool'],['Kom så','Come on'],['Du kan godt','You can do it'],['Klar','Ready'],['Alle fire','All four'],['Tre dage i træk','Three days in a row'],['Godt øvet','Well practiced']]},
+ {t:'Niveauer og emner',en:'Levels and units',w:[['Turist','Tourist'],['Gæst','Guest'],['Næsten dansk','Almost Danish'],['Første ord','First words'],['Ud i byen','Out on the town'],['Familie og hygge','Family and coziness'],['På tur','On a trip'],['Fra virkeligheden','From real life'],['Jeg og du','Me and you'],['Spørgsmål','Questions'],['Tal, tid og penge','Numbers, time and money'],['På indkøb','Out shopping'],['På restaurant','At a restaurant'],['Hvad synes du?','What do you think?'],['Hos familien','At the family\'s home']]},
+ {t:'Lektioner',en:'Lesson names',w:[['Om mig','About me'],['Tal','Numbers'],['På café','At the café'],['Familien','The family'],['Hygge','Coziness'],['Mad','Food'],['Find vej','Find the way'],['Vejret','The weather'],['Sommerferie','Summer vacation'],['Min og din','Mine and yours'],['Småord','Little words'],['De store tal','The big numbers'],['Klokken','The clock'],['I butikken','In the shop'],['I supermarkedet','At the supermarket'],['Farver','Colors'],['Mad og drikke','Food and drink'],['Regningen','The check'],['Søde ord','Kind words'],['Ved bordet','At the table']]},
+ {t:'Lars\' garderobe',en:'Lars\'s wardrobe',w:[['Dannebrog','The Danish flag'],['Festhat','Party hat'],['Solbriller','Sunglasses'],['Nissehue','Christmas elf hat'],['Vikingehjelm','Viking helmet'],['Krone','Crown']]},
+ {t:'Bageriet',en:'The bakery',w:[['Kanelsnegl','Cinnamon roll'],['Flødebolle','Chocolate cream puff'],['Romkugle','Rum ball'],['Wienerbrød','Danish pastry'],['Hindbærsnitte','Raspberry slice'],['Drømmekage','Dream cake'],['Æbleskiver','Pancake puffs'],['Kransekage','Marzipan ring cake'],['Lagkage','Layer cake']]},
+ {t:'Mærker',en:'Badges',w:[['Første skridt','First step'],['Hej-mester','Hello master'],['Café-klar','Café ready'],['Hygge-ekspert','Coziness expert'],['Rejseklar','Ready to travel'],['Tre på stribe','Three in a row'],['En hel uge','A whole week'],['Snakkesalig','Talkative'],['Vikingestemme','Viking voice'],['Fejlfri','Flawless'],['Ti i træk','Ten in a row'],['Halvtreds','Fifty'],['Kagekender','Cake connoisseur'],['Første runde','First round'],['Elefanthukommelse','Elephant memory'],['Bogorm','Bookworm'],['Duelvinder','Duel winner'],['Samtalepartner','Conversation partner'],['Sludrechatol','Chatterbox'],['Ordkunstner','Word artist'],['Klar til Danmark','Ready for Denmark'],['To uger','Two weeks'],['En hel måned','A whole month'],['Hundrede dage','A hundred days'],['Perfektionist','Perfectionist'],['Tyve i træk','Twenty in a row'],['Stilikon','Style icon']]}
+];
+APPW.forEach(g=>{g.ids=g.w.map(a=>{const id='ui-'+slug(a[0]);PH[id]={id,da:a[0],en:a[1],say:'',note:'',ui:true};return id})});
+/* The practice list: anything she marks with the arm. id -> {a: when added, n: times right in practice, t: last change} or {x:1,t} once taken off. */
+const inPr=id=>!!(S.pr&&S.pr[id]&&!S.pr[id].x);
+const prIds=()=>Object.entries(S.pr||{}).filter(([id,x])=>x&&!x.x&&PH[id]).sort((a,b)=>(b[1].a||0)-(a[1].a||0)).map(x=>x[0]);
+function prToggle(id){S.pr=S.pr||{};S.pr[id]=inPr(id)?{x:1,t:Date.now()}:{a:Date.now(),n:0,t:Date.now()};save()}
 let player=null,flip=0;
 function hush(){try{player&&player.pause()}catch(e){}player=null;try{speechSynthesis.cancel()}catch(e){}}
 function stepVoice(){return cur.state.who||(cur.i%2?'m':'f')}
@@ -1122,10 +1137,21 @@ function rewards(){
 }
 function phraseRow(p){const st=S.starred.includes(p.id);
   return `<div class="row"><button class="round" data-a="hear" data-v="${p.id}" aria-label="Listen">🔊</button><div class="tx"><b>${esc(p.da)}</b><span>${esc(p.en)}</span></div>
+  <button class="round ${inPr(p.id)?'on':''}" data-a="prac" data-v="${p.id}" aria-label="${inPr(p.id)?'Take off my practice list':'Put on my practice list'}">💪</button>
   <button class="round ${st?'on':''}" data-a="star" data-v="${p.id}" aria-label="Ask Scott about this">?</button></div>`}
+let btab=null;
 function book(){
+  const mine=prIds();if(btab===null)btab=mine.length?'mine':'all';
+  let h=`<div class="hello"><h1>Phrases</h1><p>What you know, the words on the buttons, and your own practice list.</p></div>
+  <div class="seg" style="--n:3">${[['mine','My list'+(mine.length?' · '+mine.length:'')],['all','Learned'],['app','App words']].map(t=>`<button data-a="btab" data-v="${t[0]}" class="${btab===t[0]?'on':''}">${t[1]}</button>`).join('')}</div>`;
+  if(btab==='mine'){
+    if(!mine.length)return h+`<div class="teach"><div class="m">${snegl('hi')}</div><div class="bub"><span class="da" style="font-size:22px">Min liste</span><span class="en">Your practice list is empty. Tap 💪 on any word or phrase, in a lesson or under Learned and App words, and it lands here.</span></div></div>`;
+    return h+`<section class="today"><div class="hi"><div class="m" style="width:88px">${snegl('yay')}</div><div><h2>Min liste</h2><p>${mine.length} to practice. Every round is a new mix of listening, building, pictures and speaking.</p></div></div>
+    <button class="btn" data-a="practice">💪 Practice now</button><button class="link" data-a="practice" data-q="1">🤫 Practice without speaking</button></section>
+    <div class="stack">${mine.map(id=>{const p=PH[id],k=S.pr[id].n||0;return `<div class="row"><button class="round" data-a="hear" data-v="${id}" aria-label="Listen">🔊</button><div class="tx"><b>${esc(p.da)}</b><span>${esc(p.en)}${k?' · right '+k+(k===1?' time':' times')+(k>=4?' ⭐':''):''}</span></div><button class="round" data-a="prac" data-v="${id}" aria-label="Take off my list">✕</button></div>`}).join('')}</div>
+    <div class="note">Got one down? Tap ✕ to take it off. ⭐ means you have had it right four times.</div>`}
+  if(btab==='app')return h+`<div class="note">The Danish on the buttons stays Danish. Here is what it all means. Tap 🔊 to hear it and 💪 to practice it.</div>`+APPW.map(g=>`<section class="unit"><div class="unit-h"><h2>${esc(g.t)}</h2><span>${esc(g.en)}</span></div><div class="stack">${g.ids.map(id=>phraseRow(PH[id])).join('')}</div></section>`).join('');
   const all=L.flatMap(l=>l.p),ask=all.filter(p=>S.starred.includes(p.id));
-  let h=`<div class="hello"><h1>Phrases</h1><p>Everything you have learned. Tap ? to save one to ask Scott about.</p></div>`;
   if(learned(S).length)h+=`<button class="rvb" data-a="tab" data-v="flip"><i>🃏</i><span><b>Flip cards</b><small>Tap a card to flip it. No score, just a look through what you know.</small></span></button>`;
   if(ask.length)h+=`<section class="unit"><div class="unit-h"><h2>Spørg Scott</h2><span>Ask Scott</span></div><div class="stack">${ask.map(phraseRow).join('')}</div></section>`;
   if(!L.some(l=>S.done[l.key]))h+=`<div class="note">Finish your first lesson and its phrases show up here.</div>`;
@@ -1650,7 +1676,7 @@ const ADVA={
 };
 
 /* ---------- lesson engine ---------- */
-function pool(li){if(li===-2)return L.slice(0,CORE).flatMap(l=>l.p);if(li<0)return learned(S);return L[li].x?[...L[li].p,...learned(S).filter(q=>!q.id.startsWith(L[li].key+'-'))]:L.slice(0,li+1).flatMap(l=>l.p)}
+function pool(li){if(li===-3)return [...new Set([...learned(S),...prIds().map(id=>PH[id]),...L[0].p,...L[1].p])];if(li===-2)return L.slice(0,CORE).flatMap(l=>l.p);if(li<0)return learned(S);return L[li].x?[...L[li].p,...learned(S).filter(q=>!q.id.startsWith(L[li].key+'-'))]:L.slice(0,li+1).flatMap(l=>l.p)}
 function options(p,li,key,k){const o=sh(pool(li).filter(x=>x[key]!==p[key]&&x.id!==p.id));const pick=[];for(const x of o){if(!pick.some(y=>y[key]===x[key]))pick.push(x);if(pick.length===(k||3))break}return sh([p,...pick])}
 function tf(p,li){const truth=Math.random()<.5,o=rnd(pool(li).filter(x=>x.en!==p.en));return {k:'tf',p,truth,shown:truth?p.en:o.en}}
 const words=t=>t.replace(/[?!.,]/g,'').split(' ');
@@ -1699,6 +1725,16 @@ function startReview(){
   const st=sh(ids).map((id,i)=>{const p=PH[id],t=((((S.srs||{})[id]||{}).b||0)+i)%4,m=multiWord(p);
     return t===0?{k:'hear',p,o:options(p,-1,'en')}:t===3?{k:'speak',p}:t===2&&m?(i%2?tileStep(p,-1,true):fillStep(p,-1)):{k:'pick',p,o:options(p,-1,'da')}});
   begin(fresh({mode:'review',due:wasDue,steps:st}))}
+function startPractice(quiet){
+  let ids=prIds();if(!ids.length)return;
+  ids=sh(ids).sort((a,b)=>((S.pr[a]||{}).n||0)-((S.pr[b]||{}).n||0)).slice(0,8);
+  const ps=ids.map(id=>PH[id]);
+  const kinds=p=>{const k=['hear','pick','tf','speak'],c=picOf(p);if(multiWord(p))k.push('tiles','tilesL','fill');if(c)k.push('pic');return sh(k)};
+  const mk=(p,k)=>k==='hear'?{k:'hear',p,o:options(p,-3,'en')}:k==='pick'?{k:'pick',p,o:options(p,-3,'da')}:k==='tf'?tf(p,-3):k==='speak'?{k:'speak',p}:k==='tiles'?tileStep(p,-3,false):k==='tilesL'?tileStep(p,-3,true):k==='fill'?fillStep(p,-3):{k:'pic',p,o:picOpts(p)};
+  const ok=x=>x.k!=='pic'||x.o.length===4,a=[],b=[];
+  ps.forEach(p=>{const ks=kinds(p).filter(k=>ok(mk(p,k)));a.push(mk(p,ks[0]));b.push(mk(p,ks[1]))});
+  if(ps.length>=3)a.push({k:'match',ps:sh(ps).slice(0,4)});
+  begin(fresh({mode:'practice',li:-3,quiet:!!quiet,steps:[...sh(a),...sh(b)]}))}
 function startStory(li){const l=L[li];
   begin(fresh({mode:'story',li,steps:[...l.story.map(a=>({k:'read',line:{da:a[0],en:a[1]}})),...l.q.map(q=>({k:'quiz',q:q[0],opts:sh(q[1].slice()),ans:q[1][q[2]]}))]}))}
 function startDuel(to,d){
@@ -1730,7 +1766,7 @@ function renderStep(){
     b=`<div class="ask">${cur.quiet?'Listen and remember':'Listen, then say it back'}</div>${pc&&pc.img?`<img class="pic" src="${esc(pc.img)}" alt="">`:''}
     <div class="teach"><div class="m">${snegl('hi')}</div><button class="bub" data-a="say"><span class="da">${esc(p.da)} 🔊</span><span class="hint">${esc(p.say)}</span><span class="en">${esc(p.en)}</span></button></div>
     ${p.note?`<div class="tip"><b>Tip:</b> ${esc(p.note)}</div>`:''}
-    <div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button><button class="btn sm ghost" data-a="other">🔁 Other voice</button>${(fx.voices||[]).includes(slug(p.da))?'<button class="btn sm ghost" data-a="scottsay">❤️ Scott</button>':''}<button class="btn sm ghost" data-a="star" data-v="${p.id}">${S.starred.includes(p.id)?'✓ Saved for Scott':'? Ask Scott'}</button></div>${cur.quiet?'':micBlock()}`;
+    <div class="acts"><button class="btn sm ghost" data-a="slow">🐢 Slow</button><button class="btn sm ghost" data-a="other">🔁 Other voice</button>${(fx.voices||[]).includes(slug(p.da))?'<button class="btn sm ghost" data-a="scottsay">❤️ Scott</button>':''}<button class="btn sm ghost" data-a="star" data-v="${p.id}">${S.starred.includes(p.id)?'✓ Saved for Scott':'? Ask Scott'}</button><button class="btn sm ghost" data-a="prac" data-v="${p.id}">${inPr(p.id)?'✓ On my list':'💪 Practice more'}</button></div>${cur.quiet?'':micBlock()}`;
     if(cur.quiet)foot=`<button class="btn" data-a="next" id="go">Got it</button><button class="link" data-a="unquiet">🎤 I can talk again</button>`;else foot+=skip;
   }else if(s.k==='match'){
     const a=sh(s.ps),e=sh(s.ps);cur.state={left:s.ps.length,miss:false};
@@ -1785,13 +1821,14 @@ function grade(ok,s,quiet){
   if(!s.retry){cur.graded++;if(ok)cur.right++}
   if(!ok&&!s.retry&&cur.mode!=='duel')cur.steps.push(Object.assign({},s,{retry:true}));
   srsHit(s.p,ok,s.retry);
+  if(cur.mode==='practice'&&ok&&!s.retry&&s.p&&inPr(s.p.id)){const e=S.pr[s.p.id];e.n=(e.n||0)+1;e.t=Date.now()}
   cur.combo=ok?cur.combo+1:0;cur.best=Math.max(cur.best,cur.combo);
   const d=today();d.combo=Math.max(d.combo||0,cur.combo);S.bestCombo=Math.max(S.bestCombo,cur.combo);
   const cm=document.getElementById('cmb');if(cm){cm.textContent=cur.combo>=2?'🔥 '+cur.combo:'';cm.classList.remove('bump');void cm.offsetWidth;cm.classList.add('bump')}
   if(ok&&[3,5,8,12,16,20].includes(cur.combo))comboPop(cur.combo);else sfx(ok?'ok':'no');
   const pr=rnd(PRAISE);
   document.getElementById('fb').innerHTML=ok?`<div class="fb ok"><div class="m">${snegl('yay')}</div><div>${pr[0]}<small>${pr[1]}</small></div></div>`
-    :`<div class="fb no"><div class="m">${snegl('oops')}</div><div>Næsten!<small>${s.p?`Almost. "${esc(s.p.da)}" means "${esc(s.p.en)}".${cur.mode==='duel'?'':" You'll get it again."}`:`The answer was "${esc(s.ans)}".`}</small></div></div>`;
+    :`<div class="fb no"><div class="m">${snegl('oops')}</div><div>Næsten!<small>${s.p?`Almost. "${esc(s.p.da)}" means "${esc(s.p.en)}".${cur.mode==='duel'?'':" You'll get it again."}`:`The answer was "${esc(s.ans)}".`}</small>${s.p&&!s.p.mix&&cur.mode!=='duel'&&!inPr(s.p.id)?`<button class="btn sm ghost" data-a="prac" data-v="${s.p.id}" style="margin-top:6px">💪 Practice more later</button>`:''}</div></div>`;
   const go=document.getElementById('go');go.disabled=false;go.dataset.a='next';go.textContent='Continue';go.className='btn '+(ok?'good':'miss');
   const pg=document.getElementById('prog');if(pg&&ok)pg.style.width=(cur.i+1)/cur.steps.length*100+'%';
   if(!quiet&&s.p)setTimeout(()=>say(s.p.da,false,s.k==='chat'?'f':undefined),ok?350:500);
@@ -1810,13 +1847,14 @@ function finishOther(){
   if(m==='review'){gain=10+Math.round(acc*5);today().review=1;S.stat=Object.assign(stat(),{rv:stat().rv+1,t:Date.now()});bumpStreak();title='Dagens runde er klaret!';sub=`Today's round is done. ${right} of ${total} right.`}
   else if(m==='story'){const l=L[cur.li],first=!S.done[l.key],stars=acc>=.99?3:acc>=.5?2:1;gain=first?20:5;const lvb=lvOpenFor(cur.li);S.done[l.key]={stars:Math.max(stars,(S.done[l.key]||{}).stars||0)};if(lvb>=0&&lvDone(lvb))PEND.push({k:'level',n:lvb});
     if(first)S.stat=Object.assign(stat(),{st:stat().st+1,t:Date.now()});bumpStreak();today().lessons=(today().lessons||0)+1;title='Godt læst!';sub=`Well read. ${right} of ${total} questions right.`}
+  else if(m==='practice'){gain=8+Math.round(acc*4);bumpStreak();title='Godt øvet!';sub=`Good practice. ${right} of ${total} right. Next time the mix will be different.`}
   else{const d=cur.duel,ms=Date.now()-d.t0,post=(path,body)=>fetch(SYNC+path,{method:'POST',headers:{'content-type':'text/plain'},body:JSON.stringify(body)}).then(r=>r.json()).then(j=>{if(j.duels){fx.duels=j.duels;if(tab==='fam'&&!cur&&!document.querySelector('.fin'))render()}}).catch(()=>{});gain=5;
     if(d.reply){const a=d.reply.a,win=right>a.score||(right===a.score&&ms<a.ms);if(win)S.stat=Object.assign(stat(),{dw:stat().dw+1,t:Date.now()});
       title=win?'Du vandt!':'Så tæt på!';sub=`${win?'You won':esc(d.to)+' won'}: you ${right}, ${esc(d.to)} ${a.score}.`;post('/duel/'+CODE+'/'+d.reply.id,{score:right,ms})}
     else{title='Udfordring sendt!';sub=`Challenge sent. ${esc(d.to)} has to beat ${right} of ${total} in ${Math.round(ms/1000)} seconds.`;post('/duel/'+CODE,{to:d.to,ids:d.ids,score:right,ms})}}
   S.earned+=gain;S.xp+=right;week().xp+=right;
   const won=grant();
-  save();clearResume();cur=null;tab=m==='duel'?'fam':'home';
+  save();clearResume();cur=null;tab=m==='duel'?'fam':m==='practice'?'book':'home';
   app.innerHTML=`<div class="page"><div class="fin"><div class="m">${snegl('yay')}</div><h1>${title}</h1><p>${sub}</p>${m==='duel'?'':scottNote()}
   <div class="won" style="display:flex;gap:10px;justify-content:center"><span class="chip" style="flex:none">🪙 +${gain}<small>kroner</small></span><span class="chip" style="flex:none">🔥 ${S.streak}<small>streak</small></span></div>
   ${won.length?`<div class="grid" style="width:100%">${won.map(b=>`<div class="tile own new"><i>${b.i}</i><b>${b.t}</b><small>New badge!</small></div>`).join('')}</div>`:''}
@@ -2150,6 +2188,11 @@ Object.assign(A,{
     S.lars={own:lz.own.concat(x.id),on:x.id,t:Date.now()};S.shop={spent:((S.shop&&S.shop.spent)||0)+x.p,t:Date.now()};
     const won=grant();save();render();sfx('coin');confetti();sync();celRun(won)},
   unlock(el){const l=L[+el.dataset.v];if(!l)return;S.open=S.open||{};S.open[l.key]={t:Date.now()};save();sfx('ok');render();sync()},
+  btab(el){btab=el.dataset.v;sfx('tap');window.scrollTo(0,0);render()},
+  practice(el){startPractice(!!el.dataset.q)},
+  prac(el){const id=el.dataset.v;if(!PH[id])return;prToggle(id);sfx(inPr(id)?'ok':'tap');
+    if(cur){el.textContent=inPr(id)?'✓ On my list':'💪 Practice more'}else render();
+    if(inPr(id)&&!cur)toast('On your list');sync()},
   flipit(){fl.back=!fl.back;sfx('tap');render()},
   flipgo(el){const nn=fl.ids.length;if(!nn)return;fl.i=(fl.i+(+el.dataset.v)+nn)%nn;fl.back=false;render();const p=PH[fl.ids[fl.i]];if(p)say(p.da)}
 });
